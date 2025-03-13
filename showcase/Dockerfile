@@ -1,4 +1,4 @@
-FROM python:3.12.7-bullseye
+FROM python:3.13.2-bullseye
 
 RUN apt-get update && \
     apt-get install -y \
