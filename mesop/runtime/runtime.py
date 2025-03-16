@@ -11,6 +11,7 @@ from mesop.exceptions import MesopDeveloperException, MesopUserException
 from mesop.key import Key
 from mesop.runtime.context import Context
 from mesop.security.security_policy import SecurityPolicy
+from mesop.security.cors import CORS
 from mesop.utils.backoff import exponential_backoff
 from mesop.warn import warn
 
@@ -32,6 +33,7 @@ class PageConfig:
   title: str
   stylesheets: list[str]
   security_policy: SecurityPolicy
+  cors: CORS
   on_load: OnLoadHandler | None
 
 
