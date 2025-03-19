@@ -1,0 +1,2018 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../commands/set-page-title/">
+      
+      
+        <link rel="next" href="../../faq/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>Config - Mesop</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="mesop-light" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#config" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      <!-- https://github.com/squidfunk/mkdocs-material/blob/68332de12e50eb62b8a9282b4cac7f75e51d9ea9/src/templates/partials/header.html -->
+<!--
+  Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+   
+
+<!-- Header -->
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <!-- Link to home -->
+    <a
+      href="../.."
+      title="Mesop"
+      class="md-header__button md-logo"
+      aria-label="Mesop"
+      data-md-component="logo"
+    >
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis"> Mesop </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+             Config 
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+     
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="mesop-light" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="mesop-dark" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>  
+
+    <!-- User preference: color palette -->
+     <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script> 
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label
+      class="md-header__button md-icon docbot-search-trigger"
+      for="__search"
+    >
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <!-- https://github.com/squidfunk/mkdocs-material/blob/d5363ad000d049b25ce0f66c3781040d277bfa7f/src/templates/partials/search.html -->
+<div class="md-search" data-md-component="searchOVERRIDEN" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input
+        type="text"
+        class="md-search__input"
+        name="query"
+        aria-label="Search"
+        placeholder="Ask Docs bot"
+        autocapitalize="off"
+        autocorrect="off"
+        autocomplete="off"
+        spellcheck="false"
+        data-md-component="search-query"
+        required
+      />
+      <label class="md-search__icon md-icon" for="__search">
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button
+          type="reset"
+          class="md-search__icon md-icon"
+          title="Clear"
+          aria-label="Clear"
+          tabindex="-1"
+        >
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source"><a href="https://github.com/mesop-dev/mesop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mesop-dev/mesop
+  </div>
+</a></div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+    
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installing/" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../guides/state-management/" class="md-tabs__link">
+          
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../components/" class="md-tabs__link">
+          
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../page/" class="md-tabs__link">
+          
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../faq/" class="md-tabs__link">
+          
+  
+  FAQ
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../demo/" class="md-tabs__link">
+        
+  
+    
+  
+  Demo 🌐
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../showcase/" class="md-tabs__link">
+        
+  
+    
+  
+  Showcase 🌐
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../blog/" class="md-tabs__link">
+          
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../internal/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Mesop" class="md-nav__button md-logo" aria-label="Mesop" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Mesop
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mesop-dev/mesop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mesop-dev/mesop
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../getting-started/installing/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../guides/state-management/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Guides
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../components/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Components
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            API
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../page/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Page
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    URLs & Navigation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            URLs & Navigation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/navigate/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Navigate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../query-params/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Query params
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    UI Customization
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            UI Customization
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../style/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Style
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../viewport-size/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Viewport Size
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_4" id="__nav_5_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Commands
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_4">
+            <span class="md-nav__icon md-icon"></span>
+            Commands
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/scroll-into-view/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Scroll into view
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/focus-component/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Focus component
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/set-page-title/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Set page title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Config
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Config
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesop_static_folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATIC_FOLDER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_static_url_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATIC_URL_PATH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MESOP_STATE_SESSION_BACKEND">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file" class="md-nav__link">
+    <span class="md-ellipsis">
+      file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      SQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcp-firestore" class="md-nav__link">
+    <span class="md-ellipsis">
+      GCP Firestore
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_file_base_dir" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_FILE_BASE_DIR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_firestore_collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_FIRESTORE_COLLECTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_sql_connection_uri" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_SQL_CONNECTION_URI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_sql_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_SQL_TABLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_prod_unredacted_errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_PROD_UNREDACTED_ERRORS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimental-configuration-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experimental configuration values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Experimental configuration values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesop_concurrent_updates_enabled-deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_CONCURRENT_UPDATES_ENABLED (DEPRECATED)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_websockets_enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_WEBSOCKETS_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_app_base_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_APP_BASE_PATH
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-liner" class="md-nav__link">
+    <span class="md-ellipsis">
+      One-liner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-a-env-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use a .env file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../faq/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo 🌐
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../showcase/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Showcase 🌐
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../blog/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../internal/contributing/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesop_static_folder" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATIC_FOLDER
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_static_url_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATIC_URL_PATH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MESOP_STATE_SESSION_BACKEND">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file" class="md-nav__link">
+    <span class="md-ellipsis">
+      file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      SQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcp-firestore" class="md-nav__link">
+    <span class="md-ellipsis">
+      GCP Firestore
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_file_base_dir" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_FILE_BASE_DIR
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_firestore_collection" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_FIRESTORE_COLLECTION
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_sql_connection_uri" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_SQL_CONNECTION_URI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_state_session_backend_sql_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_STATE_SESSION_BACKEND_SQL_TABLE
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_prod_unredacted_errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_PROD_UNREDACTED_ERRORS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimental-configuration-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experimental configuration values
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Experimental configuration values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mesop_concurrent_updates_enabled-deprecated" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_CONCURRENT_UPDATES_ENABLED (DEPRECATED)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_websockets_enabled" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_WEBSOCKETS_ENABLED
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mesop_app_base_path" class="md-nav__link">
+    <span class="md-ellipsis">
+      MESOP_APP_BASE_PATH
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-liner" class="md-nav__link">
+    <span class="md-ellipsis">
+      One-liner
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-a-env-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use a .env file
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="config">Config<a class="headerlink" href="#config" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Mesop is configured at the application level using environment variables.</p>
+<h2 id="configuration-values">Configuration values<a class="headerlink" href="#configuration-values" title="Permanent link">&para;</a></h2>
+<h3 id="mesop_static_folder">MESOP_STATIC_FOLDER<a class="headerlink" href="#mesop_static_folder" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>NOTE:</strong> This feature will be enabled by default in the next Mesop release and set to use <code>static</code> as the default static folder. You can still set it to another directory or <code>""</code> to disable the feature.</p>
+</blockquote>
+<p>Allows access to static files from the Mesop server.</p>
+<p>It is important to know that the specified folder path is relative to the current
+working directory where the Mesop command is run. Absolute paths are not allowed.</p>
+<p>Example:</p>
+<p>In this case, the current working directory is <code>/srv</code>, which means Mesop will make
+<code>/srv/static</code> the static folder.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>/srv
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nv">MESOP_STATIC_FOLDER</span><span class="o">=</span>static<span class="w"> </span>mesop<span class="w"> </span>app/main.py
+</code></pre></div>
+<p>Here are some examples of valid paths. Let's assume the current working directory is
+<code>/srv/</code></p>
+<ul>
+<li><code>static</code> becomes <code>/srv/static</code></li>
+<li><code>static/</code> becomes <code>/srv/static</code></li>
+<li><code>static/assets</code> becomes <code>/srv/static/assets</code></li>
+<li><code>./static</code> becomes <code>/srv/static</code></li>
+<li><code>./static/</code> becomes <code>/srv/static</code></li>
+<li><code>./static/assets</code> becomes <code>/srv/static/assets</code></li>
+</ul>
+<p>Invalid paths will raise <code>MesopDeveloperException</code>. Here are some examples:</p>
+<ul>
+<li>Absolute paths (e.g. <code>/absolute/path</code>)</li>
+<li><code>.</code></li>
+<li><code>./</code></li>
+<li><code>..</code></li>
+<li><code>../</code></li>
+</ul>
+<h3 id="mesop_static_url_path">MESOP_STATIC_URL_PATH<a class="headerlink" href="#mesop_static_url_path" title="Permanent link">&para;</a></h3>
+<p>This is the base URL path from which files for your specified static folder will be
+made viewable.</p>
+<p>The static URL path is only recognized if <code>MESOP_STATIC_FOLDER</code> is set.</p>
+<p>For example, given <code>MESOP_STATIC_FOLDER=static</code> and <code>MESOP_STATIC_URL_PATH=/assets</code>, the
+file <code>static/js/script.js</code> can be viewable from the URL path <code>/assets/js/script.js</code>.</p>
+<p><strong>Default:</strong> <code>/static</code></p>
+<h3 id="mesop_state_session_backend">MESOP_STATE_SESSION_BACKEND<a class="headerlink" href="#mesop_state_session_backend" title="Permanent link">&para;</a></h3>
+<p>Sets the backend to use for caching state data server-side. This makes it so state does
+not have to be sent to the server on every request, reducing bandwidth, especially if
+you have large state objects.</p>
+<p>The backend options available at the moment are <code>memory</code>, <code>file</code>, <code>sql</code>, and <code>firestore</code>.</p>
+<h4 id="memory">memory<a class="headerlink" href="#memory" title="Permanent link">&para;</a></h4>
+<p>Users should be careful when using the <code>memory</code> backend. Each Mesop process has their
+own RAM, which means cache misses will be common if each server has multiple processes
+and there is no session affinity. In addition, the amount of RAM must be carefully
+specified per instance in accordance with the expected user traffic and state size.</p>
+<p>The safest option for using the <code>memory</code> backend is to use a single process with a
+good amount of RAM. Python is not the most memory efficient, especially when saving data
+structures such as dicts.</p>
+<p>The drawback of being limited to a single process is that requests will take longer to
+process since only one request can be handled at a time. This is especially problematic
+if your application contains long running API calls.</p>
+<p>If session affinity is available, you can scale up multiple instances, each running
+single processes.</p>
+<h4 id="file">file<a class="headerlink" href="#file" title="Permanent link">&para;</a></h4>
+<p>Users should be careful when using the <code>file</code> backend. Each Mesop instance has their
+own disk, which can be shared among multiple processes. This means cache misses will be
+common if there are multiple instances and no session affinity.</p>
+<p>If session affinity is available, you can scale up multiple instances, each running
+multiple Mesop processes. If no session affinity is available, then you can only
+vertically scale a single instance.</p>
+<p>The bottleneck with this backend is the disk read/write performance. The amount of disk
+space must also be carefully specified per instance in accordance with the expected user
+traffic and state size.</p>
+<p>You will also need to specify a directory to write the state data using
+<code>MESOP_STATE_SESSION_BACKEND_FILE_BASE_DIR</code>.</p>
+<h4 id="sql">SQL<a class="headerlink" href="#sql" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>NOTE: Setting up and configuring databases is out of scope of this document.</p>
+</blockquote>
+<p>This option uses <a href="https://www.sqlalchemy.org/">SqlAlchemy</a> to store Mesop state sessions
+in supported SQL databases, such as SQLite3 and PostgreSQL. You can also connect to
+hosted options, such as GCP CloudSQL.</p>
+<p>If you use SQLite3, you cannot use an in-memory database. It has to be a file. This
+option has similar pros/cons as the <code>file</code> backend. Mesop uses the default configuration
+for SQLite3, so the performance will not be optimized for Mesop's usage patterns.
+SQLite3 is OK for development purposes.</p>
+<p>Using a database like PostgreSQL will allow for better scalability, both vertically and
+horizontally, since the database is decoupled from the Mesop server.</p>
+<p>The drawback here is that this requires knowledge of the database you're using. At
+minimum, you will need to create a database and a database user with the right
+privileges. You will also need to create the database table, which you can create
+with this script. You will need to update the CONNECTION_URI and TABLE_NAME to match
+your database and settings. Also the database user for this script will need privileges
+to create tables on the target database.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  <span class="n">Column</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  <span class="n">DateTime</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  <span class="n">LargeBinary</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  <span class="n">MetaData</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  <span class="n">String</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  <span class="n">Table</span><span class="p">,</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  <span class="n">create_engine</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">CONNECTION_URI</span> <span class="o">=</span> <span class="s2">&quot;your-database-connection-uri&quot;</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># Update to &quot;your-table-name&quot; if you&#39;ve overridden `MESOP_STATE_SESSION_BACKEND_SQL_TABLE`.</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;mesop_state_session&quot;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">db</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="n">CONNECTION_URI</span><span class="p">)</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">()</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>  <span class="n">TABLE_NAME</span><span class="p">,</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  <span class="n">metadata</span><span class="p">,</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="n">String</span><span class="p">(</span><span class="mi">23</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>  <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;states&quot;</span><span class="p">,</span> <span class="n">LargeBinary</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  <span class="n">Column</span><span class="p">(</span><span class="s2">&quot;created_at&quot;</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="p">)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</code></pre></div>
+<p>The Mesop server will raise a <code>sqlalchemy.exc.ProgrammingError</code> if there is a
+database configuration issue.</p>
+<p>By default, Mesop will use the table name <code>mesop_state_session</code>, but this can be
+overridden using <code>MESOP_STATE_SESSION_BACKEND_SQL_TABLE</code>.</p>
+<h4 id="gcp-firestore">GCP Firestore<a class="headerlink" href="#gcp-firestore" title="Permanent link">&para;</a></h4>
+<p>This options uses <a href="https://cloud.google.com/firestore?hl=en">GCP Firestore</a> to store
+Mesop state sessions. The <code>(default)</code> database has a free tier that can be used for
+for small demo applications with low traffic and moderate amounts of state data.</p>
+<p>Since Firestore is decoupled from your Mesop server, it allows you to scale vertically
+and horizontally without the considerations you'd need to make for the <code>memory</code> and
+<code>file</code> backends.</p>
+<p>In order to use Firestore, you will need a Google Cloud account with Firestore enabled.
+Follow the instructions for <a href="https://cloud.google.com/firestore/docs/create-database-server-client-library#create_a_in_native_mode_database">creating a Firestore in Native mode database</a>.</p>
+<p>Mesop is configured to use the <code>(default)</code> Firestore only. The GCP project is determined
+using the Application Default Credentials (ADC) which is automatically configured for
+you on GCP services, such as Cloud Run.</p>
+<p>For local development, you can run this command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gcloud<span class="w"> </span>auth<span class="w"> </span>application-default<span class="w"> </span>login
+</code></pre></div>
+<p>If you have multiple GCP projects, you may need to update the project associated
+with the ADC:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">GCP_PROJECT</span><span class="o">=</span>gcp-project
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span><span class="nv">$GCP_PROJECT</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>gcloud<span class="w"> </span>auth<span class="w"> </span>application-default<span class="w"> </span>set-quota-project<span class="w"> </span><span class="nv">$GCP_PROJECT</span>
+</code></pre></div>
+<p>Mesop leverages Firestore's <a href="https://firebase.google.com/docs/firestore/ttl">TTL policies</a>
+to delete stale state sessions. This needs to be set up using the following command,
+otherwise old data will accumulate unnecessarily.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">COLLECTION_NAME</span><span class="o">=</span>collection_name
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gcloud<span class="w"> </span>firestore<span class="w"> </span>fields<span class="w"> </span>ttls<span class="w"> </span>update<span class="w"> </span>expiresAt<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--collection-group<span class="o">=</span><span class="nv">$COLLECTION_NAME</span>
+</code></pre></div>
+<p>By default, Mesop will use the collection name <code>mesop_state_sessions</code>, but this can be
+overridden using <code>MESOP_STATE_SESSION_BACKEND_FIRESTORE_COLLECTION</code>.</p>
+<p><strong>Default:</strong> <code>none</code></p>
+<h3 id="mesop_state_session_backend_file_base_dir">MESOP_STATE_SESSION_BACKEND_FILE_BASE_DIR<a class="headerlink" href="#mesop_state_session_backend_file_base_dir" title="Permanent link">&para;</a></h3>
+<p>This is only used when the <code>MESOP_STATE_SESSION_BACKEND</code> is set to <code>file</code>. This
+parameter specifies where Mesop will read/write the session state. This means the
+directory must be readable and writeable by the Mesop server processes.</p>
+<h3 id="mesop_state_session_backend_firestore_collection">MESOP_STATE_SESSION_BACKEND_FIRESTORE_COLLECTION<a class="headerlink" href="#mesop_state_session_backend_firestore_collection" title="Permanent link">&para;</a></h3>
+<p>This is only used when the <code>MESOP_STATE_SESSION_BACKEND</code> is set to <code>firestore</code>. This
+parameter specifies which Firestore collection that Mesop will write state sessions to.</p>
+<p><strong>Default:</strong> <code>mesop_state_sessions</code></p>
+<h3 id="mesop_state_session_backend_sql_connection_uri">MESOP_STATE_SESSION_BACKEND_SQL_CONNECTION_URI<a class="headerlink" href="#mesop_state_session_backend_sql_connection_uri" title="Permanent link">&para;</a></h3>
+<p>This is only used when the <code>MESOP_STATE_SESSION_BACKEND</code> is set to <code>sql</code>. This
+parameter specifies the database connection string. See the <a href="https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls">SqlAlchemy docs for more details</a>.</p>
+<p><strong>Default:</strong> <code>mesop_state_session</code></p>
+<h3 id="mesop_state_session_backend_sql_table">MESOP_STATE_SESSION_BACKEND_SQL_TABLE<a class="headerlink" href="#mesop_state_session_backend_sql_table" title="Permanent link">&para;</a></h3>
+<p>This is only used when the <code>MESOP_STATE_SESSION_BACKEND</code> is set to <code>sql</code>. This
+parameter specifies which SQL database table that Mesop will write state sessions to.</p>
+<p><strong>Default:</strong> <code>mesop_state_session</code></p>
+<h3 id="mesop_prod_unredacted_errors">MESOP_PROD_UNREDACTED_ERRORS<a class="headerlink" href="#mesop_prod_unredacted_errors" title="Permanent link">&para;</a></h3>
+<p>Mesop, by default, only shows unredacted errors in debug mode.</p>
+<p>If you run in prod mode, the errors are redacted (internal errors are given a generic message "Sorry, there was an error. Please contact the developer.") and the tracebacks are not shown.</p>
+<p>If you want to show unredacted errors, including in prod mode, set this to <code>true</code>. This may be useful if you're deploying a Mesop app internally and want to get error details even in production.</p>
+<h2 id="experimental-configuration-values">Experimental configuration values<a class="headerlink" href="#experimental-configuration-values" title="Permanent link">&para;</a></h2>
+<p>These configuration values are experimental and are subject to breaking change, including removal in future releases.</p>
+<h3 id="mesop_concurrent_updates_enabled-deprecated">MESOP_CONCURRENT_UPDATES_ENABLED (DEPRECATED)<a class="headerlink" href="#mesop_concurrent_updates_enabled-deprecated" title="Permanent link">&para;</a></h3>
+<div class="admonition danger">
+<p class="admonition-title">Deprecated experimental feature</p>
+<p>This experimental feature has been removed in Mesop v1. Use <code>MESOP_WEBSOCKETS_ENABLED</code> instead.</p>
+</div>
+<p>Allows concurrent updates to state in the same session. If this is not updated, then updates are queued and processed sequentially.</p>
+<p>By default, this is not enabled. You can enable this by setting it to <code>true</code>.</p>
+<h3 id="mesop_websockets_enabled">MESOP_WEBSOCKETS_ENABLED<a class="headerlink" href="#mesop_websockets_enabled" title="Permanent link">&para;</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Experimental feature</p>
+<p>This is an experimental feature and is subject to breaking change. Please follow <a href="https://github.com/mesop-dev/mesop/issues/1028">https://github.com/mesop-dev/mesop/issues/1028</a> for updates.</p>
+</div>
+<p>This uses WebSockets instead of HTTP Server-Sent Events (SSE) as the transport protocol for UI updates. Using WebSockets also changes the Mesop server architecture to be stateful (e.g. meaning a server restart or routing to a different server instance means the user will lose state). If you enable this feature, then you should ensure the following:</p>
+<ul>
+<li>Either a single server instance is used <em>or</em> you route a particular user to the same server for a given session (i.e. <a href="https://cloud.google.com/run/docs/configuring/session-affinity">session affinity</a>).</li>
+<li>Either ensure user state is <em>not</em> critical (e.g. it's OK if it's cleared out due to server restart, which could happen at any time on typical cloud infrastructure) or is persisted somewhere (e.g. written to a database).</li>
+</ul>
+<p>Enabling this also allows user events to be handled concurrently, which is particularly useful supporting interactivity for long-running event handlers.</p>
+<p>By default, this is not enabled. You can enable this by setting it to <code>true</code>.</p>
+<h3 id="mesop_app_base_path">MESOP_APP_BASE_PATH<a class="headerlink" href="#mesop_app_base_path" title="Permanent link">&para;</a></h3>
+<p>This is the base path used to resolve other paths, particularly for serving static files. Must be an absolute path. This is rarely needed because the default of using the current working directory is usually sufficient.</p>
+<h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="one-liner">One-liner<a class="headerlink" href="#one-liner" title="Permanent link">&para;</a></h3>
+<p>You can specify the environment variables before the mesop command.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">MESOP_STATE_SESSION_BACKEND</span><span class="o">=</span>memory<span class="w"> </span>mesop<span class="w"> </span>main.py
+</code></pre></div>
+<h3 id="use-a-env-file">Use a .env file<a class="headerlink" href="#use-a-env-file" title="Permanent link">&para;</a></h3>
+<p>Mesop also supports <code>.env</code> files. This is nice since you don't have to keep setting
+the environment variables. In addition, the variables are only set when the application
+is run.</p>
+<div class="highlight"><span class="filename">.env</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">MESOP_STATE_SESSION_BACKEND</span><span class="o">=</span>file
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">MESOP_STATE_SESSION_BACKEND_FILE_BASE_DIR</span><span class="o">=</span>/tmp/mesop-sessions
+</code></pre></div>
+<p>When you run your Mesop app, the .env file will then be read.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>mesop<span class="w"> </span>main.py
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.path", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.prune", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+        <script src="../../javascript/docbot.js"></script>
+      
+    
+  </body>
+</html>

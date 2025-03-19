@@ -1,0 +1,583 @@
+p {
+  letter-spacing: 0.07px;
+}
+
+/*
+ * Forked from: https://github.com/mesop-sh/ruff/blob/39728a1198f1ed6081a0fd159715737848a50aa2/docs/stylesheets/extra.css#L32
+ */
+:root {
+  --black: #0f0f11;
+  --almost-white: #e3e3e3;
+  --white: white;
+  --radiate: #d7ff64;
+  --flare: #6340ac;
+  --rock: #78876e;
+  --galaxy: #121230;
+  --space: #171414;
+  --comet: #6f5d6f;
+  --cosmic: #cb00dc;
+  --sun: #ffac2f;
+  --electron: #46ebe1;
+  --aurora: #46eb74;
+  --constellation: #5f6de9;
+  --neutron: #cff3cf;
+  --proton: #f6afbc;
+  --nebula: #cdcbfb;
+  --supernova: #f1aff6;
+  --starlight: #f4f4f1;
+  --lunar: #fbf2fc;
+  --asteroid: #e3cee3;
+  --crater: #f0dfdf;
+  --mesop-blue-40: #0064ff;
+  --mesop-blue-35: #0052ce;
+  /* Tailwind colors: https://tailwindcss.com/docs/customizing-colors#default-color-palette */
+  --teal-600: #0d9488;
+  --indigo-600: #4f46e5;
+  --pink-600: #db2777;
+  --amber-600: #d97706;
+}
+
+:root {
+  --primary-button-background-color: var(--mesop-blue-40);
+  --primary-button-background-color-hover: var(--mesop-blue-35);
+  --primary-button-text-color: var(--white);
+  --primary-button-text-color-hover: var(--almost-white);
+}
+
+[data-md-color-scheme='mesop-light'] {
+  /* --md-default-bg-color: #fafafc; */
+  --md-default-fg-color--light: #475569;
+  --md-default-bg-color--dark: var(--black);
+  --md-default-bg-color--lighter: var(--almost-white);
+  --md-primary-fg-color: rgb(248 250 252 / 1);
+  --md-primary-fg-color--dark: var(--md-primary-fg-color);
+  --md-default-bg-color: var(--md-primary-fg-color);
+  --md-primary-bg-color: #333;
+  --md-typeset-a-color: var(--cosmic);
+  --md-accent-fg-color: var(--flare);
+}
+
+[data-md-color-scheme='mesop-dark'] {
+  --md-default-bg-color: var(--black); /* var(--galaxy);*/
+  --md-default-fg-color: var(--almost-white);
+  --md-default-fg-color--light: var(--almost-white);
+  --md-default-fg-color--lighter: var(--almost-white);
+  --md-primary-fg-color: var(--black); /* var(--space); */
+  --md-primary-bg-color: var(--almost-white);
+  --md-accent-fg-color: var(--cosmic);
+
+  --md-typeset-color: var(--almost-white);
+  --md-typeset-a-color: var(--radiate);
+  --md-typeset-mark-color: var(--sun);
+
+  --md-code-fg-color: var(--almost-white);
+  --md-code-bg-color: var(--space);
+
+  --md-code-hl-comment-color: var(--asteroid);
+  --md-code-hl-punctuation-color: var(--asteroid);
+  --md-code-hl-generic-color: var(--supernova);
+  --md-code-hl-variable-color: var(--starlight);
+  --md-code-hl-string-color: var(--radiate);
+  --md-code-hl-keyword-color: var(--supernova);
+  --md-code-hl-operator-color: var(--supernova);
+  --md-code-hl-number-color: var(--electron);
+  --md-code-hl-special-color: var(--electron);
+  --md-code-hl-function-color: var(--neutron);
+  --md-code-hl-constant-color: var(--radiate);
+  --md-code-hl-name-color: var(--md-code-fg-color);
+
+  --md-typeset-del-color: hsla(6, 90%, 60%, 0.15);
+  --md-typeset-ins-color: hsla(150, 90%, 44%, 0.15);
+
+  --md-typeset-table-color: hsla(0, 0%, 100%, 0.12);
+  --md-typeset-table-color--light: hsla(0, 0%, 100%, 0.035);
+}
+
+[data-md-color-scheme='mesop-light'] img[src$='#only-dark'],
+[data-md-color-scheme='mesop-light'] img[src$='#gh-dark-mode-only'] {
+  display: none; /* Hide dark images in light mode */
+}
+
+[data-md-color-scheme='mesop-light'] img[src$='#only-light'],
+[data-md-color-scheme='mesop-light'] img[src$='#gh-light-mode-only'] {
+  display: inline; /* Show light images in light mode */
+}
+
+[data-md-color-scheme='mesop-dark'] img[src$='#only-light'],
+[data-md-color-scheme='mesop-dark'] img[src$='#gh-light-mode-only'] {
+  display: none; /* Hide light images in dark mode */
+}
+
+[data-md-color-scheme='mesop-dark'] img[src$='#only-dark'],
+[data-md-color-scheme='mesop-dark'] img[src$='#gh-dark-mode-only'] {
+  display: inline; /* Show dark images in dark mode */
+}
+
+.md-header--shadow {
+  box-shadow: none;
+}
+
+[data-md-color-scheme='mesop-light'] .md-header__topic {
+  /* color: #444; TODO */
+  font-weight: 600;
+}
+
+/* See: https://github.com/squidfunk/mkdocs-material/issues/175#issuecomment-616694465 */
+.md-typeset__table {
+  min-width: 100%;
+}
+.md-typeset table:not([class]) {
+  display: table;
+}
+
+/* See: https://github.com/mesop-sh/ruff/issues/8519 */
+[data-md-color-scheme='mesop-dark'] details summary a {
+  color: var(--flare);
+}
+
+.md-nav--primary {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.md-nav--secondary {
+  font-size: 0.75rem;
+}
+
+.md-main__inner {
+  margin-top: 0.5rem;
+}
+
+.md-nav--primary a.md-nav__link {
+  color: #444;
+  font-size: 0.8rem;
+  letter-spacing: 0.14px;
+}
+
+[data-md-color-scheme='mesop-dark'] .md-nav--primary a.md-nav__link {
+  color: white;
+}
+
+.md-typeset {
+  font-size: 0.8rem;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 0.8rem;
+}
+
+.highlight code {
+  font-size: 0.7rem;
+}
+
+.md-tabs__link {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.md-search__input,
+.md-search__form {
+  border-radius: 8px;
+}
+
+.md-search__input {
+  background-color: var(--md-default-bg-color--lighter);
+}
+
+.md-search__input::placeholder {
+  color: var(--md-default-bg-color--dark);
+}
+
+/* Based on https://github.com/squidfunk/mkdocs-material/issues/2574#issuecomment-821979698 */
+[data-md-toggle='search']:not(:checked) ~ .md-header .md-search__form::after {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.5rem;
+  display: block;
+  padding: 0.1rem 0.4rem;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-bg-color--dark);
+  font-weight: bold;
+  font-size: 0.8rem;
+  border: 0.05rem solid var(--md-default-bg-color--lighter);
+  box-shadow: 0 1px 2px var(--md-default-bg-color--lighter);
+  text-shadow: 0 1px 0 var(--md-default-bg-color--lighter);
+  border-radius: 0.2rem;
+  z-index: 9;
+  content: '⌘ K';
+}
+
+[data-md-color-scheme='mesop-dark'] .md-logo {
+  filter: invert(1);
+}
+
+.immersive-demo {
+  width: 100%;
+  height: 600px;
+  overflow-y: auto;
+  border: 0;
+}
+
+.component-demo {
+  width: 100%;
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #dcdcdc;
+}
+
+/* Caps the height of the code snippets. */
+.md-typeset pre > code {
+  max-height: 450px;
+}
+
+/* Used for home page */
+
+.headline {
+  margin-top: 36px;
+  margin-bottom: 24px;
+  font-size: 48px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.sub-headline {
+  font-size: 18px;
+  text-align: center;
+  color: var(--md-default-fg-color--light);
+}
+
+.header-buttons {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+a.primary-button {
+  background: var(--primary-button-background-color);
+  color: var(--primary-button-text-color);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+a.primary-button:hover {
+  background: var(--primary-button-background-color-hover);
+  color: var(--primary-button-text-color-hover);
+}
+
+a.secondary-button {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+a.secondary-button:hover {
+  color: var(--md-default-fg-color--light);
+  background: var(--md-default-bg-color--lighter);
+}
+
+.section-headline {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.box-shadow {
+  --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color),
+    0 4px 6px -4px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.main-demo-iframe-container {
+  position: relative;
+  width: 80%;
+  margin-top: 24px;
+}
+
+.main-demo-iframe {
+  width: 100%;
+  border-radius: 8px;
+  height: 500px;
+  border: 0;
+}
+
+.main-demo-iframe-container .embed-overlay {
+  position: absolute;
+  top: 8px;
+  right: 48px;
+}
+
+.main-demo-iframe-container .open-button {
+  background-color: var(--primary-button-background-color);
+  color: white;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.main-demo-iframe-container .open-button:hover {
+  background-color: var(--primary-button-background-color-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.main-demo-iframe-container .open-button svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.main-demo-iframe-container .open-button:hover svg {
+  transform: translateX(2px);
+}
+
+.chat-inputs-iframe {
+  margin-top: 24px;
+  width: min(100%, 760px);
+  border-radius: 8px;
+  height: 450px;
+  border: 0;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column {
+  flex-direction: column;
+}
+
+.container {
+  padding-top: 36px;
+  padding-bottom: 48px;
+}
+
+[data-md-color-scheme='mesop-dark'] .container {
+  background: var(--md-default-bg-color);
+}
+
+.amber-gradient-background {
+  --a: #fff8e0;
+  --b: #fff9e5;
+  --c: #fffaf0;
+  background: radial-gradient(
+      circle farthest-side at 28% 54%,
+      var(--a),
+      transparent 36%
+    ),
+    radial-gradient(circle farthest-side at 65% 45%, var(--b), transparent 50%),
+    radial-gradient(circle farthest-side at 60% 65%, var(--c), transparent 50%);
+}
+
+.blue-gradient-background {
+  --a: #eaf4ff;
+  --b: #eef2ff;
+  --c: #f0f2ff;
+  background: radial-gradient(
+      circle farthest-side at 28% 54%,
+      var(--a),
+      transparent 36%
+    ),
+    radial-gradient(circle farthest-side at 65% 45%, var(--b), transparent 50%),
+    radial-gradient(circle farthest-side at 60% 65%, var(--c), transparent 50%);
+}
+
+.pink-gradient-background {
+  --a: #fde7f0;
+  --b: #ffeef5;
+  --c: #fff7fb;
+  background: radial-gradient(
+      circle farthest-side at 28% 54%,
+      var(--a),
+      transparent 36%
+    ),
+    radial-gradient(circle farthest-side at 65% 45%, var(--b), transparent 50%),
+    radial-gradient(circle farthest-side at 60% 65%, var(--c), transparent 50%);
+}
+
+.red-gradient-background {
+  --a: #ffd6d6;
+  --b: #ffe5e5;
+  --c: #ffeded;
+  background: radial-gradient(
+      circle farthest-side at 28% 54%,
+      var(--a),
+      transparent 36%
+    ),
+    radial-gradient(circle farthest-side at 65% 45%, var(--b), transparent 50%),
+    radial-gradient(circle farthest-side at 60% 65%, var(--c), transparent 50%);
+}
+
+.teal-gradient-background {
+  --a: #fbfdfe;
+  --b: #e5fbff;
+  --c: #ddfaff;
+  background: radial-gradient(
+      circle farthest-side at 30% 50%,
+      var(--a),
+      transparent 40%
+    ),
+    radial-gradient(circle farthest-side at 70% 40%, var(--b), transparent 50%),
+    radial-gradient(circle farthest-side at 60% 60%, var(--c), transparent 50%);
+}
+
+.section-chip {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.section-chip.teal {
+  color: var(--teal-600);
+}
+
+.section-chip.blue {
+  color: var(--mesop-blue-40);
+}
+
+.section-chip.pink {
+  color: var(--pink-600);
+}
+
+.section-chip.indigo {
+  color: var(--indigo-600);
+}
+
+.section-chip.amber {
+  color: var(--amber-600);
+}
+
+.section-body {
+  padding: 12px 0;
+  max-width: 768px;
+}
+
+a.section-button {
+  display: block;
+  background: var(--md-default-bg-color);
+  margin: 16px 0;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  color: var(--md-default-fg-color);
+  font-weight: 600;
+  padding: 16px;
+  border-radius: 12px;
+  max-width: 480px;
+}
+
+a.section-button:hover {
+  background: var(--md-default-fg-color--lightest);
+}
+
+.section-button-subtext {
+  font-weight: normal;
+}
+
+.youtube-embed {
+  margin-top: 12px;
+  border-radius: 12px;
+}
+
+.twitter-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+  .twitter-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.gif-caption {
+  font-size: 24px;
+  padding: 24px;
+  text-align: center;
+}
+
+.dev-gif-row {
+  margin-top: 36px;
+  margin-bottom: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 840px;
+}
+
+.row-reverse {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 760px) {
+  .dev-gif-row {
+    flex-direction: column;
+  }
+}
+
+.dev-gif {
+  width: 560px;
+  border-radius: 16px;
+}
+
+/* Styles for various docs page */
+
+a.next-step {
+  display: block;
+  position: relative;
+  margin-top: 16px;
+  border: 1px solid var(--md-default-bg-color--lighter);
+
+  padding: 32px 16px 16px;
+  border-radius: 8px;
+  width: 400px;
+}
+
+a.next-step:before {
+  content: 'Next';
+  color: var(--md-typeset-color);
+  font-size: 14px;
+  position: absolute;
+  top: 8px;
+}
+
+a.next-step:hover {
+  border: 1px solid var(--md-accent-fg-color);
+}
+
+h3#mesop\.features\.theme\.ThemeVar {
+  font-size: 0.8rem;
+}
+
+.cloud-run-tutorials {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+@media (max-width: 1200px) {
+  .cloud-run-tutorials {
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+  }
+}
