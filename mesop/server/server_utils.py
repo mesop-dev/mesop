@@ -129,18 +129,18 @@ def get_static_folder() -> str | None:
     ".." + os.path.sep,
   }:
     raise MesopDeveloperException(
-      "Static folder cannot be . or ..: {static_folder_name}"
+      f"Static folder cannot be . or ..: {static_folder_name}"
     )
   if os.path.isabs(static_folder_name):
     raise MesopDeveloperException(
-      "Static folder cannot be an absolute path: static_folder_name}"
+      f"Static folder cannot be an absolute path: {static_folder_name}"
     )
 
   static_folder_path = safe_join(get_app_base_path(), static_folder_name)
 
   if not static_folder_path:
     raise MesopDeveloperException(
-      "Invalid static folder specified: {static_folder_name}"
+      f"Invalid static folder specified: {static_folder_name}"
     )
 
   return static_folder_path
@@ -153,7 +153,7 @@ def get_static_url_path() -> str | None:
   static_url_path = app_config.static_url_path.strip()
   if not static_url_path.startswith("/"):
     raise MesopDeveloperException(
-      "Invalid static url path. It must start with a slash: {static_folder_name}"
+      f"Invalid static url path. It must start with a slash: {static_url_path}"
     )
 
   if not static_url_path.endswith("/"):
