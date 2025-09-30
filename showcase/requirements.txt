@@ -1,3 +1,3 @@
-mesop>=0.11.1
+mesop>=1.1.0
 gunicorn>=22.0.0
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability

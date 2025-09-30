@@ -28,6 +28,13 @@ SECTIONS = [
     icon="star",
     resources=[
       Resource(
+        title="GenMedia Creative Studio",
+        description="Showcases creative exploration with Google Cloud's generative media services - Veo, Lyria, Imagen, Chirp 3, and Gemini Image Generation (nano-banana).",
+        img_url="https://github.com/user-attachments/assets/61977f3c-dbb6-4002-b8c0-77d57aa03cce",
+        github_url="https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio",
+        github_username="GoogleCloudPlatform",
+      ),
+      Resource(
         title="Mesop Duo Chat",
         description="Chat with multiple models at once.",
         github_url="https://github.com/wwwillchen/mesop-duo-chat",
@@ -456,7 +463,7 @@ def card(resource: Resource):
             letter_spacing="0.2px",
           ),
         )
-      me.text(resource.description, style=me.Style(height=50))
+      me.text(resource.description, style=me.Style(height=65, font_size=15))
     with me.box(
       style=me.Style(
         display="flex",
