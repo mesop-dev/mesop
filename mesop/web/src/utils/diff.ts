@@ -87,7 +87,6 @@ const STATE_DIFF_DICT_ITEM_REMOVED = 'dictionary_item_removed';
 const STATE_DIFF_DICT_ITEM_ADDED = 'dictionary_item_added';
 const STATE_DIFF_ITERABLE_ITEMS_INSERTED = 'iterable_items_inserted';
 const STATE_DIFF_ITERABLE_ITEMS_REMOVED = 'iterable_items_deleted';
-const STATE_DIFF_ITERABLE_ITEMS_EQUAL = 'iterable_items_equal';
 
 // Interface for state diff objects.
 interface StateDiff {
