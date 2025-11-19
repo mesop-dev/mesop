@@ -397,8 +397,8 @@ def diff_state(state1: Any, state2: Any) -> str:
   # Handle the set case which will have a modified path after being JSON encoded.
   diffs = []
   for action in Delta(differences, always_include_values=True).to_flat_dicts():
-    if action["action"].startswith("set_item_"):
-      action["path"] = action["path"] + ["__python.set__"]
+    if action["action"].startswith("set_item_"):  # type: ignore
+      action["path"] = action["path"] + ["__python.set__"]  # type: ignore
     diffs.append(action)
 
   return json.dumps(diffs + custom_actions, cls=MesopJSONEncoder)
