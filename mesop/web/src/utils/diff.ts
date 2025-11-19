@@ -85,12 +85,17 @@ const STATE_DIFF_SET_ITEM_REMOVED = 'set_item_removed';
 const STATE_DIFF_SET_ITEM_ADDED = 'set_item_added';
 const STATE_DIFF_DICT_ITEM_REMOVED = 'dictionary_item_removed';
 const STATE_DIFF_DICT_ITEM_ADDED = 'dictionary_item_added';
+const STATE_DIFF_ITERABLE_ITEMS_INSERTED = 'iterable_items_inserted';
+const STATE_DIFF_ITERABLE_ITEMS_REMOVED = 'iterable_items_deleted';
+const STATE_DIFF_ITERABLE_ITEMS_EQUAL = 'iterable_items_equal';
 
 // Interface for state diff objects.
 interface StateDiff {
   path: (string | number)[];
   action: string;
   value: any;
+  t2_from_index?: number;
+  t2_to_index?: number;
 }
 
 // Applies state diffs to the state object.
@@ -131,6 +136,24 @@ export function applyStateDiff(stateJson: string, diffJson: string): string {
       addSetValue(root, row.path, row.value);
     } else if (row.action === STATE_DIFF_SET_ITEM_REMOVED) {
       removeSetValue(root, row.path, row.value);
+    } else if (
+      row.action === STATE_DIFF_ITERABLE_ITEMS_INSERTED &&
+      row.t2_from_index !== undefined &&
+      row.t2_to_index !== undefined
+    ) {
+      insertIterableItems(
+        root,
+        row.path,
+        row.value,
+        row.t2_from_index,
+        row.t2_to_index,
+      );
+    } else if (
+      row.action === STATE_DIFF_ITERABLE_ITEMS_REMOVED &&
+      row.t2_from_index !== undefined &&
+      row.t2_to_index !== undefined
+    ) {
+      deleteIterableItems(root, row.path, row.t2_from_index, row.t2_to_index);
     }
   }
 
@@ -220,6 +243,53 @@ function removeObjectValue(root: object, path: (string | number)[]) {
     if (i + 1 === path.length) {
       // @ts-ignore: Ignore type
       delete objectSegment[path[i]];
+    } else {
+      // @ts-ignore: Ignore type
+      objectSegment = objectSegment[path[i]];
+    }
+  }
+}
+
+// Inserts iterable items
+function insertIterableItems(
+  root: object,
+  path: (string | number)[],
+  value: any,
+  from_index: number,
+  to_index: number,
+) {
+  let objectSegment = root;
+  for (let i = 0; i < path.length; ++i) {
+    if (i + 1 === path.length) {
+      // @ts-ignore: Ignore type
+      objectSegment[path[i]].splice(from_index, 0, ...value);
+    } else {
+      // @ts-ignore: Ignore type
+      objectSegment = objectSegment[path[i]];
+    }
+  }
+}
+
+// Delete iterable items
+function deleteIterableItems(
+  root: object,
+  path: (string | number)[],
+  from_index: number,
+  to_index: number,
+) {
+  let objectSegment = root;
+  for (let i = 0; i < path.length; ++i) {
+    if (i + 1 === path.length) {
+      // @ts-ignore: Ignore type
+      console.log(
+        'from_index, to_index',
+        from_index,
+        to_index,
+        // @ts-ignore: Ignore type
+        objectSegment[path[i]],
+      );
+      // @ts-ignore: Ignore type
+      objectSegment[path[i]].splice(from_index, to_index - from_index + 1);
     } else {
       // @ts-ignore: Ignore type
       objectSegment = objectSegment[path[i]];

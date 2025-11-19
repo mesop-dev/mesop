@@ -446,4 +446,109 @@ describe('applyStateDiff functionality', () => {
       }),
     );
   });
+
+  it('applies multiple iterable changes', () => {
+    const state1 = JSON.stringify({
+      val1: [1, 2, 3, 4, 5, 6, 7],
+    });
+    const diff = JSON.stringify([
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_deleted',
+        'value': [],
+        'old_value': [1],
+        'type': "<class 'list'>",
+        'old_type': "<class 'list'>",
+        'new_path': null,
+        't1_from_index': 0,
+        't1_to_index': 1,
+        't2_from_index': 0,
+        't2_to_index': 0,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_equal',
+        'value': null,
+        'old_value': null,
+        'type': "<class 'NoneType'>",
+        'old_type': "<class 'NoneType'>",
+        'new_path': null,
+        't1_from_index': 1,
+        't1_to_index': 3,
+        't2_from_index': 0,
+        't2_to_index': 2,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_inserted',
+        'value': [3],
+        'old_value': [],
+        'type': "<class 'list'>",
+        'old_type': "<class 'list'>",
+        'new_path': null,
+        't1_from_index': 3,
+        't1_to_index': 3,
+        't2_from_index': 2,
+        't2_to_index': 3,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_equal',
+        'value': null,
+        'old_value': null,
+        'type': "<class 'NoneType'>",
+        'old_type': "<class 'NoneType'>",
+        'new_path': null,
+        't1_from_index': 3,
+        't1_to_index': 4,
+        't2_from_index': 3,
+        't2_to_index': 4,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_deleted',
+        'value': [],
+        'old_value': [5],
+        'type': "<class 'list'>",
+        'old_type': "<class 'list'>",
+        'new_path': null,
+        't1_from_index': 4,
+        't1_to_index': 5,
+        't2_from_index': 4,
+        't2_to_index': 4,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_equal',
+        'value': null,
+        'old_value': null,
+        'type': "<class 'NoneType'>",
+        'old_type': "<class 'NoneType'>",
+        'new_path': null,
+        't1_from_index': 5,
+        't1_to_index': 6,
+        't2_from_index': 4,
+        't2_to_index': 5,
+      },
+      {
+        'path': ['val1'],
+        'action': 'iterable_items_deleted',
+        'value': [],
+        'old_value': [7],
+        'type': "<class 'list'>",
+        'old_type': "<class 'list'>",
+        'new_path': null,
+        't1_from_index': 6,
+        't1_to_index': 7,
+        't2_from_index': 5,
+        't2_to_index': 5,
+      },
+    ]);
+
+    expect(applyStateDiff(state1, diff)).toBe(
+      JSON.stringify({
+        val1: [2, 3, 3, 4, 6],
+      }),
+    );
+  });
 });

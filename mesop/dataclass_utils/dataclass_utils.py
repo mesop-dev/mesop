@@ -225,11 +225,11 @@ class MesopJSONEncoder(json.JSONEncoder):
     if isinstance(obj, set):
       return {_SET_OBJECT_KEY: list(obj)}
 
-    if is_dataclass(obj):
-      return asdict(obj)
-
     if isinstance(obj, type):
       return str(obj)
+
+    if is_dataclass(obj):
+      return asdict(obj)
 
     return super().default(obj)
 
@@ -305,6 +305,9 @@ class DataFrameOperator(BaseOperator):
       # If Pandas is not installed, don't perform this check. We should log a warning.
       return False
 
+  def normalize_value_for_hashing(self, parent: Any, obj: Any) -> Any:
+    return obj
+
   def give_up_diffing(self, level, diff_instance) -> bool:
     if not level.t1.equals(level.t2):
       diff_instance.custom_report_result(
@@ -324,6 +327,11 @@ class EqualityOperator(BaseOperator):
     return isinstance(level.t1, (UploadedFile, BaseModel)) and isinstance(
       level.t2, (UploadedFile, BaseModel)
     )
+
+  def normalize_value_for_hashing(self, parent: Any, obj: Any) -> Any:
+    if isinstance(obj, set):
+      return set(sorted(list(obj)))
+    return obj
 
   def give_up_diffing(self, level, diff_instance) -> bool:
     if level.t1 != level.t2:
@@ -354,6 +362,7 @@ def diff_state(state1: Any, state2: Any) -> str:
       state1,
       state2,
       custom_operators=[*custom_operators, DataFrameOperator()],
+      threshold_to_diff_deeper=0,
     )
 
     # Manually format dataframe diffs to flat dict format.
@@ -367,7 +376,12 @@ def diff_state(state1: Any, state2: Any) -> str:
         for path, diff in differences[_DIFF_ACTION_DATA_FRAME_CHANGED].items()
       ]
   else:
-    differences = DeepDiff(state1, state2, custom_operators=custom_operators)
+    differences = DeepDiff(
+      state1,
+      state2,
+      custom_operators=custom_operators,
+      threshold_to_diff_deeper=0,
+    )
 
   # Manually format diffs to flat dict format.
   if _DIFF_ACTION_EQUALITY_CHANGED in differences:

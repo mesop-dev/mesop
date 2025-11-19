@@ -270,9 +270,9 @@ cycler==0.12.1 \
     --hash=sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30 \
     --hash=sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c
     # via matplotlib
-deepdiff==6.7.1 \
-    --hash=sha256:58396bb7a863cbb4ed5193f548c56f18218060362311aa1dc36397b2f25108bd \
-    --hash=sha256:b367e6fa6caac1c9f500adc79ada1b5b1242c50d5f716a1a4362030197847d30
+deepdiff==8.6.1 \
+    --hash=sha256:ec56d7a769ca80891b5200ec7bd41eec300ced91ebcc7797b41eb2b3f3ff643a \
+    --hash=sha256:ee8708a7f7d37fb273a541fa24ad010ed484192cd0c4ffc0fa0ed5e2d4b9e78b
     # via -r build_defs/requirements.txt
 exceptiongroup==1.2.1 \
     --hash=sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad \
@@ -528,7 +528,9 @@ greenlet==3.0.3 \
     --hash=sha256:fcd2469d6a2cf298f198f0487e0a5b1a47a42ca0fa4dfd1b6862c999f018ebbf \
     --hash=sha256:fd096eb7ffef17c456cfa587523c5f92321ae02427ff955bebe9e3c63bc9f0da \
     --hash=sha256:fe754d231288e1e64323cfad462fcee8f0288654c10bdf4f603a39ed923bef33
-    # via -r build_defs/requirements.txt
+    # via
+    #   -r build_defs/requirements.txt
+    #   sqlalchemy
 griffe==0.47.0 \
     --hash=sha256:07a2fd6a8c3d21d0bbb0decf701d62042ccc8a576645c7f8799fe1f10de2b2de \
     --hash=sha256:95119a440a3c932b13293538bdbc405bee4c36428547553dc6b327e7e7d35e5a
@@ -983,9 +985,9 @@ numpy==2.0.0 \
     #   contourpy
     #   matplotlib
     #   pandas
-ordered-set==4.1.0 \
-    --hash=sha256:046e1132c71fcf3330438a539928932caf51ddbc582496833e23de611de14562 \
-    --hash=sha256:694a8e44c87657c59292ede72891eb91d34131f6531463aab3009191c77364a8
+orderly-set==5.5.0 \
+    --hash=sha256:46f0b801948e98f427b412fcabb831677194c05c3b699b80de260374baa0b1e7 \
+    --hash=sha256:e87185c8e4d8afa64e7f8160ee2c542a475b738bc891dc3f58102e654125e6ce
     # via deepdiff
 packaging==24.1 \
     --hash=sha256:026ed72c8ed3fcce5bf8950572258698927fd1dbda10a5e981cdf0ac37f4f002 \
