@@ -48,3 +48,6 @@ file = "LICENSE"
 
 [tool.setuptools]
 packages = ["mesop"]
+
+[tool.setuptools.package-data]
+mesop = ["py.typed"]
