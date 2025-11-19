@@ -280,13 +280,6 @@ function deleteIterableItems(
   for (let i = 0; i < path.length; ++i) {
     if (i + 1 === path.length) {
       // @ts-ignore: Ignore type
-      console.log(
-        'from_index, to_index',
-        from_index,
-        to_index,
-        // @ts-ignore: Ignore type
-        objectSegment[path[i]],
-      );
       // @ts-ignore: Ignore type
       objectSegment[path[i]].splice(from_index, to_index - from_index + 1);
     } else {
