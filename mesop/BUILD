@@ -14,11 +14,14 @@ py_library(
     name = "mesop",
     srcs = [
         "__init__.py",
+        "py.typed",
     ],
-    data = glob([
-        ".env",
-        "static/**/*",
-    ]),
+    data = glob(
+        [
+            ".env",
+            "static/**/*",
+        ],
+    ),
     visibility = ["//build_defs:mesop_users"],
     deps = [
         ":version",
