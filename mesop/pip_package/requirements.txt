@@ -1,5 +1,5 @@
 absl-py
-deepdiff==6.*
+deepdiff>=8.6.1,<9
 flask
 msgpack
 protobuf
