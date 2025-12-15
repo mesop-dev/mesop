@@ -584,11 +584,15 @@ def register_event_handler(
   handler_fn: Callable[..., Any], event: Type[E]
 ) -> str:
   fn_id = compute_fn_id(handler_fn)
+  # Include event type in the handler ID to disambiguate handlers that
+  # can be used with multiple event types
+  event_qualified_name = f"{event.__module__}.{event.__name__}"
+  handler_id = f"{fn_id}:{event_qualified_name}"
 
   runtime().context().register_event_handler(
-    fn_id, wrap_handler_with_event(handler_fn, event)
+    handler_id, wrap_handler_with_event(handler_fn, event)
   )
-  return fn_id
+  return handler_id
 
 
 def has_stable_repr(obj: Any) -> bool:

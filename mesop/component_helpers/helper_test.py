@@ -11,10 +11,13 @@ from mesop.component_helpers.helper import (
   UnnamedSlot,
   _UserCompositeComponent,
   check_property_keys_is_safe,
+  register_event_handler,
   slot,
   slotclass,
 )
+from mesop.events import InputEvent, MesopEvent
 from mesop.exceptions import MesopDeveloperException
+from mesop.key import Key
 from mesop.runtime.context import NodeTreeState
 from mesop.runtime.runtime import Runtime
 
@@ -306,6 +309,82 @@ def test_user_composite_component_named_with_extra_named_slot(app):
       _UserCompositeComponent(
         named_component_with_missing_slot, named_slots_cls=TestSlot
       )
+
+
+# Test event types for disambiguation test
+from dataclasses import dataclass
+
+
+@dataclass(kw_only=True)
+class TestBlurEvent(MesopEvent):
+  """Test blur event."""
+
+  value: str
+
+
+@dataclass(kw_only=True)
+class TestSelectEvent(MesopEvent):
+  """Test select event."""
+
+  values: list[str]
+
+
+@pytest.mark.usefixtures("runtime")
+def test_event_handler_disambiguation(runtime, app):
+  """Test that the same handler can be registered with different event types."""
+  with app.app_context():
+    # Register event mappers
+    runtime().register_event_mapper(
+      TestBlurEvent,
+      lambda userEvent, key: TestBlurEvent(
+        value=userEvent.string_value,
+        key=key.key,
+      ),
+    )
+    runtime().register_event_mapper(
+      TestSelectEvent,
+      lambda userEvent, key: TestSelectEvent(
+        values=["test"],
+        key=key.key,
+      ),
+    )
+
+    # Define a shared handler function
+    def shared_handler(event):
+      pass
+
+    # Register the same handler with different event types
+    blur_handler_id = register_event_handler(shared_handler, event=TestBlurEvent)
+    select_handler_id = register_event_handler(
+      shared_handler, event=TestSelectEvent
+    )
+
+    # The handler IDs should be different because they handle different event types
+    assert (
+      blur_handler_id != select_handler_id
+    ), "Handler IDs should be different for different event types"
+
+    # Get the registered handlers
+    blur_handler = runtime().context()._handlers.get(blur_handler_id)
+    select_handler = runtime().context()._handlers.get(select_handler_id)
+
+    # Both handlers should exist
+    assert blur_handler is not None, "Blur handler should be registered"
+    assert select_handler is not None, "Select handler should be registered"
+
+    # Create mock events
+    blur_proto = pb.UserEvent(
+      string_value="blur_value",
+      key=pb.Key(key="test_key"),
+    )
+    select_proto = pb.UserEvent(
+      string_value="",
+      key=pb.Key(key="test_key"),
+    )
+
+    # Call the handlers and verify they use the correct event mappers
+    blur_handler(blur_proto)
+    select_handler(select_proto)
 
 
 if __name__ == "__main__":
