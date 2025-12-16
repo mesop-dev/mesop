@@ -164,24 +164,61 @@ def configure_flask_app(
         runtime().context().initialize_query_params(
           ui_request.init.query_params
         )
-        page_config = runtime().get_page_config(path=ui_request.path)
+        path = ui_request.path
+        page_config = runtime().get_page_config(path=path)
         if page_config and page_config.on_load:
           result = page_config.on_load(
             LoadEvent(
-              path=ui_request.path,
+              path=path,
             )
           )
           # on_load is a generator function then we need to iterate through
           # the generator object.
           if result:
             for _ in result:
-              yield from render_loop(path=ui_request.path, init_request=True)
+              yield from render_loop(path=path, init_request=True)
               runtime().context().set_previous_node_from_current_node()
               runtime().context().reset_current_node()
           else:
-            yield from render_loop(path=ui_request.path, init_request=True)
+            yield from render_loop(path=path, init_request=True)
         else:
-          yield from render_loop(path=ui_request.path, init_request=True)
+          yield from render_loop(path=path, init_request=True)
+
+        # Check if there are any navigate commands from the initial page load
+        # and handle them before ending the stream
+        navigate_commands = [
+          command
+          for command in runtime().context().commands()
+          if command.HasField("navigate")
+        ]
+        if navigate_commands:
+          if len(navigate_commands) > 1:
+            warn(
+              "Detected multiple navigate commands! Only the first one will be used."
+            )
+          command = navigate_commands[0]
+          # Clear all commands since we're handling navigation
+          runtime().context().clear_commands()
+
+          runtime().context().initialize_query_params(command.navigate.query_params)
+          if command.navigate.url.startswith(("http://", "https://")):
+            # External URL navigation - render current page and let client handle redirect
+            yield from render_loop(path=path)
+            if not MESOP_WEBSOCKETS_ENABLED:
+              yield create_update_state_event()
+            yield STREAM_END
+            return
+
+          # Internal navigation - load and render the target page
+          path = remove_url_query_param(command.navigate.url)
+          page_config = runtime().get_page_config(path=path)
+          if page_config and page_config.on_load:
+            yield from run_page_load(path=path)
+
+          runtime().context().set_previous_node_from_current_node()
+          runtime().context().reset_current_node()
+          yield from render_loop(path=path, init_request=True)
+
         if not MESOP_WEBSOCKETS_ENABLED:
           yield create_update_state_event()
         yield STREAM_END
