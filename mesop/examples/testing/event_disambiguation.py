@@ -3,6 +3,8 @@ Example demonstrating the event disambiguation fix.
 
 This example shows that the same handler function can now be used
 with different event types (blur and selection change) without conflicts.
+
+Bug: https://github.com/mesop-dev/mesop/issues/1319
 """
 
 import mesop as me
@@ -23,7 +25,7 @@ def shared_handler(event):
   if isinstance(event, me.InputBlurEvent):
     state.input_value = event.value
     state.events_received.append(f"Blur event: {event.value}")
-  elif hasattr(event, 'values'):  # SelectSelectionChangeEvent
+  elif hasattr(event, "values"):  # SelectSelectionChangeEvent
     state.select_value = event.value
     state.events_received.append(f"Select event: {event.value}")
 
@@ -36,12 +38,12 @@ def page():
 
   # Use the same handler for both input blur and select change
   me.input(
-    label="Input (blur event)",
+    label="Input",
     on_blur=shared_handler,
   )
 
   me.select(
-    label="Select (selection change event)",
+    label="Select",
     options=[
       me.SelectOption(label="Option 1", value="opt1"),
       me.SelectOption(label="Option 2", value="opt2"),

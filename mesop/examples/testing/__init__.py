@@ -29,6 +29,9 @@ from mesop.examples.testing import (
   error_register_web_component_too_late as error_register_web_component_too_late,
 )
 from mesop.examples.testing import (
+  event_disambiguation as event_disambiguation,
+)
+from mesop.examples.testing import (
   minimal_chat as minimal_chat,
 )
 from mesop.examples.testing import (
