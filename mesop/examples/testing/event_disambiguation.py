@@ -25,7 +25,7 @@ def shared_handler(event):
   if isinstance(event, me.InputBlurEvent):
     state.input_value = event.value
     state.events_received.append(f"Blur event: {event.value}")
-  elif hasattr(event, "values"):  # SelectSelectionChangeEvent
+  elif isinstance(event, me.SelectSelectionChangeEvent):
     state.select_value = event.value
     state.events_received.append(f"Select event: {event.value}")
 
