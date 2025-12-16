@@ -163,6 +163,24 @@ export class Channel {
         this.queueMessage(request, uiResponse);
       });
     });
+
+    this.eventSource.addEventListener('error', (e) => {
+      zone.run(() => {
+        console.error('SSE error:', e);
+        clearTimeout(this.isWaitingTimeout);
+        this.isWaiting = false;
+        this._isHotReloading = false;
+      });
+    });
+
+    this.eventSource.addEventListener('abort', (e) => {
+      zone.run(() => {
+        console.error('SSE aborted:', e);
+        clearTimeout(this.isWaitingTimeout);
+        this.isWaiting = false;
+        this._isHotReloading = false;
+      });
+    });
   }
 
   private initWebSocket(initParams: InitParams, request: UiRequest) {
@@ -220,6 +238,9 @@ export class Channel {
       zone.run(() => {
         console.error('WebSocket error:', error);
         this.status = ChannelStatus.CLOSED;
+        clearTimeout(this.isWaitingTimeout);
+        this.isWaiting = false;
+        this._isHotReloading = false;
       });
     };
 
@@ -227,6 +248,9 @@ export class Channel {
       zone.run(() => {
         console.error('WebSocket closed:', event.reason);
         this.status = ChannelStatus.CLOSED;
+        clearTimeout(this.isWaitingTimeout);
+        this.isWaiting = false;
+        this._isHotReloading = false;
 
         // Attempt to reconnect if we haven't exceeded max attempts
         if (this.wsReconnectAttempts < this.wsMaxReconnectAttempts) {
