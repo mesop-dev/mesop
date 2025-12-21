@@ -2,7 +2,10 @@ import base64
 import logging
 import secrets
 import threading
+import types
 from typing import Generator, Sequence
+
+import asyncio
 
 from flask import (
   Flask,
@@ -42,6 +45,41 @@ from mesop.warn import warn
 UI_PATH = prefix_base_url("/__ui__")
 
 logger = logging.getLogger(__name__)
+
+
+def _run_async_generator(agen: types.AsyncGeneratorType[None, None]):
+  loop = _get_or_create_event_loop()
+  try:
+    while True:
+      yield loop.run_until_complete(agen.__anext__())
+  except StopAsyncIteration:
+    pass
+
+
+def _run_coroutine(coroutine: types.CoroutineType):
+  loop = _get_or_create_event_loop()
+  return loop.run_until_complete(coroutine)
+
+
+def _get_or_create_event_loop():
+  try:
+    return asyncio.get_running_loop()
+  except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    return loop
+
+
+def _process_on_load_result(result) -> Generator[None, None, None]:
+  """Process on_load result, handling sync generators, async generators, and coroutines."""
+  if result is not None:
+    if isinstance(result, types.AsyncGeneratorType):
+      yield from _run_async_generator(result)
+    elif isinstance(result, types.CoroutineType):
+      yield _run_coroutine(result)
+    else:
+      # Regular generator
+      yield from result
 
 
 def configure_flask_app(
@@ -172,9 +210,9 @@ def configure_flask_app(
             )
           )
           # on_load is a generator function then we need to iterate through
-          # the generator object.
+          # the generator object. This also handles async generators and coroutines.
           if result:
-            for _ in result:
+            for _ in _process_on_load_result(result):
               yield from render_loop(path=ui_request.path, init_request=True)
               runtime().context().set_previous_node_from_current_node()
               runtime().context().reset_current_node()
@@ -277,9 +315,9 @@ def configure_flask_app(
     assert page_config and page_config.on_load
     result = page_config.on_load(LoadEvent(path=path))
     # on_load is a generator function then we need to iterate through
-    # the generator object.
+    # the generator object. This also handles async generators and coroutines.
     if result:
-      for _ in result:
+      for _ in _process_on_load_result(result):
         yield from render_loop(path=path, init_request=True)
         runtime().context().set_previous_node_from_current_node()
         runtime().context().reset_current_node()
