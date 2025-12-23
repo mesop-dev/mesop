@@ -165,20 +165,26 @@ export class Channel {
     });
 
     this.eventSource.addEventListener('error', (e) => {
-      zone.run(() => {
+      zone.run(async () => {
         console.error('SSE error:', e);
+        this.status = ChannelStatus.CLOSED;
         clearTimeout(this.isWaitingTimeout);
         this.isWaiting = false;
         this._isHotReloading = false;
+        await this.processMessageQueue();
+        this.dequeueEvent();
       });
     });
 
     this.eventSource.addEventListener('abort', (e) => {
-      zone.run(() => {
+      zone.run(async () => {
         console.error('SSE aborted:', e);
+        this.status = ChannelStatus.CLOSED;
         clearTimeout(this.isWaitingTimeout);
         this.isWaiting = false;
         this._isHotReloading = false;
+        await this.processMessageQueue();
+        this.dequeueEvent();
       });
     });
   }
@@ -235,22 +241,26 @@ export class Channel {
     };
 
     this.webSocket.onerror = (error) => {
-      zone.run(() => {
+      zone.run(async () => {
         console.error('WebSocket error:', error);
         this.status = ChannelStatus.CLOSED;
         clearTimeout(this.isWaitingTimeout);
         this.isWaiting = false;
         this._isHotReloading = false;
+        await this.processMessageQueue();
+        this.dequeueEvent();
       });
     };
 
     this.webSocket.onclose = (event) => {
-      zone.run(() => {
+      zone.run(async () => {
         console.error('WebSocket closed:', event.reason);
         this.status = ChannelStatus.CLOSED;
         clearTimeout(this.isWaitingTimeout);
         this.isWaiting = false;
         this._isHotReloading = false;
+        await this.processMessageQueue();
+        this.dequeueEvent();
 
         // Attempt to reconnect if we haven't exceeded max attempts
         if (this.wsReconnectAttempts < this.wsMaxReconnectAttempts) {
