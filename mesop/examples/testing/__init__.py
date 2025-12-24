@@ -1,4 +1,7 @@
 from mesop.examples.testing import (
+  async_onload as async_onload,
+)
+from mesop.examples.testing import (
   click_is_target as click_is_target,
 )
 from mesop.examples.testing import (

@@ -1,0 +1,19 @@
+import {test, expect} from '@playwright/test';
+
+describe('async onload events', () => {
+  test('async generator', async ({page}) => {
+    await page.goto('/async_gen');
+
+    await expect(
+      await page.getByText('Async Generator: Loaded from async generator!'),
+    ).toBeVisible();
+  });
+
+  test('async coroutine', async ({page}) => {
+    await page.goto('/async_coro');
+
+    await expect(
+      await page.getByText('Async Coroutine: Loaded from coroutine!'),
+    ).toBeVisible();
+  });
+});
