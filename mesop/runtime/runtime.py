@@ -1,3 +1,4 @@
+from collections.abc import AsyncGenerator, Coroutine
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Any, Callable, Generator, Type, TypeVar, cast
@@ -23,7 +24,10 @@ class EmptyState:
   pass
 
 
-OnLoadHandler = Callable[[LoadEvent], None | Generator[None, None, None]]
+OnLoadHandler = Callable[
+  [LoadEvent],
+  None | Generator[None, None, None] | AsyncGenerator[None, None] | Coroutine[Any, Any, None],
+]
 
 
 @dataclass(kw_only=True)

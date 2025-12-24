@@ -5,8 +5,6 @@ import threading
 import types
 from typing import Generator, Sequence
 
-import asyncio
-
 from flask import (
   Flask,
   Response,
@@ -39,6 +37,7 @@ from mesop.server.server_utils import (
   prefix_base_url,
   serialize,
 )
+from mesop.utils.async_utils import run_async_generator, run_coroutine
 from mesop.utils.url_utils import remove_url_query_param
 from mesop.warn import warn
 
@@ -47,36 +46,13 @@ UI_PATH = prefix_base_url("/__ui__")
 logger = logging.getLogger(__name__)
 
 
-def _run_async_generator(agen: types.AsyncGeneratorType[None, None]):
-  loop = _get_or_create_event_loop()
-  try:
-    while True:
-      yield loop.run_until_complete(agen.__anext__())
-  except StopAsyncIteration:
-    pass
-
-
-def _run_coroutine(coroutine: types.CoroutineType):
-  loop = _get_or_create_event_loop()
-  return loop.run_until_complete(coroutine)
-
-
-def _get_or_create_event_loop():
-  try:
-    return asyncio.get_running_loop()
-  except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    return loop
-
-
 def _process_on_load_result(result) -> Generator[None, None, None]:
   """Process on_load result, handling sync generators, async generators, and coroutines."""
   if result is not None:
     if isinstance(result, types.AsyncGeneratorType):
-      yield from _run_async_generator(result)
+      yield from run_async_generator(result)
     elif isinstance(result, types.CoroutineType):
-      yield _run_coroutine(result)
+      yield run_coroutine(result)
     else:
       # Regular generator
       yield from result

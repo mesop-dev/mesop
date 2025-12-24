@@ -1,4 +1,3 @@
-import asyncio
 import copy
 import threading
 import types
@@ -18,6 +17,7 @@ from mesop.exceptions import (
   MesopException,
 )
 from mesop.server.state_session import state_session
+from mesop.utils.async_utils import run_async_generator, run_coroutine
 
 T = TypeVar("T")
 
@@ -363,9 +363,9 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
       result = handler(payload)
       if result is not None:
         if isinstance(result, types.AsyncGeneratorType):
-          yield from _run_async_generator(result)
+          yield from run_async_generator(result)
         elif isinstance(result, types.CoroutineType):
-          yield _run_coroutine(result)
+          yield run_coroutine(result)
         else:
           yield from result
       else:
@@ -374,26 +374,3 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
       raise MesopException(
         f"Unknown handler id: {event.handler_id} from event {event}"
       )
-
-
-def _run_async_generator(agen: types.AsyncGeneratorType[None, None]):
-  loop = _get_or_create_event_loop()
-  try:
-    while True:
-      yield loop.run_until_complete(agen.__anext__())
-  except StopAsyncIteration:
-    pass
-
-
-def _run_coroutine(coroutine: types.CoroutineType):
-  loop = _get_or_create_event_loop()
-  return loop.run_until_complete(coroutine)
-
-
-def _get_or_create_event_loop():
-  try:
-    return asyncio.get_running_loop()
-  except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    return loop
