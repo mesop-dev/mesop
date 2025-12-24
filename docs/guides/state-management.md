@@ -286,8 +286,11 @@ Threading primitives like threads, locks, and queues cannot be serialized.
 #### Protocol Buffers and Complex Objects
 Protocol buffer messages and other complex objects that don't have built-in serialization support cannot be used.
 
+> Note: This example uses Mesop's internal proto definitions for illustration. The same principle applies to any protocol buffer or complex object type.
+
 ???+ failure "Bad: protocol buffer in state"
     ```python
+    # Example using protocol buffer (not recommended)
     import mesop.protos.ui_pb2 as pb
     
     @me.stateclass
@@ -301,13 +304,14 @@ Protocol buffer messages and other complex objects that don't have built-in seri
     ```python
     @me.stateclass
     class State:
-      style_dict: dict[str, str]
+      style_config: dict[str, str]
     
-    def on_update(e: me.Event):
+    def on_update(e: me.ClickEvent):
       state = me.state(State)
-      proto = pb.Style()  # Use proto temporarily
-      # Extract into dict
-      state.style_dict = {"color": proto.color, "font": proto.font}
+      # If you receive a proto from an API, extract the data
+      # proto = some_api_call()  # Returns a protobuf
+      # Extract only what you need into serializable types
+      state.style_config = {"color": "blue", "font": "Arial"}
     ```
 
 ### Troubleshooting Serialization Errors
