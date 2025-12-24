@@ -120,7 +120,17 @@ export class Shell {
         onCommand: async (command) => {
           if (command.hasNavigate()) {
             const url = command.getNavigate()!.getUrl()!;
-            if (url.startsWith('http://') || url.startsWith('https://')) {
+            const openInNewTab = command.getNavigate()!.getOpenInNewTab();
+
+            if (openInNewTab) {
+              // When opening in a new tab, we need to handle both absolute and relative URLs
+              let absoluteUrl = url;
+              if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                // Convert relative URL to absolute URL
+                absoluteUrl = window.location.origin + url;
+              }
+              window.open(absoluteUrl, '_blank');
+            } else if (url.startsWith('http://') || url.startsWith('https://')) {
               window.location.href = url;
             } else {
               await this.router.navigateByUrl(command.getNavigate()!.getUrl()!);
