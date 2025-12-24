@@ -242,8 +242,8 @@ Open files, sockets, and other I/O objects cannot be serialized.
     
     def on_upload(e: me.UploadEvent):
       state = me.state(State)
-      # Use the file property for convenience with single uploads
-      if e.file:
+      # Check if any files were uploaded
+      if e.files:
         state.file_content = e.file.getvalue().decode('utf-8')
     ```
 
@@ -268,9 +268,9 @@ Database connections, cursors, and ORM session objects cannot be serialized.
     
     def on_load(e: me.LoadEvent):
       state = me.state(State)
-      # Create connection when needed
-      conn = get_db_connection()
-      state.user_data = fetch_user_data(conn)
+      # Create connection when needed (implement your own connection logic)
+      conn = create_database_connection()
+      state.user_data = fetch_user_data_from_db(conn)
       conn.close()
     ```
 
@@ -310,9 +310,16 @@ Protocol buffer messages and other complex objects that don't have built-in seri
     
     def on_update(e: me.ClickEvent):
       state = me.state(State)
-      # If you receive a proto from an API, extract the data
-      # proto = some_api_call()  # Returns a protobuf
-      # Extract only what you need into serializable types
+      # If you receive a proto from an API, extract the relevant fields
+      # Example: proto_obj = some_api_that_returns_protobuf()
+      # Extract only what you need into serializable types:
+      # state.style_config = {
+      #   "color": proto_obj.color,
+      #   "font": proto_obj.font_family,
+      #   "size": str(proto_obj.font_size)
+      # }
+      
+      # For this example, just set the values directly:
       state.style_config = {"color": "blue", "font": "Arial"}
     ```
 
