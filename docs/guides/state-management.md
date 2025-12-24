@@ -240,9 +240,9 @@ Open files, sockets, and other I/O objects cannot be serialized.
     
     def on_upload(e: me.UploadEvent):
       state = me.state(State)
-      # Use the uploaded file from the uploader component
-      if e.files:
-        state.file_content = e.files[0].getvalue().decode('utf-8')
+      # Use the file property for convenience with single uploads
+      if e.file:
+        state.file_content = e.file.getvalue().decode('utf-8')
     ```
 
 #### Database Connections and ORM Objects
