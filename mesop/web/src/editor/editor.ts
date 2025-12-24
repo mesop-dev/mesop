@@ -31,27 +31,34 @@ class Editor {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    // Hotkey for hot reload
-    //
-    // Binds:
-    // cmd + shift + r (MacOS)
-    // alt + shift + r (ChromeOS - to avoid conflict with browser's hard reload)
-    // ctrl + shift + r (Other platforms)
-    if (event.key !== 'r' || !event.shiftKey) {
-      return;
-    }
-
-    const isMacOS = isMac();
-    const isChrome = isChromeOS();
-    const shouldReload = 
-      (isMacOS && event.metaKey) ||
-      (isChrome && event.altKey) ||
-      (!isMacOS && !isChrome && event.ctrlKey);
-
-    if (shouldReload) {
+    if (this.shouldReload(event)) {
       this.channel.hotReload();
       event.preventDefault();
     }
+  }
+
+  /**
+   * Determines if the hot reload keyboard shortcut was triggered.
+   * 
+   * Hotkey mappings:
+   * - MacOS: cmd + shift + r
+   * - ChromeOS: alt + shift + r (to avoid conflict with browser's hard reload)
+   * - Other platforms: ctrl + shift + r
+   */
+  private shouldReload(event: KeyboardEvent): boolean {
+    if (event.key !== 'r' || !event.shiftKey) {
+      return false;
+    }
+
+    if (isMac()) {
+      return event.metaKey;
+    }
+
+    if (isChromeOS()) {
+      return event.altKey;
+    }
+
+    return event.ctrlKey;
   }
 }
 
