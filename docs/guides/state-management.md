@@ -121,6 +121,7 @@ class State:
 - `list[T]` - Lists (including nested lists)
 - `dict[K, V]` - Dictionaries (including nested dicts)
 - `set[T]` - Sets
+- `tuple[T, ...]` - Tuples
 
 ```python
 @me.stateclass
@@ -130,6 +131,7 @@ class State:
   unique_ids: set[int]
   nested_list: list[list[str]]
   nested_dict: dict[str, dict[str, bool]]
+  coordinates: tuple[float, float]
 ```
 
 #### Date and Time
@@ -238,8 +240,9 @@ Open files, sockets, and other I/O objects cannot be serialized.
     
     def on_upload(e: me.UploadEvent):
       state = me.state(State)
-      with open(e.file.name) as f:
-        state.file_content = f.read()
+      # Use the uploaded file from the uploader component
+      if e.files:
+        state.file_content = e.files[0].getvalue().decode('utf-8')
     ```
 
 #### Database Connections and ORM Objects
