@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-describe('async onload events', () => {
+test.describe('async onload events', () => {
   test('async generator', async ({page}) => {
     await page.goto('/async_gen');
 
