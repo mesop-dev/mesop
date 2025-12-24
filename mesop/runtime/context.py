@@ -150,6 +150,9 @@ class Context:
     return self._query_params
 
   def initialize_query_params(self, query_params: Sequence[pb.QueryParam]):
+    # Clear existing query params first to avoid stale params in WebSocket mode
+    # where the context is persistent across requests
+    self._query_params = {}
     for query_param in query_params:
       self._query_params[query_param.key] = list(query_param.values)
 
@@ -160,12 +163,13 @@ class Context:
       self._query_params[key] = (
         [value] if isinstance(value, str) else list(value)
       )
+    # Create UpdateQueryParam command with proper values
+    # For deletion (value=None), use empty list [] instead of None
+    values = [] if value is None else ([value] if isinstance(value, str) else value)
     self._commands.append(
       pb.Command(
         update_query_param=pb.UpdateQueryParam(
-          query_param=pb.QueryParam(
-            key=key, values=[value] if isinstance(value, str) else value
-          )
+          query_param=pb.QueryParam(key=key, values=values)
         )
       )
     )
