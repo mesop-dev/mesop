@@ -35,11 +35,10 @@ class Editor {
     //
     // Binds:
     // cmd + shift + r (MacOs)
-    // ctrl + shift + r (Other platforms)
+    // ctrl + alt + r (Other platforms - changed from ctrl + shift + r to avoid conflict with browser's hard reload)
     if (
       event.key === 'r' &&
-      (isMac() ? event.metaKey : event.ctrlKey) &&
-      event.shiftKey
+      (isMac() ? event.metaKey && event.shiftKey : event.ctrlKey && event.altKey)
     ) {
       this.channel.hotReload();
       event.preventDefault();
