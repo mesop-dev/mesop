@@ -7,3 +7,10 @@ const anyWindow = window as any;
 export function isMac(): boolean {
   return anyWindow['navigator']['platform'].includes('Mac');
 }
+
+/**
+ * Detects if user is using ChromeOS.
+ */
+export function isChromeOS(): boolean {
+  return anyWindow['navigator']['userAgent'].includes('CrOS');
+}

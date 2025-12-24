@@ -30,6 +30,12 @@ Open the URL printed in the terminal (i.e. http://localhost:32123) in the browse
 
 If you make changes to the code, the Mesop app should be automatically hot reloaded. This means that you can keep the `mesop` CLI command running in the background in your terminal and your UI will automatically be updated in the browser.
 
+You can also manually trigger a hot reload using a keyboard shortcut:
+
+- **MacOS**: `Cmd + Shift + R`
+- **ChromeOS**: `Alt + Shift + R`
+- **Windows/Linux**: `Ctrl + Shift + R`
+
 ## Next steps
 
 Learn more about the core concepts of Mesop as you learn how to build your own Mesop app:

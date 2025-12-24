@@ -11,7 +11,7 @@ import {
   ErrorDialogService,
 } from '../services/error_dialog_service';
 import {Shell, registerComponentRendererElement} from '../shell/shell';
-import {isMac} from '../utils/platform';
+import {isMac, isChromeOS} from '../utils/platform';
 import {Channel} from '../services/channel';
 // Keep the following comment to ensure there's a hook for adding TS imports in the downstream sync.
 // ADD_TS_IMPORT_HERE
@@ -34,15 +34,26 @@ class Editor {
     // Hotkey for hot reload
     //
     // Binds:
-    // cmd + shift + r (MacOs)
-    // ctrl + alt + r (Other platforms - changed from ctrl + shift + r to avoid conflict with browser's hard reload)
-    if (
-      event.key === 'r' &&
-      (isMac() ? event.metaKey && event.shiftKey : event.ctrlKey && event.altKey)
-    ) {
-      this.channel.hotReload();
-      event.preventDefault();
-      return;
+    // cmd + shift + r (MacOS)
+    // alt + shift + r (ChromeOS - to avoid conflict with browser's hard reload)
+    // ctrl + shift + r (Other platforms)
+    const isMacOS = isMac();
+    const isChrome = isChromeOS();
+    
+    if (event.key === 'r' && event.shiftKey) {
+      if (isMacOS && event.metaKey) {
+        this.channel.hotReload();
+        event.preventDefault();
+        return;
+      } else if (isChrome && event.altKey) {
+        this.channel.hotReload();
+        event.preventDefault();
+        return;
+      } else if (!isMacOS && !isChrome && event.ctrlKey) {
+        this.channel.hotReload();
+        event.preventDefault();
+        return;
+      }
     }
   }
 }
