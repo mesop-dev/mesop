@@ -179,6 +179,8 @@ class State:
 You can nest dataclasses within your state class, and they will be automatically serialized:
 
 ```python
+from dataclasses import dataclass
+
 @dataclass
 class Address:
   street: str
