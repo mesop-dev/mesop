@@ -26,7 +26,10 @@ class EmptyState:
 
 OnLoadHandler = Callable[
   [LoadEvent],
-  None | Generator[None, None, None] | AsyncGenerator[None, None] | Coroutine[Any, Any, None],
+  None
+  | Generator[None, None, None]
+  | AsyncGenerator[None, None]
+  | Coroutine[Any, Any, None],
 ]
 
 
