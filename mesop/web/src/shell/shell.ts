@@ -124,8 +124,11 @@ export class Shell {
             const openInNewTab = navigateCommand.getOpenInNewTab();
             
             if (openInNewTab) {
-              // Open URL in a new tab
-              window.open(url, '_blank');
+              // For relative URLs, resolve to absolute URL before opening in new tab
+              const absoluteUrl = url.startsWith('http://') || url.startsWith('https://')
+                ? url
+                : new URL(url, window.location.href).href;
+              window.open(absoluteUrl, '_blank');
             } else if (url.startsWith('http://') || url.startsWith('https://')) {
               window.location.href = url;
             } else {
