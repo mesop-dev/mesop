@@ -285,9 +285,9 @@ def on_login(e: me.ClickEvent):
 
 Be aware of these known serialization limitations:
 
-- **Dataclass inheritance**: Classes that inherit from other dataclasses may not serialize correctly. See [issue #659](https://github.com/mesop-dev/mesop/issues/659).
-- **Numpy arrays**: Direct serialization of numpy arrays is not currently supported. Consider converting to lists or using pandas DataFrames. See [issue #814](https://github.com/mesop-dev/mesop/issues/814).
-- **Enums**: Python Enum types may not serialize properly. Consider using string or integer representations instead. See [issue #565](https://github.com/mesop-dev/mesop/issues/565).
+- https://github.com/mesop-dev/mesop/issues/565
+- https://github.com/mesop-dev/mesop/issues/659
+- https://github.com/mesop-dev/mesop/issues/814
 
 ## Multiple state classes
 
