@@ -13,7 +13,7 @@ To navigate to another page, you can use `me.navigate`. This is particularly use
 You can open a URL in a new tab by setting the `open_in_new_tab` parameter to `True`:
 
 ```python
---8<-- "mesop/examples/navigate_new_tab.py"
+--8<-- "mesop/examples/testing/navigate_new_tab.py"
 ```
 
 ## API

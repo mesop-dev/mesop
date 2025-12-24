@@ -1,7 +1,7 @@
 import mesop as me
 
 
-@me.page(path="/navigate_new_tab")
+@me.page(path="/testing/navigate_new_tab")
 def page():
   me.text("Navigate to New Tab Example", type="headline-5")
   me.text("Click the buttons below to test navigation in new tabs:")
@@ -25,26 +25,26 @@ def page():
 
 
 def navigate_to_about_new_tab(e: me.ClickEvent):
-  me.navigate("/about", open_in_new_tab=True)
+  me.navigate("/testing/navigate_new_tab_target", open_in_new_tab=True)
 
 
 def navigate_to_about_same_tab(e: me.ClickEvent):
-  me.navigate("/about", open_in_new_tab=False)
+  me.navigate("/testing/navigate_new_tab_target", open_in_new_tab=False)
 
 
 def navigate_to_external_new_tab(e: me.ClickEvent):
-  me.navigate("https://google.com", open_in_new_tab=True)
+  me.navigate("https://example.com", open_in_new_tab=True)
 
 
 def navigate_with_query_params_new_tab(e: me.ClickEvent):
   me.navigate(
-    "/query_params",
+    "/testing/navigate_new_tab_target",
     query_params={"search": "test", "page": "1"},
     open_in_new_tab=True,
   )
 
 
-@me.page(path="/about")
-def about():
-  me.text("About Page", type="headline-4")
-  me.text("This is the about page opened from the navigation example.")
+@me.page(path="/testing/navigate_new_tab_target")
+def navigate_new_tab_target():
+  me.text("Navigate New Tab Target Page", type="headline-4")
+  me.text("This is the target page opened from the navigation example.")

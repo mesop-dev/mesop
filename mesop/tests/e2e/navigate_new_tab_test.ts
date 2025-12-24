@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 test('navigate with open_in_new_tab - relative URL', async ({page, context}) => {
-  await page.goto('/navigate_new_tab');
+  await page.goto('/testing/navigate_new_tab');
 
   // Get the current pages before clicking
   const pagesBefore = context.pages().length;
@@ -20,22 +20,22 @@ test('navigate with open_in_new_tab - relative URL', async ({page, context}) => 
   const newPage = context.pages()[pagesAfter - 1];
 
   // Wait for navigation in new tab
-  await newPage.waitForURL('**/about');
+  await newPage.waitForURL('**/testing/navigate_new_tab_target');
 
   // Verify the content in the new page
-  expect(await newPage.getByText('About Page').textContent()).toContain(
-    'About Page',
+  expect(await newPage.getByText('Navigate New Tab Target Page').textContent()).toContain(
+    'Navigate New Tab Target Page',
   );
 
   // Verify original page is still on the same URL
-  expect(page.url()).toContain('/navigate_new_tab');
+  expect(page.url()).toContain('/testing/navigate_new_tab');
 });
 
 test('navigate with open_in_new_tab - external URL', async ({
   page,
   context,
 }) => {
-  await page.goto('/navigate_new_tab');
+  await page.goto('/testing/navigate_new_tab');
 
   // Get the current pages before clicking
   const pagesBefore = context.pages().length;
@@ -55,15 +55,15 @@ test('navigate with open_in_new_tab - external URL', async ({
   // Get the new page
   const newPage = context.pages()[pagesAfter - 1];
 
-  // Wait for navigation in new tab to Google
-  await newPage.waitForURL('https://google.com/**', {timeout: 5000});
+  // Wait for navigation in new tab to example.com
+  await newPage.waitForURL('https://example.com/**', {timeout: 5000});
 
   // Verify original page is still on the same URL
-  expect(page.url()).toContain('/navigate_new_tab');
+  expect(page.url()).toContain('/testing/navigate_new_tab');
 });
 
 test('navigate with open_in_new_tab false - same tab', async ({page}) => {
-  await page.goto('/navigate_new_tab');
+  await page.goto('/testing/navigate_new_tab');
 
   // Click button to open about page in same tab
   await page
@@ -71,16 +71,16 @@ test('navigate with open_in_new_tab false - same tab', async ({page}) => {
     .click();
 
   // Wait for navigation in same tab
-  await page.waitForURL('**/about');
+  await page.waitForURL('**/testing/navigate_new_tab_target');
 
   // Verify the content changed in the same tab
-  expect(await page.getByText('About Page').textContent()).toContain(
-    'About Page',
+  expect(await page.getByText('Navigate New Tab Target Page').textContent()).toContain(
+    'Navigate New Tab Target Page',
   );
 });
 
 test('navigate with query params in new tab', async ({page, context}) => {
-  await page.goto('/navigate_new_tab');
+  await page.goto('/testing/navigate_new_tab');
 
   // Get the current pages before clicking
   const pagesBefore = context.pages().length;
@@ -101,12 +101,12 @@ test('navigate with query params in new tab', async ({page, context}) => {
   const newPage = context.pages()[pagesAfter - 1];
 
   // Wait for navigation in new tab
-  await newPage.waitForURL('**/query_params?search=test&page=1');
+  await newPage.waitForURL('**/testing/navigate_new_tab_target?search=test&page=1');
 
   // Verify query params are in the URL
   expect(newPage.url()).toContain('search=test');
   expect(newPage.url()).toContain('page=1');
 
   // Verify original page is still on the same URL
-  expect(page.url()).toContain('/navigate_new_tab');
+  expect(page.url()).toContain('/testing/navigate_new_tab');
 });

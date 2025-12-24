@@ -231,7 +231,6 @@ message NavigateCommand {
 
     repeated QueryParam query_params = 2;
 
-    // Whether to open the URL in a new tab
     optional bool open_in_new_tab = 3;
 }
 
