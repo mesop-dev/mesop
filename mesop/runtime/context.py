@@ -177,7 +177,10 @@ class Context:
     self._commands = []
 
   def navigate(
-    self, url: str, query_params: dict[str, str | Sequence[str]] | None = None
+    self,
+    url: str,
+    query_params: dict[str, str | Sequence[str]] | None = None,
+    open_in_new_tab: bool = False,
   ) -> None:
     query_param_protos = None
     if query_params is not None:
@@ -203,7 +206,9 @@ class Context:
     self._commands.append(
       pb.Command(
         navigate=pb.NavigateCommand(
-          url=full_url, query_params=query_param_protos
+          url=full_url,
+          query_params=query_param_protos,
+          open_in_new_tab=open_in_new_tab,
         )
       )
     )

@@ -12,6 +12,7 @@ def navigate(
   url: str,
   *,
   query_params: dict[str, str | Sequence[str]] | QueryParams | None = None,
+  open_in_new_tab: bool = False,
 ) -> None:
   """
   Navigates to the given URL.
@@ -19,6 +20,7 @@ def navigate(
   Args:
     url: The URL to navigate to.
     query_params: A dictionary of query parameters to include in the URL, or `me.query_params`. If not provided, all current query parameters will be removed.
+    open_in_new_tab: Whether to open the URL in a new tab. Defaults to False.
   """
   cleaned_url = remove_url_query_param(url)
   if url != cleaned_url:
@@ -33,4 +35,4 @@ def navigate(
   # Clear the query params because the query params will
   # either be replaced with the new query_params or emptied (in server.py).
   runtime().context().query_params().clear()
-  runtime().context().navigate(cleaned_url, query_params)
+  runtime().context().navigate(cleaned_url, query_params, open_in_new_tab)

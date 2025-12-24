@@ -119,11 +119,17 @@ export class Shell {
         },
         onCommand: async (command) => {
           if (command.hasNavigate()) {
-            const url = command.getNavigate()!.getUrl()!;
-            if (url.startsWith('http://') || url.startsWith('https://')) {
+            const navigateCommand = command.getNavigate()!;
+            const url = navigateCommand.getUrl()!;
+            const openInNewTab = navigateCommand.getOpenInNewTab();
+            
+            if (openInNewTab) {
+              // Open URL in a new tab
+              window.open(url, '_blank');
+            } else if (url.startsWith('http://') || url.startsWith('https://')) {
               window.location.href = url;
             } else {
-              await this.router.navigateByUrl(command.getNavigate()!.getUrl()!);
+              await this.router.navigateByUrl(url);
               this.channel.resetOverridedTitle();
             }
           } else if (command.hasScrollIntoView()) {
