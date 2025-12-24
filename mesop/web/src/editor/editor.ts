@@ -37,23 +37,20 @@ class Editor {
     // cmd + shift + r (MacOS)
     // alt + shift + r (ChromeOS - to avoid conflict with browser's hard reload)
     // ctrl + shift + r (Other platforms)
+    if (event.key !== 'r' || !event.shiftKey) {
+      return;
+    }
+
     const isMacOS = isMac();
     const isChrome = isChromeOS();
-    
-    if (event.key === 'r' && event.shiftKey) {
-      if (isMacOS && event.metaKey) {
-        this.channel.hotReload();
-        event.preventDefault();
-        return;
-      } else if (isChrome && event.altKey) {
-        this.channel.hotReload();
-        event.preventDefault();
-        return;
-      } else if (!isMacOS && !isChrome && event.ctrlKey) {
-        this.channel.hotReload();
-        event.preventDefault();
-        return;
-      }
+    const shouldReload = 
+      (isMacOS && event.metaKey) ||
+      (isChrome && event.altKey) ||
+      (!isMacOS && !isChrome && event.ctrlKey);
+
+    if (shouldReload) {
+      this.channel.hotReload();
+      event.preventDefault();
     }
   }
 }
