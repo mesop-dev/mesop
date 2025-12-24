@@ -121,7 +121,6 @@ class State:
 - `list[T]` - Lists (including nested lists)
 - `dict[K, V]` - Dictionaries (including nested dicts)
 - `set[T]` - Sets
-- `tuple[T, ...]` - Tuples
 
 ```python
 @me.stateclass
@@ -131,7 +130,6 @@ class State:
   unique_ids: set[int]
   nested_list: list[list[str]]
   nested_dict: dict[str, dict[str, bool]]
-  coordinates: tuple[float, float]
 ```
 
 #### Date and Time
@@ -194,186 +192,94 @@ class State:
 
 ### Non-Serializable Types
 
-The following types **cannot** be serialized and will cause errors if used in state:
+Most types that are not in the serializable types list above cannot be serialized. This includes (but is not limited to):
 
-#### Functions and Lambdas
-Functions, methods, and lambda expressions cannot be serialized.
+- Functions, lambdas, and methods
+- File handles, sockets, and I/O objects
+- Database connections and cursors
+- Thread and lock objects
+- Protocol buffers and custom complex objects
 
-???+ failure "Bad: function in state"
-    ```python
-    @me.stateclass
-    class State:
-      callback: Callable  # ❌ Will fail
-    ```
+**If you get a serialization error**, refer to the [serializable types](#serializable-types) section above for supported types.
 
-???+ success "Good: use event handlers"
-    Instead of storing functions in state, use Mesop's event handler pattern:
-    
-    ```python
-    @me.stateclass
-    class State:
-      value: str
-    
-    def on_click(e: me.ClickEvent):
-      state = me.state(State)
-      state.value = "clicked"
-    
-    def app():
-      me.button("Click", on_click=on_click)
-    ```
+### Workarounds for Unsupported Types
 
-#### File Handles and I/O Objects
-Open files, sockets, and other I/O objects cannot be serialized.
+If you need to work with types that aren't directly serializable, here are some strategies:
 
-???+ failure "Bad: file handle in state"
-    ```python
-    @me.stateclass
-    class State:
-      file: io.TextIOWrapper  # ❌ Will fail
-    ```
+#### 1. Break down into primitives
 
-???+ success "Good: read file contents"
-    Read the file contents into a serializable format:
-    
-    ```python
-    @me.stateclass
-    class State:
-      file_content: str
-    
-    def on_upload(e: me.UploadEvent):
-      state = me.state(State)
-      # Check if any files were uploaded
-      if e.files:
-        # e.file is a convenience property that returns the first file
-        state.file_content = e.file.getvalue().decode('utf-8')
-    ```
-
-#### Database Connections and ORM Objects
-Database connections, cursors, and ORM session objects cannot be serialized.
-
-???+ failure "Bad: database connection in state"
-    ```python
-    @me.stateclass
-    class State:
-      db_connection: sqlite3.Connection  # ❌ Will fail
-      session: sqlalchemy.orm.Session  # ❌ Will fail
-    ```
-
-???+ success "Good: recreate connections as needed"
-    Create database connections inside event handlers or use connection pooling:
-    
-    ```python
-    @me.stateclass
-    class State:
-      user_data: dict[str, str]
-    
-    def on_load(e: me.LoadEvent):
-      state = me.state(State)
-      # Create connection when needed
-      # (replace with your own database connection logic)
-      conn = create_database_connection()
-      state.user_data = fetch_user_data_from_db(conn)
-      conn.close()
-    ```
-
-#### Thread and Lock Objects
-Threading primitives like threads, locks, and queues cannot be serialized.
-
-???+ failure "Bad: thread objects in state"
-    ```python
-    @me.stateclass
-    class State:
-      thread: threading.Thread  # ❌ Will fail
-      lock: threading.Lock  # ❌ Will fail
-    ```
-
-#### Protocol Buffers and Complex Objects
-Protocol buffer messages and other complex objects that don't have built-in serialization support cannot be used.
-
-> Note: This example uses Mesop's internal proto definitions for illustration. The same principle applies to any protocol buffer or complex object type.
-
-???+ failure "Bad: protocol buffer in state"
-    ```python
-    # Example using protocol buffer (not recommended)
-    import mesop.protos.ui_pb2 as pb
-    
-    @me.stateclass
-    class State:
-      proto: pb.Style  # ❌ Will fail
-    ```
-
-???+ success "Good: extract serializable data"
-    Extract the data you need into serializable types:
-    
-    ```python
-    @me.stateclass
-    class State:
-      style_config: dict[str, str]
-    
-    def on_update(e: me.ClickEvent):
-      state = me.state(State)
-      # If you receive a protobuf from an API, extract the relevant fields
-      # Example (field names depend on your protobuf schema):
-      # proto_obj = some_api_that_returns_protobuf()
-      # state.style_config = {
-      #   "color": proto_obj.color,
-      #   "font": proto_obj.font_family,
-      #   "size": str(proto_obj.font_size)
-      # }
-      
-      # For this example, just set the values directly:
-      state.style_config = {"color": "blue", "font": "Arial"}
-    ```
-
-### Troubleshooting Serialization Errors
-
-If you encounter a serialization error, you'll typically see an error message like:
-
-```
-Object of type <Type> is not JSON serializable
-```
-
-**Steps to fix:**
-
-1. **Identify the problematic field**: Look at the error message to determine which field is causing the issue.
-
-2. **Check the type**: Verify that the field type is in the list of serializable types above.
-
-3. **Extract serializable data**: If you need to store complex objects, extract only the serializable data you need:
+Extract the data you need into serializable primitive types:
 
 ```python
-# Instead of storing the entire object
+# ❌ Bad: storing complex object
 @me.stateclass
 class State:
-  api_response: requests.Response  # ❌ Not serializable
+  api_response: requests.Response  # Not serializable
 
-# Extract only what you need
+# ✅ Good: extract the data you need
 @me.stateclass
 class State:
   response_text: str
   status_code: int
+  headers: dict[str, str]
 
 def on_click(e: me.ClickEvent):
   state = me.state(State)
   response = requests.get("https://api.example.com")
   state.response_text = response.text
   state.status_code = response.status_code
+  state.headers = dict(response.headers)
 ```
 
-4. **Use temporary variables**: For objects needed only during event handling, use local variables instead of state:
+#### 2. Serialize to JSON or bytes
+
+Convert complex objects to JSON strings or bytes:
 
 ```python
-def on_process(e: me.ClickEvent):
+@me.stateclass
+class State:
+  config_json: str  # Store as JSON string
+
+def on_load(e: me.LoadEvent):
   state = me.state(State)
-  
-  # Use locally, don't store in state
-  connection = database.connect()
-  data = connection.query("SELECT * FROM users")
-  connection.close()
-  
-  # Store only the results
-  state.users = [{"id": row[0], "name": row[1]} for row in data]
+  complex_config = load_complex_config()
+  state.config_json = json.dumps(complex_config)
+
+def use_config():
+  state = me.state(State)
+  config = json.loads(state.config_json)
+  # Use config...
 ```
+
+#### 3. Use Pydantic models
+
+Pydantic models are serializable and can handle complex nested structures:
+
+```python
+from pydantic import BaseModel
+
+class UserProfile(BaseModel):
+  name: str
+  email: str
+  settings: dict[str, str]
+  created_at: datetime
+
+@me.stateclass
+class State:
+  profile: UserProfile  # Pydantic models are serializable
+
+def on_login(e: me.ClickEvent):
+  state = me.state(State)
+  # Pydantic can serialize most Python types
+  state.profile = UserProfile(
+    name="Alice",
+    email="alice@example.com",
+    settings={"theme": "dark"},
+    created_at=datetime.now()
+  )
+```
+
+> **Note**: When using Pydantic models, you get less granular state diffing compared to using primitives directly. This is fine if you don't store a large amount of state data.
 
 ## Multiple state classes
 
