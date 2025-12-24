@@ -33,15 +33,6 @@ async def async_coroutine_on_load(e: me.LoadEvent):
   state.message = "Loaded from coroutine!"
 
 
-def sync_generator_on_load(e: me.LoadEvent):
-  """Sync generator on_load handler."""
-  state = me.state(State)
-  state.message = "Loading sync..."
-  yield
-  state.message = "Loaded sync!"
-  yield
-
-
 @me.page(path="/async_gen", on_load=async_on_load)
 def page_async_gen():
   state = me.state(State)
@@ -52,9 +43,3 @@ def page_async_gen():
 def page_async_coro():
   state = me.state(State)
   me.text(f"Async Coroutine: {state.message}")
-
-
-@me.page(path="/sync_gen", on_load=sync_generator_on_load)
-def page_sync_gen():
-  state = me.state(State)
-  me.text(f"Sync Generator: {state.message}")

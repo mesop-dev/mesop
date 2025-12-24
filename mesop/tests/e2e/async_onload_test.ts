@@ -5,7 +5,7 @@ test.describe('async onload events', () => {
     await page.goto('/async_gen');
 
     await expect(
-      await page.getByText('Async Generator: Loaded from async generator!'),
+      page.getByText('Async Generator: Loaded from async generator!'),
     ).toBeVisible();
   });
 
@@ -13,7 +13,7 @@ test.describe('async onload events', () => {
     await page.goto('/async_coro');
 
     await expect(
-      await page.getByText('Async Coroutine: Loaded from coroutine!'),
+      page.getByText('Async Coroutine: Loaded from coroutine!'),
     ).toBeVisible();
   });
 });
