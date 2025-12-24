@@ -32,7 +32,10 @@ def navigate(
   if isinstance(query_params, QueryParams):
     query_params = {key: query_params.get_all(key) for key in query_params}
 
-  # Clear the query params because the query params will
-  # either be replaced with the new query_params or emptied (in server.py).
-  runtime().context().query_params().clear()
+  # Only clear query params if we're navigating in the current tab
+  # When opening in a new tab, we don't want to affect the current page's state
+  if not open_in_new_tab:
+    # Clear the query params because the query params will
+    # either be replaced with the new query_params or emptied (in server.py).
+    runtime().context().query_params().clear()
   runtime().context().navigate(cleaned_url, query_params, open_in_new_tab)
