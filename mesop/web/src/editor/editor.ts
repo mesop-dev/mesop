@@ -39,7 +39,7 @@ class Editor {
 
   /**
    * Determines if the hot reload keyboard shortcut was triggered.
-   * 
+   *
    * Hotkey mappings:
    * - MacOS: cmd + shift + r
    * - ChromeOS: alt + shift + r (to avoid conflict with browser's hard reload)
