@@ -36,8 +36,10 @@ from mesop.examples import index as index
 from mesop.examples import integrations as integrations
 from mesop.examples import many_checkboxes as many_checkboxes
 from mesop.examples import named_nested_slot as named_nested_slot
+from mesop.examples import navigate as navigate
 from mesop.examples import navigate_absolute as navigate_absolute
 from mesop.examples import navigate_advanced as navigate_advanced
+from mesop.examples import navigate_new_tab as navigate_new_tab
 from mesop.examples import nested as nested
 from mesop.examples import on_load as on_load
 from mesop.examples import on_load_generator as on_load_generator
