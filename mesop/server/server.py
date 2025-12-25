@@ -253,6 +253,10 @@ def configure_flask_app(
             )
           for command in runtime().context().commands():
             if command.HasField("navigate"):
+              # If opening in a new tab, don't navigate the current page
+              # Just render the current page and let the frontend handle opening the new tab
+              if command.navigate.open_in_new_tab:
+                break
               runtime().context().initialize_query_params(
                 command.navigate.query_params
               )

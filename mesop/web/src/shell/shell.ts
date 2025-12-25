@@ -130,6 +130,8 @@ export class Shell {
                 absoluteUrl = window.location.origin + url;
               }
               window.open(absoluteUrl, '_blank');
+              // Return immediately to prevent any other navigation logic from executing
+              return;
             } else if (url.startsWith('http://') || url.startsWith('https://')) {
               window.location.href = url;
             } else {
