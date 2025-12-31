@@ -129,7 +129,10 @@ export class Shell {
               if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 // Reject non-root-relative URLs (e.g., "javascript:", "data:", or other schemes)
                 if (!url.startsWith('/')) {
-                  console.warn('Refusing to open potentially unsafe URL in a new tab:', url);
+                  console.warn(
+                    'Refusing to open potentially unsafe URL in a new tab:',
+                    url,
+                  );
                   return;
                 }
                 if (url.startsWith('/')) {
@@ -145,7 +148,10 @@ export class Shell {
                 !absoluteUrl.startsWith('http://') &&
                 !absoluteUrl.startsWith('https://')
               ) {
-                console.warn('Refusing to open non-http(s) URL in a new tab:', absoluteUrl);
+                console.warn(
+                  'Refusing to open non-http(s) URL in a new tab:',
+                  absoluteUrl,
+                );
                 return;
               }
               window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
