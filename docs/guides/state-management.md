@@ -287,7 +287,7 @@ Be aware of these known serialization limitations:
 
 - [https://github.com/mesop-dev/mesop/issues/565](https://github.com/mesop-dev/mesop/issues/565)
 - [https://github.com/mesop-dev/mesop/issues/659](https://github.com/mesop-dev/mesop/issues/659)
-- [https://github.com/mesop-dev/mesop/issues/814](https://github.com/mesop-dev/mesop/issues/659)
+- [https://github.com/mesop-dev/mesop/issues/814](https://github.com/mesop-dev/mesop/issues/814)
 
 ## Multiple state classes
 
