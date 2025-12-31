@@ -15,7 +15,7 @@ def page():
   me.text("Navigate in New Tab Examples", type="headline-4")
   me.divider()
 
-  me.text("Open absolute URLs in new tab:", type="headline-6")
+  me.text("Open internal pages in new tab:", type="headline-6")
   me.button(
     "Open /navigate_new_tab/about in new tab",
     on_click=navigate_about_new_tab,

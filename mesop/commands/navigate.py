@@ -24,7 +24,7 @@ def navigate(
 
   Args:
     url: The URL to navigate to.
-    query_params: A dictionary of query parameters to include in the URL, or `me.query_params`. If not provided, all current query parameters will be removed.
+    query_params: A dictionary of query parameters to include in the URL, or `me.query_params`. If not provided and `open_in_new_tab` is False, all current query parameters will be removed. When `open_in_new_tab` is True, the current page's query parameters are preserved unless explicitly overridden.
     open_in_new_tab: Whether to open the URL in a new browser tab. Defaults to False.
   """
   cleaned_url = remove_url_query_param(url)
