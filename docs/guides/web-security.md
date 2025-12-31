@@ -120,9 +120,9 @@ def app():
 The `me.CORS` class supports the following parameters:
 
 - **allowed_origins**: List of origins that can access the resource. Use `["*"]` to allow all origins.
-- **allowed_methods**: List of HTTP methods allowed for CORS requests. Defaults to `["GET", "POST", "OPTIONS"]`.
-- **allowed_headers**: List of headers that can be used in the actual request. Use `["*"]` to allow all headers.
-- **expose_headers**: List of headers that browsers are allowed to access from the response.
+- **allowed_methods**: List of HTTP methods allowed for CORS requests. Must specify explicit methods (wildcard `"*"` is not supported). Defaults to `["GET", "POST", "OPTIONS"]`.
+- **allowed_headers**: List of headers that can be used in the actual request. Use `["*"]` to allow all headers, or specify explicit header names.
+- **expose_headers**: List of headers that browsers are allowed to access from the response. Must specify explicit headers (wildcard `"*"` is not supported).
 - **allow_credentials**: Whether to allow credentials (cookies, authorization headers, etc.). Cannot be used with `allowed_origins=["*"]`.
 - **max_age**: How long (in seconds) the results of a preflight request can be cached. Defaults to 86400 (24 hours).
 

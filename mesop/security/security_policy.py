@@ -14,12 +14,14 @@ class CORS:
       Use ["*"] to allow all origins (not recommended for production).
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin).
     allowed_methods: A list of allowed HTTP methods.
+      Must specify explicit methods (wildcard "*" is not supported).
       Defaults to ["GET", "POST", "OPTIONS"].
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods).
     allowed_headers: A list of allowed headers.
-      Use ["*"] to allow all headers.
+      Use ["*"] to allow all headers, or specify explicit header names.
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers).
     expose_headers: A list of headers that can be exposed to the response.
+      Must specify explicit headers (wildcard "*" is not supported).
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers).
     allow_credentials: Whether to allow credentials (cookies, authorization headers, etc.).
       Cannot be used with allowed_origins=["*"].
@@ -43,6 +45,16 @@ class CORS:
       raise MesopDeveloperException(
         "Cannot use allow_credentials=True with allowed_origins=['*']. "
         "When credentials are allowed, you must specify explicit origins."
+      )
+    if "*" in self.allowed_methods:
+      raise MesopDeveloperException(
+        "Wildcard '*' is not allowed in allowed_methods. "
+        "You must specify explicit HTTP methods (e.g., ['GET', 'POST', 'PUT'])."
+      )
+    if "*" in self.expose_headers:
+      raise MesopDeveloperException(
+        "Wildcard '*' is not allowed in expose_headers. "
+        "You must specify explicit headers to expose."
       )
 
 
