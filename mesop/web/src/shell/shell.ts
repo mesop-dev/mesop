@@ -124,11 +124,24 @@ export class Shell {
 
             if (openInNewTab) {
               // When opening in a new tab, we need to handle both absolute and root-relative URLs
-              // Document relative URLs are not supported in this case.
+              // Only http/https URLs are allowed; document-relative URLs are not supported.
               let absoluteUrl = url;
               if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                // Reject non-root-relative URLs (e.g., "javascript:", "data:", or other schemes)
+                if (!url.startsWith('/')) {
+                  console.warn('Refusing to open potentially unsafe URL in a new tab:', url);
+                  return;
+                }
                 // Convert root-relative URL to absolute URL
                 absoluteUrl = window.location.origin + url;
+              }
+              // Final safety check: only allow http/https absolute URLs
+              if (
+                !absoluteUrl.startsWith('http://') &&
+                !absoluteUrl.startsWith('https://')
+              ) {
+                console.warn('Refusing to open non-http(s) URL in a new tab:', absoluteUrl);
+                return;
               }
               window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
               // Return immediately to prevent any other navigation logic from executing
