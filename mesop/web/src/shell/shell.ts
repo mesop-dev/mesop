@@ -130,7 +130,7 @@ export class Shell {
                 // Convert root-relative URL to absolute URL
                 absoluteUrl = window.location.origin + url;
               }
-              window.open(absoluteUrl, '_blank');
+              window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
               // Return immediately to prevent any other navigation logic from executing
               return;
             }
