@@ -82,8 +82,8 @@ test('navigate with url query params in new tab', async ({page, context}) => {
   await newPage.waitForLoadState();
   const url = new URL(newPage.url());
   expect(url.pathname).toContain('/navigate_new_tab/about');
-  expect(url.searchParams.get('foo')).toBeUndefined();
-  expect(url.searchParams.get('baz')).toBeUndefined();
+  expect(url.searchParams.get('foo')).toBeNull();
+  expect(url.searchParams.get('baz')).toBeNull();
 
   // Verify original page hasn't changed
   await expect(page).toHaveURL(/.*\/navigate_new_tab/);
