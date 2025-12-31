@@ -33,6 +33,13 @@ def page():
 
   me.divider()
 
+  me.text("Open with url query params in new tab:", type="headline-6")
+  me.button(
+    "Open with url query params", on_click=navigate_with_url_params_new_tab
+  )
+
+  me.divider()
+
   me.text("Traditional navigation (same tab):", type="headline-6")
   me.button(
     "Navigate to /navigate_new_tab/about (same tab)",
@@ -52,6 +59,13 @@ def navigate_with_params_new_tab(e: me.ClickEvent):
   me.navigate(
     "/navigate_new_tab/about",
     query_params={"foo": "bar", "baz": "qux"},
+    open_in_new_tab=True,
+  )
+
+
+def navigate_with_url_params_new_tab(e: me.ClickEvent):
+  me.navigate(
+    "/navigate_new_tab/about?foo=bar&baz=qux",
     open_in_new_tab=True,
   )
 

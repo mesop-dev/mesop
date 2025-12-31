@@ -68,6 +68,30 @@ test('navigate with query params in new tab', async ({page, context}) => {
   await newPage.close();
 });
 
+test('navigate with url query params in new tab', async ({page, context}) => {
+  await page.goto('/navigate_new_tab');
+
+  // Set up listener for new page before clicking
+  const pagePromise = context.waitForEvent('page');
+
+  // Click button to open with url query params in new tab
+  await page.getByRole('button', {name: 'Open with url query params'}).click();
+
+  // Wait for new page and verify URL has query params
+  const newPage = await pagePromise;
+  await newPage.waitForLoadState();
+  const url = new URL(newPage.url());
+  expect(url.pathname).toContain('/navigate_new_tab/about');
+  expect(url.searchParams.get('foo')).toBeUndefined();
+  expect(url.searchParams.get('baz')).toBeUndefined();
+
+  // Verify original page hasn't changed
+  await expect(page).toHaveURL(/.*\/navigate_new_tab/);
+
+  // Clean up
+  await newPage.close();
+});
+
 test('traditional same tab navigation still works', async ({page}) => {
   await page.goto('/navigate_new_tab');
 
