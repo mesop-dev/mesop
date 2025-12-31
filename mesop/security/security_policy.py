@@ -12,19 +12,20 @@ class CORS:
   Attributes:
     allowed_origins: A list of allowed origins for CORS requests.
       Use ["*"] to allow all origins (not recommended for production).
+      Cannot use "*" with allow_credentials=True.
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin).
     allowed_methods: A list of allowed HTTP methods.
-      Must specify explicit methods (wildcard "*" is not supported).
       Defaults to ["GET", "POST", "OPTIONS"].
+      Can use ["*"] to allow all methods, but not with allow_credentials=True.
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods).
     allowed_headers: A list of allowed headers.
-      Use ["*"] to allow all headers, or specify explicit header names.
+      Use ["*"] to allow all headers (can be used even with credentials).
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers).
     expose_headers: A list of headers that can be exposed to the response.
-      Must specify explicit headers (wildcard "*" is not supported).
+      Can use ["*"] to expose all headers, but not with allow_credentials=True.
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers).
     allow_credentials: Whether to allow credentials (cookies, authorization headers, etc.).
-      Cannot be used with allowed_origins=["*"].
+      When True, wildcards are restricted in allowed_origins, allowed_methods, and expose_headers.
       See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Credentials).
     max_age: How long (in seconds) the results of a preflight request can be cached.
       Defaults to 86400 (24 hours).
@@ -41,21 +42,22 @@ class CORS:
   max_age: int = 86400
 
   def __post_init__(self):
-    if self.allow_credentials and "*" in self.allowed_origins:
-      raise MesopDeveloperException(
-        "Cannot use allow_credentials=True with allowed_origins=['*']. "
-        "When credentials are allowed, you must specify explicit origins."
-      )
-    if "*" in self.allowed_methods:
-      raise MesopDeveloperException(
-        "Wildcard '*' is not allowed in allowed_methods. "
-        "You must specify explicit HTTP methods (e.g., ['GET', 'POST', 'PUT'])."
-      )
-    if "*" in self.expose_headers:
-      raise MesopDeveloperException(
-        "Wildcard '*' is not allowed in expose_headers. "
-        "You must specify explicit headers to expose."
-      )
+    if self.allow_credentials:
+      if "*" in self.allowed_origins:
+        raise MesopDeveloperException(
+          "Cannot use allow_credentials=True with allowed_origins=['*']. "
+          "When credentials are allowed, you must specify explicit origins."
+        )
+      if "*" in self.allowed_methods:
+        raise MesopDeveloperException(
+          "Cannot use allow_credentials=True with allowed_methods=['*']. "
+          "When credentials are allowed, you must specify explicit HTTP methods."
+        )
+      if "*" in self.expose_headers:
+        raise MesopDeveloperException(
+          "Cannot use allow_credentials=True with expose_headers=['*']. "
+          "When credentials are allowed, you must specify explicit headers to expose."
+        )
 
 
 @dataclass(kw_only=True)
