@@ -22,10 +22,10 @@ def check_auth_on_load(e: me.LoadEvent):
   state = me.state(State)
   if not state.authenticated:
     # This should now work consistently with the fix
-    me.navigate('/login')
+    me.navigate("/navigate-on-load/login")
 
 
-@me.page(path="/", on_load=check_auth_on_load)
+@me.page(path="/navigate-on-load", on_load=check_auth_on_load)
 def home():
   """Home page that should redirect to login if not authenticated."""
   me.text("Home Page - You should not see this if not authenticated")
@@ -36,7 +36,7 @@ def home():
     me.text("ERROR: This should have redirected to /login")
 
 
-@me.page(path="/login")
+@me.page(path="/navigate-on-load/login")
 def login():
   """Login page."""
   me.text("Login Page", type="headline-4")
@@ -45,6 +45,6 @@ def login():
   def on_login(e: me.ClickEvent):
     state = me.state(State)
     state.authenticated = True
-    me.navigate('/')
+    me.navigate("/navigate-on-load")
 
   me.button("Login", on_click=on_login)

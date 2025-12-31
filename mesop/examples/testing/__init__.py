@@ -32,6 +32,9 @@ from mesop.examples.testing import (
   minimal_chat as minimal_chat,
 )
 from mesop.examples.testing import (
+  navigate_on_load as navigate_on_load,
+)
+from mesop.examples.testing import (
   set_serialize as set_serialize,
 )
 from mesop.examples.testing import (
