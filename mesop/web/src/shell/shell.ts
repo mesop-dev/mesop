@@ -132,8 +132,13 @@ export class Shell {
                   console.warn('Refusing to open potentially unsafe URL in a new tab:', url);
                   return;
                 }
-                // Convert root-relative URL to absolute URL
-                absoluteUrl = window.location.origin + url;
+                if (url.startsWith('/')) {
+                  // Convert root-relative URL to absolute URL
+                  absoluteUrl = window.location.origin + url;
+                } else {
+                  // For non-http(s), non-root-relative URLs, use the URL as-is
+                  absoluteUrl = url;
+                }
               }
               // Final safety check: only allow http/https absolute URLs
               if (
