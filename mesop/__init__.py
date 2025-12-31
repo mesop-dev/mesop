@@ -247,6 +247,7 @@ from mesop.features.viewport_size import Size as Size
 from mesop.features.viewport_size import viewport_size as viewport_size
 from mesop.key import Key as Key
 from mesop.runtime import runtime
+from mesop.security.security_policy import CORS as CORS
 from mesop.security.security_policy import SecurityPolicy as SecurityPolicy
 from mesop.server.wsgi_app import create_wsgi_app as create_wsgi_app
 from mesop.version import VERSION

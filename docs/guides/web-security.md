@@ -49,7 +49,7 @@ For more information, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTT
 
 ## CORS (Cross-Origin Resource Sharing)
 
-By default, Mesop apps do not set CORS headers, which means they can only be accessed from the same origin. If you want to allow your Mesop app to be embedded or accessed from other origins (e.g., as a widget on another website), you can configure CORS by setting the `allowed_cors_origins` parameter in the security policy.
+By default, Mesop apps do not set CORS headers, which means they can only be accessed from the same origin. If you want to allow your Mesop app to be embedded or accessed from other origins (e.g., as a widget on another website), you can configure CORS by providing a `CORS` configuration object to the security policy.
 
 ### Example: Allow all origins
 
@@ -60,16 +60,18 @@ import mesop as me
 @me.page(
   path="/cors_enabled",
   security_policy=me.SecurityPolicy(
-    allowed_cors_origins=["*"],
+    cors=me.CORS(
+      allowed_origins=["*"],
+    ),
   ),
 )
 def app():
   me.text("This page can be accessed from any origin")
 ```
 
-> **Warning:** Using `["*"]` allows any origin to access your Mesop app. This is not recommended for production applications that handle sensitive data.
+> **Warning:** Using `allowed_origins=["*"]` allows any origin to access your Mesop app. This is not recommended for production applications that handle sensitive data.
 
-### Example: Allow specific origins
+### Example: Allow specific origins with credentials
 
 ```py
 import mesop as me
@@ -78,17 +80,53 @@ import mesop as me
 @me.page(
   path="/cors_enabled",
   security_policy=me.SecurityPolicy(
-    allowed_cors_origins=["https://example.com", "https://app.example.com"],
+    cors=me.CORS(
+      allowed_origins=["https://example.com", "https://app.example.com"],
+      allow_credentials=True,
+    ),
   ),
 )
 def app():
   me.text("This page can be accessed from example.com and app.example.com")
 ```
 
-When specific origins are configured, Mesop will:
-- Set the `Access-Control-Allow-Origin` header to the requesting origin if it's in the allowed list
-- Set the `Access-Control-Allow-Credentials` header to `true`, allowing credentials to be sent
-- Handle preflight OPTIONS requests automatically
+### Example: Advanced CORS configuration
+
+For more control over CORS behavior, you can configure additional options:
+
+```py
+import mesop as me
+
+
+@me.page(
+  path="/api",
+  security_policy=me.SecurityPolicy(
+    cors=me.CORS(
+      allowed_origins=["https://example.com"],
+      allowed_methods=["GET", "POST", "PUT", "DELETE"],
+      allowed_headers=["Content-Type", "Authorization", "X-Custom-Header"],
+      expose_headers=["X-RateLimit-Remaining", "X-RateLimit-Reset"],
+      allow_credentials=True,
+      max_age=3600,  # Cache preflight response for 1 hour
+    ),
+  ),
+)
+def app():
+  me.text("API endpoint with custom CORS configuration")
+```
+
+### CORS Configuration Options
+
+The `me.CORS` class supports the following parameters:
+
+- **allowed_origins**: List of origins that can access the resource. Use `["*"]` to allow all origins.
+- **allowed_methods**: List of HTTP methods allowed for CORS requests. Defaults to `["GET", "POST", "OPTIONS"]`.
+- **allowed_headers**: List of headers that can be used in the actual request. Use `["*"]` to allow all headers.
+- **expose_headers**: List of headers that browsers are allowed to access from the response.
+- **allow_credentials**: Whether to allow credentials (cookies, authorization headers, etc.). Cannot be used with `allowed_origins=["*"]`.
+- **max_age**: How long (in seconds) the results of a preflight request can be cached. Defaults to 86400 (24 hours).
+
+Mesop automatically handles preflight OPTIONS requests when CORS is configured.
 
 For more information about CORS, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
 

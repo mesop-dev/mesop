@@ -283,26 +283,52 @@ def configure_static_file_serving(
         security_policy.cross_origin_opener_policy
       )
 
-    if security_policy and security_policy.allowed_cors_origins:
-      # Set CORS headers if allowed_cors_origins is configured
+    if security_policy and security_policy.cors:
+      # Set CORS headers if cors is configured
+      cors = security_policy.cors
       origin = request.headers.get("Origin")
+
       if origin:
-        # If "*" is in allowed_cors_origins, allow all origins
-        if "*" in security_policy.allowed_cors_origins:
+        # If "*" is in allowed_origins, allow all origins
+        if "*" in cors.allowed_origins:
           response.headers["Access-Control-Allow-Origin"] = "*"
         # Otherwise, check if the origin is in the allowed list
-        elif origin in security_policy.allowed_cors_origins:
+        elif origin in cors.allowed_origins:
           response.headers["Access-Control-Allow-Origin"] = origin
-          # When using specific origins, we can set credentials to true
-          response.headers["Access-Control-Allow-Credentials"] = "true"
+
+      # Set credentials header if enabled
+      if cors.allow_credentials:
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+
+      # Set expose headers if configured
+      if cors.expose_headers:
+        response.headers["Access-Control-Expose-Headers"] = ", ".join(
+          cors.expose_headers
+        )
 
       # Handle preflight requests
       if request.method == "OPTIONS":
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = (
-          request.headers.get("Access-Control-Request-Headers", "*")
+        # Set allowed methods
+        response.headers["Access-Control-Allow-Methods"] = ", ".join(
+          cors.allowed_methods
         )
-        response.headers["Access-Control-Max-Age"] = "86400"  # 24 hours
+
+        # Set allowed headers
+        if cors.allowed_headers:
+          if "*" in cors.allowed_headers:
+            response.headers["Access-Control-Allow-Headers"] = "*"
+          else:
+            response.headers["Access-Control-Allow-Headers"] = ", ".join(
+              cors.allowed_headers
+            )
+        else:
+          # Default to reflecting the requested headers
+          requested_headers = request.headers.get("Access-Control-Request-Headers")
+          if requested_headers:
+            response.headers["Access-Control-Allow-Headers"] = requested_headers
+
+        # Set max age
+        response.headers["Access-Control-Max-Age"] = str(cors.max_age)
 
     if security_policy and security_policy.allowed_connect_srcs:
       csp["connect-src"] = "'self' " + " ".join(

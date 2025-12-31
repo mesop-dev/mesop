@@ -99,6 +99,58 @@ testInProdOnly('cors: disabled (no headers)', async ({page}) => {
   expect(corsHeader).toBeUndefined();
 });
 
+testInProdOnly('cors: custom headers and methods', async ({page, request}) => {
+  // Test preflight OPTIONS request
+  const preflightResponse = await request.fetch(
+    '/testing/cors_custom_headers',
+    {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://example.com',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'Content-Type, Authorization',
+      },
+    },
+  );
+
+  const allowOrigin = preflightResponse.headers()['access-control-allow-origin'];
+  expect(allowOrigin).toEqual('http://example.com');
+
+  const allowMethods = preflightResponse.headers()[
+    'access-control-allow-methods'
+  ];
+  expect(allowMethods).toContain('GET');
+  expect(allowMethods).toContain('POST');
+  expect(allowMethods).toContain('PUT');
+  expect(allowMethods).toContain('DELETE');
+
+  const allowHeaders = preflightResponse.headers()[
+    'access-control-allow-headers'
+  ];
+  expect(allowHeaders).toContain('Content-Type');
+  expect(allowHeaders).toContain('Authorization');
+  expect(allowHeaders).toContain('X-Custom-Header');
+
+  const maxAge = preflightResponse.headers()['access-control-max-age'];
+  expect(maxAge).toEqual('3600');
+
+  const allowCredentials =
+    preflightResponse.headers()['access-control-allow-credentials'];
+  expect(allowCredentials).toEqual('true');
+});
+
+testInProdOnly('cors: expose headers', async ({page}) => {
+  const response = await page.goto('/testing/cors_custom_headers', {
+    headers: {
+      Origin: 'http://example.com',
+    },
+  });
+
+  const exposeHeaders =
+    response?.headers()['access-control-expose-headers'];
+  expect(exposeHeaders).toContain('X-Custom-Response-Header');
+});
+
 function cleanCsp(csp: string): string {
   return (
     csp
