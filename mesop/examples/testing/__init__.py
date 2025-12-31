@@ -17,6 +17,9 @@ from mesop.examples.testing import (
   coop as coop,
 )
 from mesop.examples.testing import (
+  cors as cors,
+)
+from mesop.examples.testing import (
   csp_escaping as csp_escaping,
 )
 from mesop.examples.testing import (

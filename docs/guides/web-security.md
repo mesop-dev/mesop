@@ -47,6 +47,51 @@ Mesop sets this value to `unsafe-none`, which is the default value. It is recomm
 
 For more information, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Opener-Policy) and [XS Leaks Wiki](https://xsleaks.dev/).
 
+## CORS (Cross-Origin Resource Sharing)
+
+By default, Mesop apps do not set CORS headers, which means they can only be accessed from the same origin. If you want to allow your Mesop app to be embedded or accessed from other origins (e.g., as a widget on another website), you can configure CORS by setting the `allowed_cors_origins` parameter in the security policy.
+
+### Example: Allow all origins
+
+```py
+import mesop as me
+
+
+@me.page(
+  path="/cors_enabled",
+  security_policy=me.SecurityPolicy(
+    allowed_cors_origins=["*"],
+  ),
+)
+def app():
+  me.text("This page can be accessed from any origin")
+```
+
+> **Warning:** Using `["*"]` allows any origin to access your Mesop app. This is not recommended for production applications that handle sensitive data.
+
+### Example: Allow specific origins
+
+```py
+import mesop as me
+
+
+@me.page(
+  path="/cors_enabled",
+  security_policy=me.SecurityPolicy(
+    allowed_cors_origins=["https://example.com", "https://app.example.com"],
+  ),
+)
+def app():
+  me.text("This page can be accessed from example.com and app.example.com")
+```
+
+When specific origins are configured, Mesop will:
+- Set the `Access-Control-Allow-Origin` header to the requesting origin if it's in the allowed list
+- Set the `Access-Control-Allow-Credentials` header to `true`, allowing credentials to be sent
+- Handle preflight OPTIONS requests automatically
+
+For more information about CORS, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).
+
 ## API
 
 You can configure the security policy at the page level. See [SecurityPolicy on the Page API docs](../api/page.md#mesop.security.security_policy.SecurityPolicy).

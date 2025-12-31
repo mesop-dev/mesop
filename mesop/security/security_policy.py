@@ -17,6 +17,7 @@ class SecurityPolicy:
     allowed_worker_srcs. A list of sites you can load workers from, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/worker-src).
     allowed_trusted_types: A list of trusted type policy names, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types).
     allowed_font_srcs: A list of sites you can load fonts from, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/font-src).
+    allowed_cors_origins: A list of allowed origins for CORS requests, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). Use ["*"] to allow all origins (not recommended for production).
     dangerously_disable_trusted_types: A flag to disable trusted types.
       Highly recommended to not disable trusted types because
       it's an important web security feature!
@@ -34,6 +35,7 @@ class SecurityPolicy:
   allowed_worker_srcs: list[str] = field(default_factory=list)
   allowed_trusted_types: list[str] = field(default_factory=list)
   allowed_font_srcs: list[str] = field(default_factory=list)
+  allowed_cors_origins: list[str] = field(default_factory=list)
   dangerously_disable_trusted_types: bool = False
 
   def __post_init__(self):

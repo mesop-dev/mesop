@@ -56,6 +56,49 @@ testInProdOnly('coop: noopener allow popups', async ({page}) => {
   expect(coop).toEqual('noopener-allow-popups');
 });
 
+testInProdOnly('cors: allow all origins', async ({page}) => {
+  const response = await page.goto('/testing/cors_allow_all', {
+    headers: {
+      Origin: 'http://example.com',
+    },
+  });
+  const corsHeader = response?.headers()['access-control-allow-origin'];
+  expect(corsHeader).toEqual('*');
+});
+
+testInProdOnly('cors: specific origin allowed', async ({page, context}) => {
+  const response = await page.goto('/testing/cors_specific_origin', {
+    headers: {
+      Origin: 'http://example.com',
+    },
+  });
+  const corsHeader = response?.headers()['access-control-allow-origin'];
+  expect(corsHeader).toEqual('http://example.com');
+  const credentialsHeader =
+    response?.headers()['access-control-allow-credentials'];
+  expect(credentialsHeader).toEqual('true');
+});
+
+testInProdOnly('cors: specific origin not allowed', async ({page}) => {
+  const response = await page.goto('/testing/cors_specific_origin', {
+    headers: {
+      Origin: 'http://notallowed.com',
+    },
+  });
+  const corsHeader = response?.headers()['access-control-allow-origin'];
+  expect(corsHeader).toBeUndefined();
+});
+
+testInProdOnly('cors: disabled (no headers)', async ({page}) => {
+  const response = await page.goto('/testing/cors_disabled', {
+    headers: {
+      Origin: 'http://example.com',
+    },
+  });
+  const corsHeader = response?.headers()['access-control-allow-origin'];
+  expect(corsHeader).toBeUndefined();
+});
+
 function cleanCsp(csp: string): string {
   return (
     csp

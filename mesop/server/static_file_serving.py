@@ -283,6 +283,27 @@ def configure_static_file_serving(
         security_policy.cross_origin_opener_policy
       )
 
+    if security_policy and security_policy.allowed_cors_origins:
+      # Set CORS headers if allowed_cors_origins is configured
+      origin = request.headers.get("Origin")
+      if origin:
+        # If "*" is in allowed_cors_origins, allow all origins
+        if "*" in security_policy.allowed_cors_origins:
+          response.headers["Access-Control-Allow-Origin"] = "*"
+        # Otherwise, check if the origin is in the allowed list
+        elif origin in security_policy.allowed_cors_origins:
+          response.headers["Access-Control-Allow-Origin"] = origin
+          # When using specific origins, we can set credentials to true
+          response.headers["Access-Control-Allow-Credentials"] = "true"
+
+      # Handle preflight requests
+      if request.method == "OPTIONS":
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = (
+          request.headers.get("Access-Control-Request-Headers", "*")
+        )
+        response.headers["Access-Control-Max-Age"] = "86400"  # 24 hours
+
     if security_policy and security_policy.allowed_connect_srcs:
       csp["connect-src"] = "'self' " + " ".join(
         [
