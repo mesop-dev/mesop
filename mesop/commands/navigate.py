@@ -17,6 +17,11 @@ def navigate(
   """
   Navigates to the given URL.
 
+  The URL can be an absolute URL (e.g., "http://example.com/page") or a root-relative URL
+  (e.g., "/page").
+
+  Document-relative URLs (e.g., "page" or "./page") are not supported.
+
   Args:
     url: The URL to navigate to.
     query_params: A dictionary of query parameters to include in the URL, or `me.query_params`. If not provided, all current query parameters will be removed.

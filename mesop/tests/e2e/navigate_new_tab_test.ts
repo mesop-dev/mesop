@@ -8,13 +8,13 @@ test('navigate relative URL in new tab', async ({page, context}) => {
 
   // Click button to open in new tab
   await page
-    .getByRole('button', {name: 'Open /examples/navigate/about in new tab'})
+    .getByRole('button', {name: 'Open /navigate_new_tab/about in new tab'})
     .click();
 
   // Wait for new page and verify URL
   const newPage = await pagePromise;
   await newPage.waitForLoadState();
-  await expect(newPage).toHaveURL(/.*\/examples\/navigate\/about/);
+  await expect(newPage).toHaveURL(/.*\/navigate_new_tab\/about/);
 
   // Verify original page hasn't changed
   await expect(page).toHaveURL(/.*\/navigate_new_tab/);
@@ -30,12 +30,12 @@ test('navigate absolute URL in new tab', async ({page, context}) => {
   const pagePromise = context.waitForEvent('page');
 
   // Click button to open in new tab
-  await page.getByRole('button', {name: 'Open Google in new tab'}).click();
+  await page.getByRole('button', {name: 'Open example.com in new tab'}).click();
 
   // Wait for new page and verify URL
   const newPage = await pagePromise;
   await newPage.waitForLoadState();
-  await expect(newPage).toHaveURL(/https:\/\/(www\.)?google\.com/);
+  await expect(newPage).toHaveURL(/https:\/\/(www\.)?example\.com/);
 
   // Verify original page hasn't changed
   await expect(page).toHaveURL(/.*\/navigate_new_tab/);
@@ -51,15 +51,13 @@ test('navigate with query params in new tab', async ({page, context}) => {
   const pagePromise = context.waitForEvent('page');
 
   // Click button to open with query params in new tab
-  await page
-    .getByRole('button', {name: 'Open with query params'})
-    .click();
+  await page.getByRole('button', {name: 'Open with query params'}).click();
 
   // Wait for new page and verify URL has query params
   const newPage = await pagePromise;
   await newPage.waitForLoadState();
   const url = new URL(newPage.url());
-  expect(url.pathname).toContain('/examples/query_params/page_2');
+  expect(url.pathname).toContain('/navigate_new_tab/about');
   expect(url.searchParams.get('foo')).toBe('bar');
   expect(url.searchParams.get('baz')).toBe('qux');
 
@@ -75,9 +73,11 @@ test('traditional same tab navigation still works', async ({page}) => {
 
   // Click button to navigate in same tab
   await page
-    .getByRole('button', {name: 'Navigate to /examples/navigate/about (same tab)'})
+    .getByRole('button', {
+      name: 'Navigate to /navigate_new_tab/about (same tab)',
+    })
     .click();
 
   // Verify navigation happened in same tab
-  await expect(page).toHaveURL(/.*\/examples\/navigate\/about/);
+  await expect(page).toHaveURL(/.*\/navigate_new_tab\/about/);
 });

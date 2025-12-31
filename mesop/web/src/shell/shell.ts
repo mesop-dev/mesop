@@ -123,16 +123,18 @@ export class Shell {
             const openInNewTab = command.getNavigate()!.getOpenInNewTab();
 
             if (openInNewTab) {
-              // When opening in a new tab, we need to handle both absolute and relative URLs
+              // When opening in a new tab, we need to handle both absolute and root-relative URLs
+              // Document relative URLs are not supported in this case.
               let absoluteUrl = url;
               if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                // Convert relative URL to absolute URL
+                // Convert root-relative URL to absolute URL
                 absoluteUrl = window.location.origin + url;
               }
               window.open(absoluteUrl, '_blank');
               // Return immediately to prevent any other navigation logic from executing
               return;
-            } else if (url.startsWith('http://') || url.startsWith('https://')) {
+            }
+            if (url.startsWith('http://') || url.startsWith('https://')) {
               window.location.href = url;
             } else {
               await this.router.navigateByUrl(command.getNavigate()!.getUrl()!);
