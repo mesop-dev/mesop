@@ -22,6 +22,9 @@ def navigate(
 
   Document-relative URLs (e.g., "page" or "./page") are not supported.
 
+  Query parameters should be passed using the `query_params` argument. If passed in the URL directly,
+  they will be removed and a warning will be issued.
+
   Args:
     url: The URL to navigate to.
     query_params: A dictionary of query parameters to include in the URL, or `me.query_params`. If not provided and `open_in_new_tab` is False, all current query parameters will be removed. When `open_in_new_tab` is True, the current page's query parameters are preserved unless explicitly overridden.
