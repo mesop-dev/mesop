@@ -4,7 +4,7 @@ absl-py==2.1.0
     # via mesop
 aiohappyeyeballs==2.4.0
     # via aiohttp
-aiohttp==3.10.11
+aiohttp==3.13.3
     # via
     #   llama-index-core
     #   llama-index-legacy
@@ -43,7 +43,7 @@ dataclasses-json==0.6.7
     # via
     #   llama-index-core
     #   llama-index-legacy
-deepdiff==6.7.1
+deepdiff==8.6.1
     # via mesop
 deprecated==1.2.14
     # via
@@ -104,7 +104,7 @@ grpcio-status==1.62.3
     # via google-api-core
 gunicorn==23.0.0
     # via docbot (pyproject.toml)
-h11==0.14.0
+h11==0.16.0
     # via httpcore
 httpcore==1.0.5
     # via httpx
@@ -126,7 +126,7 @@ idna==3.8
     #   yarl
 itsdangerous==2.2.0
     # via flask
-jinja2==3.1.4
+jinja2==3.1.6
     # via flask
 jiter==0.5.0
     # via openai
@@ -140,9 +140,9 @@ llama-index-agent-openai==0.2.9
     # via
     #   llama-index
     #   llama-index-program-openai
-llama-index-cli==0.1.13
+llama-index-cli==0.4.1
     # via llama-index
-llama-index-core==0.10.68.post1
+llama-index-core==0.13.0
     # via
     #   llama-index
     #   llama-index-agent-openai
@@ -199,7 +199,7 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
-marshmallow==3.22.0
+marshmallow==3.26.2
     # via dataclasses-json
 mesop==1.0.0
     # via docbot (pyproject.toml)
@@ -256,7 +256,7 @@ proto-plus==1.24.0
     # via
     #   google-ai-generativelanguage
     #   google-api-core
-protobuf==4.25.4
+protobuf==7.34.0rc1
     # via
     #   google-ai-generativelanguage
     #   google-api-core
@@ -282,7 +282,7 @@ pydantic-core==2.20.1
     # via pydantic
 pyparsing==3.1.4
     # via httplib2
-pypdf==4.3.1
+pypdf==6.6.0
     # via llama-index-readers-file
 pystemmer==2.2.0.1
     # via llama-index-retrievers-bm25
@@ -298,7 +298,7 @@ regex==2024.7.24
     # via
     #   nltk
     #   tiktoken
-requests==2.32.3
+requests==2.32.4
     # via
     #   google-api-core
     #   llama-index-core
@@ -358,11 +358,11 @@ tzdata==2024.1
     # via pandas
 uritemplate==4.1.1
     # via google-api-python-client
-urllib3==2.2.2
+urllib3==2.6.3
     # via requests
 watchdog==4.0.2
     # via mesop
-werkzeug==3.0.6
+werkzeug==3.1.5
     # via
     #   flask
     #   mesop
