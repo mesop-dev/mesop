@@ -1,6 +1,6 @@
 default-src 'self'
 font-src 'self' fonts.gstatic.com data:
-frame-src *
+frame-src * blob: https://*.scf.usercontent.goog
 img-src 'self' data: https: http: blob:
 media-src 'self' data: https: blob:
 style-src 'self' 'unsafe-inline' fonts.googleapis.com

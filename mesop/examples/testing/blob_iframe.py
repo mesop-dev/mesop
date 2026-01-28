@@ -16,6 +16,8 @@ def page():
         const iframe = document.createElement('iframe');
         iframe.src = blobUrl;
         iframe.id = 'test-blob-iframe';
+        // Revoke the blob URL after the iframe loads to prevent memory leak
+        iframe.onload = () => URL.revokeObjectURL(blobUrl);
         document.getElementById('blob-iframe-container').appendChild(iframe);
       </script>
     </div>
