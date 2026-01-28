@@ -254,7 +254,8 @@ def configure_static_file_serving(
         "default-src": "'self'",
         "font-src": "'self' fonts.gstatic.com data:",
         # Mesop app developers should be able to iframe other sites.
-        "frame-src": "*",
+        # Support SafeContentFrame (blob: URLs and scf.usercontent.goog)
+        "frame-src": "* blob: https://*.scf.usercontent.goog",
         # Mesop app developers should be able to load images and media from various origins.
         "img-src": "'self' data: https: http: blob:",
         "media-src": "'self' data: https: blob:",
