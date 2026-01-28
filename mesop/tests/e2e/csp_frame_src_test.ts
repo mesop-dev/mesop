@@ -2,7 +2,7 @@ import {expect} from '@playwright/test';
 import {testInProdOnly} from './e2e_helpers';
 
 testInProdOnly(
-  'CSP frame-src includes blob and scf.usercontent.goog',
+  'CSP frame-src includes blob',
   async ({page}) => {
     // Listen for CSP violations before navigating
     const cspErrors: string[] = [];
@@ -23,12 +23,9 @@ testInProdOnly(
     // Verify CSP header is present
     expect(cspHeader).toBeDefined();
 
-    // Verify frame-src directive includes blob: and *.scf.usercontent.goog
+    // Verify frame-src directive includes blob:
     expect(cspHeader).toContain('frame-src');
     expect(cspHeader).toMatch(/frame-src[^;]*blob:/);
-    expect(cspHeader).toMatch(
-      /frame-src[^;]*https:\/\/\*\.scf\.usercontent\.goog/,
-    );
 
     await page.waitForLoadState('networkidle');
 
