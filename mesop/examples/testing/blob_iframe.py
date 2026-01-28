@@ -4,7 +4,7 @@ import mesop as me
 @me.page(path="/testing/blob_iframe", title="Blob iframe test")
 def page():
   me.text("Testing blob iframe support")
-  # This will create an iframe with a blob URL using a web component
+  # This will create an iframe with a blob URL using inline JavaScript
   me.html(
     """
     <div id="blob-iframe-container">
