@@ -189,15 +189,6 @@ export class Channel {
 
     this.webSocket.onopen = () => {
       // Send the initial UiRequest upon connection
-      if (request.getInit()) {
-        console.log(
-          '[QueryParams] WebSocket init request, query_params:',
-          request
-            .getInit()!
-            .getQueryParamsList()
-            .map((qp) => ({key: qp.getKey(), values: qp.getValuesList()})),
-        );
-      }
       const payload = generatePayloadString(request);
       this.webSocket!.send(payload);
       this.wsReconnectAttempts = 0;

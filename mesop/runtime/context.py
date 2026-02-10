@@ -150,12 +150,15 @@ class Context:
     return self._query_params
 
   def initialize_query_params(self, query_params: Sequence[pb.QueryParam]):
-    # Clear existing query params before re-initializing. This is critical
-    # in WebSocket mode where the context is reused across messages—without
-    # clearing, stale params from previous events/pages would accumulate.
-    self._query_params.clear()
+    # Build a new dict and swap the reference atomically. This avoids a race
+    # condition in WebSocket mode where concurrent threads share the same
+    # context: a clear()+populate approach has a window where _query_params
+    # is empty, which another thread's render loop could observe.
+    # CPython's GIL makes the reference assignment atomic.
+    new_params: dict[str, list[str]] = {}
     for query_param in query_params:
-      self._query_params[query_param.key] = list(query_param.values)
+      new_params[query_param.key] = list(query_param.values)
+    self._query_params = new_params
 
   def set_query_param(self, key: str, value: str | Sequence[str] | None):
     if value is None:

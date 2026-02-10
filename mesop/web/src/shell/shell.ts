@@ -96,14 +96,7 @@ export class Shell {
     const initRequest = new InitRequest();
     initRequest.setViewportSize(getViewportSize());
     initRequest.setThemeSettings(this.themeService.getThemeSettings());
-    const qps = getQueryParams();
-    console.log(
-      '[QueryParams] ngOnInit, window.location.search:',
-      window.location.search,
-      'parsed query params:',
-      qps.map((qp) => ({key: qp.getKey(), values: qp.getValuesList()})),
-    );
-    initRequest.setQueryParamsList(qps);
+    initRequest.setQueryParamsList(getQueryParams());
     request.setInit(initRequest);
     this.channel.init(
       {

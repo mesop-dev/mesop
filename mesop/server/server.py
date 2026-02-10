@@ -175,17 +175,8 @@ def configure_flask_app(
       if ui_request.HasField("init"):
         runtime().context().set_theme_settings(ui_request.init.theme_settings)
         runtime().context().set_viewport_size(ui_request.init.viewport_size)
-        logger.info(
-          "[QueryParams] Init request path=%s, query_params=%s",
-          ui_request.path,
-          [(qp.key, list(qp.values)) for qp in ui_request.init.query_params],
-        )
         runtime().context().initialize_query_params(
           ui_request.init.query_params
-        )
-        logger.info(
-          "[QueryParams] After initialize: %s",
-          runtime().context().query_params(),
         )
         page_config = runtime().get_page_config(path=ui_request.path)
         if page_config and page_config.on_load:
@@ -212,11 +203,6 @@ def configure_flask_app(
         event = ui_request.user_event
         runtime().context().set_theme_settings(event.theme_settings)
         runtime().context().set_viewport_size(event.viewport_size)
-        logger.info(
-          "[QueryParams] User event path=%s, query_params=%s",
-          ui_request.path,
-          [(qp.key, list(qp.values)) for qp in event.query_params],
-        )
         runtime().context().initialize_query_params(event.query_params)
 
         if not MESOP_WEBSOCKETS_ENABLED:
@@ -280,11 +266,6 @@ def configure_flask_app(
                 nav_query_params = get_url_query_params(
                   command.navigate.url
                 )
-              logger.info(
-                "[QueryParams] Navigate url=%s, query_params=%s",
-                command.navigate.url,
-                [(qp.key, list(qp.values)) for qp in nav_query_params],
-              )
               runtime().context().initialize_query_params(nav_query_params)
               if command.navigate.url.startswith(("http://", "https://")):
                 yield from render_loop(path=path)
