@@ -1,4 +1,8 @@
-import {Component, HostListener} from '@angular/core';
+import {
+  Component,
+  HostListener,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import {
   DefaultHotReloadWatcher,
   HotReloadWatcher,
@@ -78,6 +82,7 @@ export async function bootstrapApp() {
       provideAnimations(),
       provideRouter(routes),
       {provide: ErrorDialogService, useClass: DebugErrorDialogService},
+      provideZoneChangeDetection(),
     ],
   });
   registerComponentRendererElement(app);

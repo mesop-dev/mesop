@@ -5,6 +5,7 @@ import {
   ErrorHandler,
   HostListener,
   NgZone,
+  provideZoneChangeDetection,
   Renderer2,
   signal,
 } from '@angular/core';
@@ -329,6 +330,7 @@ class MesopApp {}
 export async function bootstrapApp() {
   const app = await bootstrapApplication(MesopApp, {
     providers: [
+      provideZoneChangeDetection(),
       provideAnimations(),
       provideRouter(routes),
       {provide: ErrorDialogService, useClass: ProdErrorDialogService},
