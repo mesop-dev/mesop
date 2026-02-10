@@ -150,21 +150,28 @@ class Context:
     return self._query_params
 
   def initialize_query_params(self, query_params: Sequence[pb.QueryParam]):
+    # Clear existing query params before re-initializing. This is critical
+    # in WebSocket mode where the context is reused across messages—without
+    # clearing, stale params from previous events/pages would accumulate.
+    self._query_params.clear()
     for query_param in query_params:
       self._query_params[query_param.key] = list(query_param.values)
 
   def set_query_param(self, key: str, value: str | Sequence[str] | None):
     if value is None:
       del self._query_params[key]
+      proto_values = []
+    elif isinstance(value, str):
+      self._query_params[key] = [value]
+      proto_values = [value]
     else:
-      self._query_params[key] = (
-        [value] if isinstance(value, str) else list(value)
-      )
+      self._query_params[key] = list(value)
+      proto_values = list(value)
     self._commands.append(
       pb.Command(
         update_query_param=pb.UpdateQueryParam(
           query_param=pb.QueryParam(
-            key=key, values=[value] if isinstance(value, str) else value
+            key=key, values=proto_values
           )
         )
       )
