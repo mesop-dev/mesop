@@ -35,4 +35,4 @@ class QueryParams(MutableMapping[str, str]):
     self._get_context().set_query_param(key=key, value=value)
 
 
-query_params = QueryParams(runtime().context)
+query_params = QueryParams(lambda: runtime().context())
