@@ -50,7 +50,7 @@ import {ExperimentService} from '../services/experiment_service';
 // ADD_TS_IMPORT_HERE
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-shell',
   templateUrl: 'shell.ng.html',
   standalone: true,
@@ -322,7 +322,7 @@ export class Shell {
 const routes: Routes = [{path: '**', component: Shell}];
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-app',
   template: '<router-outlet></router-outlet>',
   imports: [RouterOutlet],

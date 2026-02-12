@@ -36,7 +36,7 @@ export const COMPONENT_RENDERER_ELEMENT_NAME = 'component-renderer-element';
 const WEB_COMPONENT_PREFIX = '<web>';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'component-renderer',
   templateUrl: 'component_renderer.ng.html',
   styleUrl: 'component_renderer.css',

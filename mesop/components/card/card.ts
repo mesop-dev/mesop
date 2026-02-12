@@ -9,7 +9,7 @@ import {CardType} from 'mesop/mesop/components/card/card_jspb_proto_pb/mesop/com
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-card',
   templateUrl: 'card.ng.html',
   standalone: true,

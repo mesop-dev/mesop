@@ -53,7 +53,7 @@ export interface TypeToComponent {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   template: '<ng-content></ng-content>',
   standalone: true,
 })

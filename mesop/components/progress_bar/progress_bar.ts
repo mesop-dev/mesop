@@ -12,7 +12,7 @@ import {ProgressBarType} from 'mesop/mesop/components/progress_bar/progress_bar_
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'progress_bar.ng.html',
   standalone: true,
   imports: [MatProgressBarModule],

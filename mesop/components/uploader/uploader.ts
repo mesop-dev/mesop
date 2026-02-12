@@ -15,7 +15,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-uploader',
   styleUrl: 'uploader.css',
   templateUrl: 'uploader.ng.html',

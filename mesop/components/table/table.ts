@@ -13,7 +13,7 @@ import {
 } from 'mesop/mesop/protos/ui_jspb_proto_pb/mesop/protos/ui_pb';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-table',
   templateUrl: 'table.ng.html',
   standalone: true,

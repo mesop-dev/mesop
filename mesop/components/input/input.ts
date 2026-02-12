@@ -17,7 +17,7 @@ import {debounceTime} from 'rxjs/operators';
 import {CommonModule} from '@angular/common';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'input.ng.html',
   standalone: true,
   imports: [MatInputModule, MatFormFieldModule, CommonModule],

@@ -8,7 +8,7 @@ import {TextType} from 'mesop/mesop/components/text/text_jspb_proto_pb/mesop/com
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-text',
   templateUrl: 'text.ng.html',
   standalone: true,

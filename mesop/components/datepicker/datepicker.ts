@@ -19,7 +19,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-datepicker',
   templateUrl: 'datepicker.ng.html',
   standalone: true,

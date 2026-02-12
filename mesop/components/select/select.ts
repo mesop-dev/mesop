@@ -15,7 +15,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {FormsModule} from '@angular/forms';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'select.ng.html',
   standalone: true,
   imports: [MatSelectModule, FormsModule],

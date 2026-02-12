@@ -6,7 +6,7 @@ import {
 import {AudioType} from 'mesop/mesop/components/audio/audio_jspb_proto_pb/mesop/components/audio/audio_pb';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-audio',
   templateUrl: 'audio.ng.html',
   standalone: true,

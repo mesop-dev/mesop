@@ -9,7 +9,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {setIframeSrc} from '../../web/src/safe_iframe/safe_iframe';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-embed',
   templateUrl: 'embed.ng.html',
   standalone: true,

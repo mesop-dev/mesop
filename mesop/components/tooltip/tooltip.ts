@@ -8,7 +8,7 @@ import {TooltipType} from 'mesop/mesop/components/tooltip/tooltip_jspb_proto_pb/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'tooltip.ng.html',
   standalone: true,
   imports: [MatTooltipModule],

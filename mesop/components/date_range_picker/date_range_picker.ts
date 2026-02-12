@@ -28,7 +28,7 @@ import {debounceTime} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-date-range-picker',
   templateUrl: 'date_range_picker.ng.html',
   standalone: true,

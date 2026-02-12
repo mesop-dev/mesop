@@ -8,7 +8,7 @@ import {BadgeType} from 'mesop/mesop/components/badge/badge_jspb_proto_pb/mesop/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'badge.ng.html',
   standalone: true,
   imports: [MatBadgeModule],

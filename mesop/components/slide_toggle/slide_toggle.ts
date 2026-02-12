@@ -12,7 +12,7 @@ import {SlideToggleType} from 'mesop/mesop/components/slide_toggle/slide_toggle_
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'slide_toggle.ng.html',
   standalone: true,
   imports: [MatSlideToggleModule],

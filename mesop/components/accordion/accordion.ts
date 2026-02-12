@@ -7,7 +7,7 @@ import {
 import {AccordionType} from 'mesop/mesop/components/accordion/accordion_jspb_proto_pb/mesop/components/accordion/accordion_pb';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-accordion',
   templateUrl: 'accordion.ng.html',
   standalone: true,

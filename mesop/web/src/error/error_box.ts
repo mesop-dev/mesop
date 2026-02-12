@@ -13,7 +13,7 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-error-box',
   templateUrl: 'error_box.ng.html',
   styleUrl: 'error_box.css',
@@ -74,7 +74,7 @@ export class ErrorBox {
 }
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-server-error-dialog',
   template: ` <mesop-error-box [error]="data.error"></mesop-error-box> `,
   styles: `

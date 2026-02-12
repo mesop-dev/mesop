@@ -7,7 +7,7 @@ import {
 import {CardContentType} from 'mesop/mesop/components/card_content/card_content_jspb_proto_pb/mesop/components/card_content/card_content_pb';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-card-content',
   templateUrl: 'card_content.ng.html',
   standalone: true,

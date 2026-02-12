@@ -17,7 +17,7 @@ import {MarkdownType} from 'mesop/mesop/components/markdown/markdown_jspb_proto_
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-markdown',
   templateUrl: 'markdown.ng.html',
   standalone: true,

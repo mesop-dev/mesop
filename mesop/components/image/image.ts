@@ -8,7 +8,7 @@ import {ImageType} from 'mesop/mesop/components/image/image_jspb_proto_pb/mesop/
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-image',
   templateUrl: 'image.ng.html',
   standalone: true,

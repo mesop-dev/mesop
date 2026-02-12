@@ -8,7 +8,7 @@ import {DividerType} from 'mesop/mesop/components/divider/divider_jspb_proto_pb/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'divider.ng.html',
   standalone: true,
   imports: [MatDividerModule],

@@ -8,7 +8,7 @@ import {
 import {CardHeaderType} from 'mesop/mesop/components/card_header/card_header_jspb_proto_pb/mesop/components/card_header/card_header_pb';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-card-header',
   templateUrl: 'card_header.ng.html',
   standalone: true,

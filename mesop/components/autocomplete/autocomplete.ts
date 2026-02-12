@@ -26,7 +26,7 @@ import {
 } from '@angular/material/autocomplete';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-autocomplete',
   templateUrl: 'autocomplete.ng.html',
   standalone: true,

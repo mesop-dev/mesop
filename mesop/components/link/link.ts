@@ -8,7 +8,7 @@ import {LinkType} from 'mesop/mesop/components/link/link_jspb_proto_pb/mesop/com
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-link',
   templateUrl: 'link.ng.html',
   styleUrl: 'link.css',

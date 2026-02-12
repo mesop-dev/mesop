@@ -11,7 +11,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-sidenav',
   templateUrl: 'sidenav.ng.html',
   standalone: true,

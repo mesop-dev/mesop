@@ -22,7 +22,7 @@ import {Channel} from '../services/channel';
 // ADD_TS_IMPORT_HERE
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-editor',
   template: '<mesop-shell></mesop-shell>',
   standalone: true,
@@ -71,7 +71,7 @@ class Editor {
 const routes: Routes = [{path: '**', component: Editor}];
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-editor-app',
   template: '<router-outlet></router-outlet>',
   imports: [RouterOutlet],

@@ -19,7 +19,7 @@ import {setIframeSrc} from '../../web/src/safe_iframe/safe_iframe';
 import {prefixBasePath} from '../../web/src/utils/base_path';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-html',
   templateUrl: 'html.ng.html',
   standalone: true,

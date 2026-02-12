@@ -14,7 +14,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 type ExpansionPanelEnabledState = 'None' | 'True' | 'False';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   selector: 'mesop-expansion-panel',
   templateUrl: 'expansion_panel.ng.html',
   standalone: true,

@@ -14,7 +14,7 @@ import {Subject} from 'rxjs';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'slider.ng.html',
   standalone: true,
   imports: [MatSliderModule, FormsModule],

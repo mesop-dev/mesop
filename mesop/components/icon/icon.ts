@@ -10,7 +10,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.Default,
   templateUrl: 'icon.ng.html',
   standalone: true,
   imports: [MatIconModule],
