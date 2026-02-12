@@ -1,5 +1,5 @@
 import {MatIconModule} from '@angular/material/icon';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Style,
@@ -10,6 +10,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'icon.ng.html',
   standalone: true,
   imports: [MatIconModule],

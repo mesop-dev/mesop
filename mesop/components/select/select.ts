@@ -1,5 +1,5 @@
 import {MatSelectModule, MatSelectChange} from '@angular/material/select';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -15,6 +15,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {FormsModule} from '@angular/forms';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'select.ng.html',
   standalone: true,
   imports: [MatSelectModule, FormsModule],

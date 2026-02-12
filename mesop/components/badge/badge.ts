@@ -1,5 +1,5 @@
 import {MatBadgeModule} from '@angular/material/badge';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -8,6 +8,7 @@ import {BadgeType} from 'mesop/mesop/components/badge/badge_jspb_proto_pb/mesop/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'badge.ng.html',
   standalone: true,
   imports: [MatBadgeModule],

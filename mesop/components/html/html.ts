@@ -1,5 +1,6 @@
 import {
   CSP_NONCE,
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -18,6 +19,7 @@ import {setIframeSrc} from '../../web/src/safe_iframe/safe_iframe';
 import {prefixBasePath} from '../../web/src/utils/base_path';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-html',
   templateUrl: 'html.ng.html',
   standalone: true,

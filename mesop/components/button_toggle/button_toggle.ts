@@ -2,7 +2,7 @@ import {
   MatButtonToggleModule,
   MatButtonToggleChange,
 } from '@angular/material/button-toggle';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -17,6 +17,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-button-toggle',
   templateUrl: 'button_toggle.ng.html',
   standalone: true,

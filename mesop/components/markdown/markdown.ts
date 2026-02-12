@@ -1,8 +1,9 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   ElementRef,
+  Input,
   Renderer2,
 } from '@angular/core';
 import {marked} from '../../web/external/marked';
@@ -16,6 +17,7 @@ import {MarkdownType} from 'mesop/mesop/components/markdown/markdown_jspb_proto_
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-markdown',
   templateUrl: 'markdown.ng.html',
   standalone: true,

@@ -5,7 +5,7 @@ import {
 } from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -28,6 +28,7 @@ import {debounceTime} from 'rxjs/operators';
 import {Subject} from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-date-range-picker',
   templateUrl: 'date_range_picker.ng.html',
   standalone: true,

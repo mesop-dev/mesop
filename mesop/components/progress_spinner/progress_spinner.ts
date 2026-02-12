@@ -1,5 +1,5 @@
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -8,6 +8,7 @@ import {ProgressSpinnerType} from 'mesop/mesop/components/progress_spinner/progr
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'progress_spinner.ng.html',
   standalone: true,
   imports: [MatProgressSpinnerModule],

@@ -1,5 +1,5 @@
 import {MatButtonModule} from '@angular/material/button';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   ClickEvent,
   UserEvent,
@@ -12,6 +12,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'button.ng.html',
   standalone: true,
   imports: [MatButtonModule],

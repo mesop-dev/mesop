@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Style,
@@ -8,6 +8,7 @@ import {VideoType} from 'mesop/mesop/components/video/video_jspb_proto_pb/mesop/
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-video',
   templateUrl: 'video.ng.html',
   standalone: true,

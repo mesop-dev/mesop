@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Style,
@@ -8,6 +8,7 @@ import {LinkType} from 'mesop/mesop/components/link/link_jspb_proto_pb/mesop/com
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-link',
   templateUrl: 'link.ng.html',
   styleUrl: 'link.css',

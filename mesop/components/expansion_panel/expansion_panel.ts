@@ -1,6 +1,6 @@
 import {MatIconModule} from '@angular/material/icon';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Style,
   Key,
@@ -14,6 +14,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 type ExpansionPanelEnabledState = 'None' | 'True' | 'False';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-expansion-panel',
   templateUrl: 'expansion_panel.ng.html',
   standalone: true,

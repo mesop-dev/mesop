@@ -1,6 +1,6 @@
 import {MatSliderModule} from '@angular/material/slider';
 import {FormsModule} from '@angular/forms';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -14,6 +14,7 @@ import {Subject} from 'rxjs';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'slider.ng.html',
   standalone: true,
   imports: [MatSliderModule, FormsModule],

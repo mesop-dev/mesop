@@ -2,7 +2,7 @@ import {
   MatSlideToggleModule,
   MatSlideToggleChange,
 } from '@angular/material/slide-toggle';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -12,6 +12,7 @@ import {SlideToggleType} from 'mesop/mesop/components/slide_toggle/slide_toggle_
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'slide_toggle.ng.html',
   standalone: true,
   imports: [MatSlideToggleModule],

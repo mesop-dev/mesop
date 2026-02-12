@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -6,6 +6,7 @@ import {
 import {AudioType} from 'mesop/mesop/components/audio/audio_jspb_proto_pb/mesop/components/audio/audio_pb';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-audio',
   templateUrl: 'audio.ng.html',
   standalone: true,

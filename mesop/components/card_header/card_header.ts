@@ -1,6 +1,6 @@
 import {MatCardModule} from '@angular/material/card';
 import {CommonModule} from '@angular/common';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -8,6 +8,7 @@ import {
 import {CardHeaderType} from 'mesop/mesop/components/card_header/card_header_jspb_proto_pb/mesop/components/card_header/card_header_pb';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-card-header',
   templateUrl: 'card_header.ng.html',
   standalone: true,

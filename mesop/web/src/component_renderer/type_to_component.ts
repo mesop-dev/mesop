@@ -38,7 +38,7 @@ import {CheckboxComponent} from '../../../components/checkbox/checkbox';
 import {ButtonComponent} from '../../../components/button/button';
 import {TextComponent} from '../../../components/text/text';
 import {MarkdownComponent} from '../../../components/markdown/markdown';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 
 export interface BaseComponent {
   key: Key;
@@ -53,6 +53,7 @@ export interface TypeToComponent {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<ng-content></ng-content>',
   standalone: true,
 })

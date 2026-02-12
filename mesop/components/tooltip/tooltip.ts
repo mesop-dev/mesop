@@ -1,5 +1,5 @@
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -8,6 +8,7 @@ import {TooltipType} from 'mesop/mesop/components/tooltip/tooltip_jspb_proto_pb/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'tooltip.ng.html',
   standalone: true,
   imports: [MatTooltipModule],

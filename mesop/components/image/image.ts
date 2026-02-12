@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Style,
@@ -8,6 +8,7 @@ import {ImageType} from 'mesop/mesop/components/image/image_jspb_proto_pb/mesop/
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-image',
   templateUrl: 'image.ng.html',
   standalone: true,

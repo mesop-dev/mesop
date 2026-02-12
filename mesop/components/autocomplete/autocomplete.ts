@@ -1,6 +1,6 @@
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {
   Key,
   Type,
@@ -26,6 +26,7 @@ import {
 } from '@angular/material/autocomplete';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-autocomplete',
   templateUrl: 'autocomplete.ng.html',
   standalone: true,

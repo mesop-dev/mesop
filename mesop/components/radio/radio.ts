@@ -1,5 +1,5 @@
 import {MatRadioModule, MatRadioChange} from '@angular/material/radio';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -11,6 +11,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'radio.ng.html',
   styleUrl: 'radio.css',
   standalone: true,

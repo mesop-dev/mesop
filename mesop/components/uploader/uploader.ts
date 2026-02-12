@@ -1,5 +1,5 @@
 import {MatButtonModule} from '@angular/material/button';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -15,6 +15,7 @@ import {Channel} from '../../web/src/services/channel';
 import {formatStyle} from '../../web/src/utils/styles';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-uploader',
   styleUrl: 'uploader.css',
   templateUrl: 'uploader.ng.html',

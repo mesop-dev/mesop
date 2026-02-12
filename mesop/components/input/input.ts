@@ -1,6 +1,6 @@
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -17,6 +17,7 @@ import {debounceTime} from 'rxjs/operators';
 import {CommonModule} from '@angular/common';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'input.ng.html',
   standalone: true,
   imports: [MatInputModule, MatFormFieldModule, CommonModule],

@@ -1,5 +1,5 @@
 import {MatTableModule} from '@angular/material/table';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   TableType,
   TableRow,
@@ -13,6 +13,7 @@ import {
 } from 'mesop/mesop/protos/ui_jspb_proto_pb/mesop/protos/ui_pb';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-table',
   templateUrl: 'table.ng.html',
   standalone: true,

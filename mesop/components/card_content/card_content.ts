@@ -1,5 +1,5 @@
 import {MatCardModule} from '@angular/material/card';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -7,6 +7,7 @@ import {
 import {CardContentType} from 'mesop/mesop/components/card_content/card_content_jspb_proto_pb/mesop/components/card_content/card_content_pb';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-card-content',
   templateUrl: 'card_content.ng.html',
   standalone: true,

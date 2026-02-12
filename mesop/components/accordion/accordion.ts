@@ -1,5 +1,5 @@
 import {MatAccordion} from '@angular/material/expansion';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -7,6 +7,7 @@ import {
 import {AccordionType} from 'mesop/mesop/components/accordion/accordion_jspb_proto_pb/mesop/components/accordion/accordion_pb';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-accordion',
   templateUrl: 'accordion.ng.html',
   standalone: true,

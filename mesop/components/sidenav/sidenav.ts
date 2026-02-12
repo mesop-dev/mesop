@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -11,6 +11,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-sidenav',
   templateUrl: 'sidenav.ng.html',
   standalone: true,

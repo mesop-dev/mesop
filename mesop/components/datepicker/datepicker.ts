@@ -4,7 +4,7 @@ import {
 } from '@angular/material/datepicker';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {
   UserEvent,
@@ -19,6 +19,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-datepicker',
   templateUrl: 'datepicker.ng.html',
   standalone: true,

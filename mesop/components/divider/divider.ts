@@ -1,5 +1,5 @@
 import {MatDividerModule} from '@angular/material/divider';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   Key,
   Type,
@@ -8,6 +8,7 @@ import {DividerType} from 'mesop/mesop/components/divider/divider_jspb_proto_pb/
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'divider.ng.html',
   standalone: true,
   imports: [MatDividerModule],

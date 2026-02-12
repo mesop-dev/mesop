@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {
   Key,
   Style,
@@ -9,6 +9,7 @@ import {formatStyle} from '../../web/src/utils/styles';
 import {setIframeSrc} from '../../web/src/safe_iframe/safe_iframe';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-embed',
   templateUrl: 'embed.ng.html',
   standalone: true,

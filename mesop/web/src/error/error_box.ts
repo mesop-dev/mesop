@@ -1,4 +1,4 @@
-import {Component, Inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, Input} from '@angular/core';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {
   ServerError,
@@ -13,6 +13,7 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-error-box',
   templateUrl: 'error_box.ng.html',
   styleUrl: 'error_box.css',
@@ -73,6 +74,7 @@ export class ErrorBox {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'mesop-server-error-dialog',
   template: ` <mesop-error-box [error]="data.error"></mesop-error-box> `,
   styles: `

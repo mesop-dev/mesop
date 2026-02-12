@@ -2,7 +2,7 @@ import {
   MatProgressBarModule,
   ProgressAnimationEnd,
 } from '@angular/material/progress-bar';
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   UserEvent,
   Key,
@@ -12,6 +12,7 @@ import {ProgressBarType} from 'mesop/mesop/components/progress_bar/progress_bar_
 import {Channel} from '../../web/src/services/channel';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: 'progress_bar.ng.html',
   standalone: true,
   imports: [MatProgressBarModule],
