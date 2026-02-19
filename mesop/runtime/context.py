@@ -116,6 +116,7 @@ class Context:
     self._previous_states: dict[type[Any], object] = copy.deepcopy(states)
     self._handlers: dict[str, Handler] = {}
     self._commands: list[pb.Command] = []
+    self._has_rendered: bool = False
     self._viewport_size: pb.ViewportSize | None = None
     self._theme_settings: pb.ThemeSettings | None = None
     self._js_modules: set[str] = set()
@@ -145,6 +146,12 @@ class Context:
 
   def clear_js_modules(self):
     self._js_modules = set()
+
+  def has_rendered(self) -> bool:
+    return self._has_rendered
+
+  def set_has_rendered(self, has_rendered: bool) -> None:
+    self._has_rendered = has_rendered
 
   def query_params(self) -> dict[str, list[str]]:
     return self._query_params

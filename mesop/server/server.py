@@ -130,6 +130,7 @@ def configure_flask_app(
           ],
         )
       )
+      runtime().context().set_has_rendered(True)
       yield serialize(data)
     except Exception as e:
       logging.error(e)
@@ -205,16 +206,20 @@ def configure_flask_app(
         runtime().context().set_viewport_size(event.viewport_size)
         runtime().context().initialize_query_params(event.query_params)
 
-        if not MESOP_WEBSOCKETS_ENABLED:
+        if (
+          not MESOP_WEBSOCKETS_ENABLED or not runtime().context().has_rendered()
+        ):
           if event.states.states:
             runtime().context().update_state(event.states)
           else:
             runtime().context().restore_state_from_session(event.state_token)
 
-        # In websockets mode, we don't need to do a trace render loop because
-        # the context instance is long-lived and contains all the registered
-        # event handlers from the last render loop.
-        if not MESOP_WEBSOCKETS_ENABLED:
+        # In websockets mode, since the context instance is long-lived, we only
+        # need to do a trace render loop if the context has not completed at least
+        # one render loop.
+        if (
+          not MESOP_WEBSOCKETS_ENABLED or not runtime().context().has_rendered()
+        ):
           for _ in render_loop(path=ui_request.path, trace_mode=True):
             pass
         if ui_request.user_event.handler_id:
