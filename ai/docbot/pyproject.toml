@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "gunicorn>=23.0.0",
     "nest-asyncio>=1.6.0",
-    "llama-index==0.10.68",
+    "llama-index==0.13.0",
     "google-generativeai>=0.5.4",
     "llama-index-llms-gemini==0.2.0",
     "llama-index-embeddings-google==0.1.6",
