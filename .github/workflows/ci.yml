@@ -120,35 +120,6 @@ jobs:
             mkdocs-material-
       - run: pip install -r build_defs/requirements_lock.txt
       - run: mkdocs gh-deploy --force
-  # Deploy docs bot
-  deploy-docs-bot:
-    # Only deploy docs bot if we're pushing to main (see on.push.branches)
-    if: github.event_name == 'push'
-    # Only deploy docs bot if deploy docs passes
-    needs: [deploy-docs]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
-        with:
-          python-version: 3.10.13
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
-        with:
-          key: docs-bot-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            docs-bot-
-      - run: pip install -r ai/docbot/requirements.txt
-      - run: |
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-      - name: Deploy to HuggingFace
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # Huggingface token
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: ./ai/docbot/deploy_to_hf.sh ../mesop_docbot
   # Deploy showcase
   deploy-showcase:
     # Only deploy showcase if we're pushing to main (see on.push.branches)
