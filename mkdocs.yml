@@ -158,7 +158,6 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - search.highlight
 
 extra_css:
   - stylesheets/extra.css
@@ -181,7 +180,6 @@ markdown_extensions:
 
 plugins:
   - blog
-  - search
   - mkdocstrings:
       default_handler: python
 
