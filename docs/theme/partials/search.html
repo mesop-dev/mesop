@@ -1,5 +1,5 @@
 <!-- https://github.com/squidfunk/mkdocs-material/blob/d5363ad000d049b25ce0f66c3781040d277bfa7f/src/templates/partials/search.html -->
-<div class="md-search" data-md-component="searchOVERRIDEN" role="dialog">
+<div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
@@ -8,7 +8,7 @@
         class="md-search__input"
         name="query"
         aria-label="{{ lang.t('search.placeholder') }}"
-        placeholder="Ask Docs bot"
+        placeholder="{{ lang.t('search.placeholder') }}"
         autocapitalize="off"
         autocorrect="off"
         autocomplete="off"

@@ -189,24 +189,6 @@ p {
   color: var(--md-default-bg-color--dark);
 }
 
-/* Based on https://github.com/squidfunk/mkdocs-material/issues/2574#issuecomment-821979698 */
-[data-md-toggle='search']:not(:checked) ~ .md-header .md-search__form::after {
-  position: absolute;
-  top: 0.3rem;
-  right: 0.5rem;
-  display: block;
-  padding: 0.1rem 0.4rem;
-  background: var(--md-default-bg-color);
-  color: var(--md-default-bg-color--dark);
-  font-weight: bold;
-  font-size: 0.8rem;
-  border: 0.05rem solid var(--md-default-bg-color--lighter);
-  box-shadow: 0 1px 2px var(--md-default-bg-color--lighter);
-  text-shadow: 0 1px 0 var(--md-default-bg-color--lighter);
-  border-radius: 0.2rem;
-  z-index: 9;
-  content: '⌘ K';
-}
 
 [data-md-color-scheme='mesop-dark'] .md-logo {
   filter: invert(1);
