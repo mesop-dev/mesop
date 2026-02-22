@@ -189,7 +189,6 @@ p {
   color: var(--md-default-bg-color--dark);
 }
 
-
 [data-md-color-scheme='mesop-dark'] .md-logo {
   filter: invert(1);
 }
