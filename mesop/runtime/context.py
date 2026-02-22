@@ -389,10 +389,9 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
       else:
         yield
     else:
-      if self._debug_mode:
-        raise MesopDeveloperException(
-          f"Unknown handler id: {event.handler_id} from event {event}"
-        )
-      logger.warning(
+      error_message = (
         f"Unknown handler id: {event.handler_id} from event {event}"
       )
+      if self._debug_mode:
+        raise MesopDeveloperException(error_message)
+      logger.warning(error_message)
