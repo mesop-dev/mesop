@@ -1,4 +1,5 @@
 import copy
+import logging
 import threading
 import types
 import urllib.parse as urlparse
@@ -22,6 +23,8 @@ from mesop.utils.async_utils import run_async_generator, run_coroutine
 T = TypeVar("T")
 
 Handler = Callable[[Any], Generator[None, None, None] | None]
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)
@@ -109,9 +112,12 @@ class Context:
   def __init__(
     self,
     states: dict[type[Any], object],
+    *,
+    debug_mode: bool = False,
   ) -> None:
     self._node_tree_state = NodeTreeState()
     self._states: dict[type[Any], object] = states
+    self._debug_mode = debug_mode
     # Previous states is used for performing state diffs.
     self._previous_states: dict[type[Any], object] = copy.deepcopy(states)
     self._handlers: dict[str, Handler] = {}
@@ -383,6 +389,10 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
       else:
         yield
     else:
-      raise MesopException(
+      if self._debug_mode:
+        raise MesopDeveloperException(
+          f"Unknown handler id: {event.handler_id} from event {event}"
+        )
+      logger.warning(
         f"Unknown handler id: {event.handler_id} from event {event}"
       )

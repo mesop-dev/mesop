@@ -101,7 +101,9 @@ class Runtime:
       for state_class in self._state_classes:
         states[state_class] = state_class()
 
-    return Context(states=cast(dict[Any, Any], states))
+    return Context(
+      states=cast(dict[Any, Any], states), debug_mode=self.debug_mode
+    )
 
   def wait_for_hot_reload(self):
     # If hot reload is in-progress, the path may not be registered yet because the client reload
