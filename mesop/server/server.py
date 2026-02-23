@@ -206,9 +206,7 @@ def configure_flask_app(
         runtime().context().set_viewport_size(event.viewport_size)
         runtime().context().initialize_query_params(event.query_params)
 
-        if (
-          not MESOP_WEBSOCKETS_ENABLED or not runtime().context().has_rendered()
-        ):
+        if not MESOP_WEBSOCKETS_ENABLED:
           if event.states.states:
             runtime().context().update_state(event.states)
           else:
