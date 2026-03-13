@@ -165,6 +165,16 @@ export class Channel {
     });
   }
 
+  private createInitRequest(): UiRequest {
+    const refreshRequest = new UiRequest();
+    const initRequest = new InitRequest();
+    initRequest.setViewportSize(getViewportSize());
+    initRequest.setThemeSettings(this.themeService.getThemeSettings());
+    initRequest.setQueryParamsList(getQueryParams());
+    refreshRequest.setInit(initRequest);
+    return refreshRequest;
+  }
+
   private initWebSocket(initParams: InitParams, request: UiRequest) {
     if (this.webSocket?.readyState === WebSocket.OPEN) {
       this.status = ChannelStatus.OPEN;
@@ -243,12 +253,7 @@ export class Channel {
             //
             // This is only a temporary fix. Ideally, when the websocket reconnects, it should
             // retain the existing state and continue from there.
-            const refreshRequest = new UiRequest();
-            const initRequest = new InitRequest();
-            initRequest.setViewportSize(getViewportSize());
-            initRequest.setThemeSettings(this.themeService.getThemeSettings());
-            initRequest.setQueryParamsList(getQueryParams());
-            refreshRequest.setInit(initRequest);
+            const refreshRequest = this.createInitRequest();
             this.initWebSocket(initParams, refreshRequest);
           }, backoffDelay);
         }
@@ -440,7 +445,21 @@ export class Channel {
     };
 
     if (this.status === ChannelStatus.CLOSED) {
-      initUserEvent();
+      const isWebSocketDead =
+        this.experimentService.websocketsEnabled &&
+        this.webSocket &&
+        (this.webSocket.readyState === WebSocket.CLOSED ||
+          this.webSocket.readyState === WebSocket.CLOSING);
+
+      if (isWebSocketDead) {
+        this.queuedEvents.push(initUserEvent);
+
+        const refreshRequest = this.createInitRequest();
+
+        this.init(this.initParams, refreshRequest);
+      } else {
+        initUserEvent();
+      }
     } else {
       this.queuedEvents.push(initUserEvent);
       if (this.experimentService.websocketsEnabled) {
