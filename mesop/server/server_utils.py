@@ -92,7 +92,11 @@ def is_same_site(url1: str | None, url2: str | None):
     return False
   try:
     p1, p2 = urlparse.urlparse(url1), urlparse.urlparse(url2)
-    return p1.scheme == p2.scheme and p1.hostname == p2.hostname and p1.port == p2.port
+    return (
+      p1.scheme == p2.scheme
+      and p1.hostname == p2.hostname
+      and p1.port == p2.port
+    )
   except ValueError:
     return False
 

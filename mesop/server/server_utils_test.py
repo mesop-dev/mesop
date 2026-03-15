@@ -37,11 +37,15 @@ def test_prefix_base_url_no_base():
 
 
 def test_is_same_site_identical():
-  assert su.is_same_site("http://localhost:32123", "http://localhost:32123/") is True
+  assert (
+    su.is_same_site("http://localhost:32123", "http://localhost:32123/") is True
+  )
 
 
 def test_is_same_site_different_ports():
-  assert su.is_same_site("http://localhost:32123", "http://localhost:8080") is False
+  assert (
+    su.is_same_site("http://localhost:32123", "http://localhost:8080") is False
+  )
 
 
 def test_is_same_site_different_schemes():
