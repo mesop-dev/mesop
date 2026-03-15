@@ -15,8 +15,7 @@ py_binary(
     main = "bin.py",
     deps = [
         "//mesop",  # Keep dep to ensure the entire Mesop library is loaded.
-        "//mesop/cli:execute_module",
-        "//mesop/exceptions",
         "//mesop/runtime",
+        "//mesop/server",
     ] + THIRD_PARTY_PY_ABSL_PY,
 )

@@ -136,3 +136,7 @@ THIRD_PARTY_PY_GREENLET = [
 THIRD_PARTY_PY_GOOGLE_GENAI = [
     requirement("google-genai"),
 ]
+
+THIRD_PARTY_PY_WATCHDOG = [
+    requirement("watchdog"),
+]
