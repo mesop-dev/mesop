@@ -340,6 +340,15 @@ def configure_flask_app(
 
     @sock.route(UI_PATH)
     def handle_websocket(ws: Server):
+      # Prevent cross-site WebSocket hijacking (CSWSH). Browsers do not enforce
+      # same-origin policy for WebSocket upgrades, so we must validate the Origin
+      # header ourselves, matching the same logic used for the SSE endpoint.
+      if not runtime().debug_mode and not is_same_site(
+        request.headers.get("Origin"), request.url_root
+      ):
+        ws.close(message="Rejecting cross-site WebSocket request to " + UI_PATH)
+        return
+
       def ws_generate_data(ws, ui_request):
         for data_chunk in generate_data(ui_request):
           if not ws.connected:
