@@ -34,3 +34,24 @@ def test_prefix_base_url_no_base():
   with patch.object(env, "MESOP_BASE_URL_PATH", ""):
     reload_utils()
     assert su.prefix_base_url("/foo") == "/foo"
+
+
+def test_is_same_site_identical():
+  assert su.is_same_site("http://localhost:32123", "http://localhost:32123/") is True
+
+
+def test_is_same_site_different_ports():
+  assert su.is_same_site("http://localhost:32123", "http://localhost:8080") is False
+
+
+def test_is_same_site_different_schemes():
+  assert su.is_same_site("http://example.com", "https://example.com") is False
+
+
+def test_is_same_site_different_hosts():
+  assert su.is_same_site("http://evil.com", "http://localhost:32123") is False
+
+
+def test_is_same_site_none():
+  assert su.is_same_site(None, "http://localhost:32123") is False
+  assert su.is_same_site("http://localhost:32123", None) is False

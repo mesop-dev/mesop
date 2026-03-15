@@ -84,7 +84,7 @@ def create_update_state_event(diff: bool = False) -> str:
 
 def is_same_site(url1: str | None, url2: str | None):
   """
-  Determine if two URLs are the same site.
+  Determine if two URLs have the same origin (scheme + hostname + port).
   """
   # If either URL is false-y, they are not the same site
   # (because we need a real URL to have an actual site)
@@ -92,7 +92,7 @@ def is_same_site(url1: str | None, url2: str | None):
     return False
   try:
     p1, p2 = urlparse.urlparse(url1), urlparse.urlparse(url2)
-    return p1.hostname == p2.hostname
+    return p1.scheme == p2.scheme and p1.hostname == p2.hostname and p1.port == p2.port
   except ValueError:
     return False
 
