@@ -196,6 +196,31 @@ def test_memory_backend_clear_stale_sessions():
   assert states == {type(StateA): StateA()}
 
 
+@pytest.mark.parametrize(
+  "malicious_token",
+  [
+    "../../../../etc/passwd",
+    "../sibling",
+    "token/../../escape",
+    "token\x00null",
+    "token with spaces",
+    "",
+  ],
+)
+def test_file_backend_rejects_path_traversal_token(tmp_path, malicious_token):
+  backend = FileStateSessionBackend(tmp_path)
+  with pytest.raises(MesopException, match="Invalid state token."):
+    backend._make_file_path(malicious_token)
+
+
+def test_file_backend_accepts_valid_token(tmp_path):
+  backend = FileStateSessionBackend(tmp_path)
+  # token_urlsafe(16) produces base64url characters: A-Z a-z 0-9 _ -
+  valid_token = "abcABC123_-XyZ"
+  path = backend._make_file_path(valid_token)
+  assert path.parent == tmp_path.resolve()
+
+
 def test_file_backend_clear_stale_sessions_not_stale(tmp_path):
   # GIVEN
   backend = FileStateSessionBackend(tmp_path)

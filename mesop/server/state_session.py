@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Protocol
@@ -146,8 +147,16 @@ class FileStateSessionBackend(StateSessionBackend):
     self.base_dir = base_dir
     self.prefix = "session"
 
+  # Matches tokens produced by secrets.token_urlsafe: base64url alphabet only.
+  _VALID_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
   def _make_file_path(self, token: str) -> Path:
-    return self.base_dir / (self.prefix + token)
+    if not self._VALID_TOKEN_RE.match(token):
+      raise MesopException("Invalid state token.")
+    file_path = (self.base_dir / (self.prefix + token)).resolve()
+    if not file_path.is_relative_to(self.base_dir.resolve()):
+      raise MesopException("Invalid state token.")
+    return file_path
 
   def restore(self, token: str, states: States):
     """Gets the saved state from the given token and updates the given state."""
