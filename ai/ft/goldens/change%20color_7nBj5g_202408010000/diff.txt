@@ -1,5 +1,0 @@
-<<<<<<< ORIGINAL
-  me.text(text="subtitle-2: Hello, world!", type="subtitle-2") # <--- EDIT HERE
-=======
-  me.text(text="subtitle-2: Hello, world!", type="subtitle-2", style=me.Style(color="green")) # <--- EDIT HERE
->>>>>>> UPDATED

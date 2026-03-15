@@ -1,1 +1,0 @@
-Add thumbs up and thumbs down buttons to bot response

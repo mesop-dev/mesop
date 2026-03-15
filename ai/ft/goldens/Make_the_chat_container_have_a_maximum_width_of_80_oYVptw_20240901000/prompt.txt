@@ -1,1 +1,0 @@
-Make the chat container have a maximum width of 800 pixels

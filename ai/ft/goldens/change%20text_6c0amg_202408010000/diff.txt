@@ -1,5 +1,0 @@
-<<<<<<< ORIGINAL
-  me.text(text="body-1: Hello, world!", type="body-1", style=me.Style(color=me.theme_var("on-surface"), font_size=18)) # <--- EDIT HERE
-=======
-  me.text(text="This is body-1 text.", type="body-1", style=me.Style(color=me.theme_var("on-surface"), font_size=18)) # <--- EDIT HERE
->>>>>>> UPDATED

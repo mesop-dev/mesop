@@ -1,1 +1,0 @@
-Add dark mode icon on the right end of the header

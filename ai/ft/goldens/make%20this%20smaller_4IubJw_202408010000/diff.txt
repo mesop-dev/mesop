@@ -1,5 +1,0 @@
-<<<<<<< ORIGINAL
-  me.text(text="headline-3: Hello, world!", type="headline-3") # <--- EDIT HERE
-=======
-  me.text(text="headline-3: Hello, world!", type="headline-5") # <--- EDIT HERE
->>>>>>> UPDATED

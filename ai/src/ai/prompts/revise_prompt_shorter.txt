@@ -1,9 +1,0 @@
-Existing app code:
-```
-<APP_CODE>
-```
-
-User instructions:
-<APP_CHANGES>
-
-Diff output:

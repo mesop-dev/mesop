@@ -1,1 +1,0 @@
-Add regenerate button next to the thumbs up thumbs down icons

@@ -6,8 +6,6 @@ extend-exclude = [
     "mesop/example_index.py",
     "mesop/examples/error*",
     "generator/fixtures/*",
-    "ai/data/**",               # do not format data files
-    "ai/ft/goldens/**",         # need exact formatting for diff patch.
     "mesop/editor/testdata/**", # formatting messes up diff.
 ]
 select = [

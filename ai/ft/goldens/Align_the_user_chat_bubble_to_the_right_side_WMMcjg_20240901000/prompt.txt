@@ -1,1 +1,0 @@
-Align the user chat bubble to the right side

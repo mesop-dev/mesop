@@ -1,1 +1,0 @@
-turn the checkbox and radio into a row
