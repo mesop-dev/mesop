@@ -1,7 +1,7 @@
 # ruff: noqa: E721
 import base64
 import json
-from dataclasses import Field, asdict, dataclass, field, is_dataclass
+from dataclasses import Field, asdict, dataclass, field, fields, is_dataclass
 from datetime import date, datetime
 from io import StringIO
 from typing import Any, Type, TypeVar, cast, get_origin, get_type_hints
@@ -114,9 +114,51 @@ def has_parent(cls: Type[Any]) -> bool:
   return len(cls.__bases__) > 0 and cls.__bases__[0] != object
 
 
+# JSON scalar types that are valid as dict keys without conversion.
+_JSON_SCALAR_KEY_TYPES = (str, int, float, bool)
+
+
+def _normalize_state_for_diff(obj: Any) -> Any:
+  """Normalize a state object so that DeepDiff produces correct paths.
+
+  JSON only supports string (and a few scalar) dict keys.  Non-scalar keys
+  such as tuples are converted to their ``str()`` representation so that:
+
+  * ``diff_state`` generates a correct, single path element (e.g.
+    ``"(1, 2)"``) instead of incorrectly flattening the tuple into
+    multiple path elements.
+  * ``serialize_dataclass`` does not raise ``TypeError`` when encoding a
+    dict whose keys are tuples or other non-JSON-scalar types.
+
+  Dataclass instances are converted to plain dicts of their fields (without
+  deep-copying leaf values), so that custom DeepDiff operators that rely on
+  ``isinstance`` checks (e.g. ``DataFrameOperator``, ``EqualityOperator``)
+  continue to work correctly.
+  """
+  if is_dataclass(obj) and not isinstance(obj, type):
+    return {
+      f.name: _normalize_state_for_diff(getattr(obj, f.name))
+      for f in fields(obj)
+    }
+  if isinstance(obj, dict):
+    return {
+      (
+        str(k)
+        if not isinstance(k, _JSON_SCALAR_KEY_TYPES) and k is not None
+        else k
+      ): _normalize_state_for_diff(v)
+      for k, v in obj.items()
+    }
+  if isinstance(obj, list):
+    return [_normalize_state_for_diff(item) for item in obj]
+  return obj
+
+
 def serialize_dataclass(state: Any):
   if is_dataclass(state):
-    json_str = json.dumps(asdict(state), cls=MesopJSONEncoder)
+    json_str = json.dumps(
+      _normalize_state_for_diff(asdict(state)), cls=MesopJSONEncoder
+    )
     return json_str
   else:
     raise MesopException("Tried to serialize state which was not a dataclass")
@@ -354,13 +396,20 @@ def diff_state(state1: Any, state2: Any) -> str:
   if not is_dataclass(state1) or not is_dataclass(state2):
     raise MesopException("Tried to diff state which was not a dataclass")
 
+  # Normalize both states before diffing so that non-JSON-scalar dict keys
+  # (e.g. tuples) are converted to their string representation.  This
+  # ensures DeepDiff emits a single, correct path element (e.g. "(1, 2)")
+  # instead of incorrectly expanding the tuple into multiple path segments.
+  norm1 = _normalize_state_for_diff(state1)
+  norm2 = _normalize_state_for_diff(state2)
+
   custom_actions = []
   custom_operators = [EqualityOperator()]
   # Only use the `DataFrameOperator` if pandas exists.
   if _has_pandas:
     differences = DeepDiff(
-      state1,
-      state2,
+      norm1,
+      norm2,
       custom_operators=[*custom_operators, DataFrameOperator()],
       threshold_to_diff_deeper=0,
     )
@@ -377,8 +426,8 @@ def diff_state(state1: Any, state2: Any) -> str:
       ]
   else:
     differences = DeepDiff(
-      state1,
-      state2,
+      norm1,
+      norm2,
       custom_operators=custom_operators,
       threshold_to_diff_deeper=0,
     )
