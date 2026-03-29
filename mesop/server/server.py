@@ -349,11 +349,21 @@ def configure_flask_app(
         ws.close(message="Rejecting cross-site WebSocket request to " + UI_PATH)
         return
 
+      # Limit the number of threads that can be spawned per WebSocket connection
+      # to prevent uncontrolled resource consumption (CWE-400). Normal UI interactions
+      # rarely require more than 1-2 concurrent in-flight requests; this cap is
+      # generous for legitimate use while making flooding impractical.
+      _MAX_CONCURRENT_THREADS = 8
+      _semaphore = threading.BoundedSemaphore(_MAX_CONCURRENT_THREADS)
+
       def ws_generate_data(ws, ui_request):
-        for data_chunk in generate_data(ui_request):
-          if not ws.connected:
-            break
-          ws.send(data_chunk)
+        try:
+          for data_chunk in generate_data(ui_request):
+            if not ws.connected:
+              break
+            ws.send(data_chunk)
+        finally:
+          _semaphore.release()
 
       # Generate a unique session ID for the WebSocket connection
       session_id = secrets.token_urlsafe(32)
@@ -372,6 +382,14 @@ def configure_flask_app(
           except Exception as parse_error:
             logging.error("Failed to parse message: %s", parse_error)
             continue  # Skip processing this message
+
+          # Drop the message if this connection already has too many threads running.
+          if not _semaphore.acquire(blocking=False):
+            logging.warning(
+              "WebSocket connection exceeded max concurrent requests (%d), dropping message.",
+              _MAX_CONCURRENT_THREADS,
+            )
+            continue
 
           # Start a new thread so we can handle multiple
           # concurrent updates for the same websocket connection.
