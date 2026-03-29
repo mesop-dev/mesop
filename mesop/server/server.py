@@ -3,6 +3,7 @@ import logging
 import secrets
 import threading
 import types
+from concurrent.futures import ThreadPoolExecutor
 from typing import Generator, Sequence
 
 from flask import (
@@ -338,6 +339,22 @@ def configure_flask_app(
 
     sock = Sock(flask_app)
 
+    # Global thread pool and admission semaphore, scoped to this Flask app instance
+    # so they are only created when WebSockets are actually enabled.
+    #
+    # _ws_executor caps the total number of OS threads processing WebSocket requests
+    # across ALL connections, preventing thread exhaustion from either a single
+    # flooded connection or many concurrent connections (CWE-400).
+    #
+    # _ws_semaphore enforces a hard limit on the total number of tasks that may be
+    # in-flight at once (running + queued in the executor). Without this, a flood of
+    # connections could fill the executor's unbounded internal queue, exhausting RAM.
+    # acquire() is non-blocking: excess messages are dropped rather than queued.
+    _WS_MAX_WORKERS = 100
+    _WS_MAX_IN_FLIGHT = 500
+    _ws_executor = ThreadPoolExecutor(max_workers=_WS_MAX_WORKERS)
+    _ws_semaphore = threading.BoundedSemaphore(_WS_MAX_IN_FLIGHT)
+
     @sock.route(UI_PATH)
     def handle_websocket(ws: Server):
       # Prevent cross-site WebSocket hijacking (CSWSH). Browsers do not enforce
@@ -349,21 +366,16 @@ def configure_flask_app(
         ws.close(message="Rejecting cross-site WebSocket request to " + UI_PATH)
         return
 
-      # Limit the number of threads that can be spawned per WebSocket connection
-      # to prevent uncontrolled resource consumption (CWE-400). Normal UI interactions
-      # rarely require more than 1-2 concurrent in-flight requests; this cap is
-      # generous for legitimate use while making flooding impractical.
-      _MAX_CONCURRENT_THREADS = 8
-      _semaphore = threading.BoundedSemaphore(_MAX_CONCURRENT_THREADS)
-
       def ws_generate_data(ws, ui_request):
+        # Semaphore is always released here, whether generate_data succeeds or raises,
+        # so the in-flight count stays accurate and slots are never leaked.
         try:
           for data_chunk in generate_data(ui_request):
             if not ws.connected:
               break
             ws.send(data_chunk)
         finally:
-          _semaphore.release()
+          _ws_semaphore.release()
 
       # Generate a unique session ID for the WebSocket connection
       session_id = secrets.token_urlsafe(32)
@@ -383,25 +395,22 @@ def configure_flask_app(
             logging.error("Failed to parse message: %s", parse_error)
             continue  # Skip processing this message
 
-          # Drop the message if this connection already has too many threads running.
-          if not _semaphore.acquire(blocking=False):
+          # Reject the message immediately if the server is already at capacity.
+          # This keeps memory bounded regardless of how many connections are open.
+          if not _ws_semaphore.acquire(blocking=False):
             logging.warning(
-              "WebSocket connection exceeded max concurrent requests (%d), dropping message.",
-              _MAX_CONCURRENT_THREADS,
+              "WebSocket server at capacity (%d in-flight tasks), dropping message.",
+              _WS_MAX_IN_FLIGHT,
             )
             continue
 
-          # Start a new thread so we can handle multiple
-          # concurrent updates for the same websocket connection.
-          #
-          # Note: we do copy_current_request_context at the callsite
-          # to ensure that the request context is copied over for each new thread.
-          thread = threading.Thread(
-            target=copy_current_request_context(ws_generate_data),
-            args=(ws, ui_request),
-            daemon=True,
+          # Submit to the bounded thread pool rather than spawning a raw OS thread.
+          # copy_current_request_context snapshots the Flask request context here
+          # (in the WebSocket handler thread) so each pool task runs with the
+          # correct context, even though pool threads are reused across requests.
+          _ws_executor.submit(
+            copy_current_request_context(ws_generate_data), ws, ui_request
           )
-          thread.start()
 
       except Exception as e:
         logging.error("WebSocket error: %s", e)
