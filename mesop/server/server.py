@@ -14,6 +14,7 @@ from flask import (
   request,
   stream_with_context,
 )
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 import mesop.protos.ui_pb2 as pb
 from mesop.component_helpers import diff_component
@@ -83,6 +84,14 @@ def configure_flask_app(
     __name__,
     static_folder=static_folder,
     static_url_path=static_url_path,
+  )
+
+  # Apply ProxyFix middleware to support running behind a reverse proxy.
+  # This ensures that Flask's `request.url_root` and `request.scheme` correctly
+  # reflect the external HTTPS URL and any sub-paths, which is required for accurate
+  # Same-Origin and CSWSH/CSRF security checks.
+  flask_app.wsgi_app = ProxyFix(
+    flask_app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1
   )
 
   def render_loop(
@@ -357,6 +366,15 @@ def configure_flask_app(
 
     @sock.route(UI_PATH)
     def handle_websocket(ws: Server):
+      # Prevent cross-site WebSocket hijacking (CSWSH). Browsers do not enforce
+      # same-origin policy for WebSocket upgrades, so we must validate the Origin
+      # header ourselves, matching the same logic used for the SSE endpoint.
+      if not runtime().debug_mode and not is_same_site(
+        request.headers.get("Origin"), request.url_root
+      ):
+        ws.close(message="Rejecting cross-site WebSocket request to " + UI_PATH)
+        return
+
       def ws_generate_data(ws, ui_request):
         # Semaphore is always released here, whether generate_data succeeds or raises,
         # so the in-flight count stays accurate and slots are never leaked.
