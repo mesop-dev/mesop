@@ -367,6 +367,157 @@ def on_click(e):
 
 If you didn't explicitly annotate NestedState as a dataclass, then you would get an error instantiating NestedState because there's no initializer defined.
 
+## Security & Best Practices
+
+### Validate input before updating state
+
+Event handlers receive data directly from the browser. Always validate and sanitize that data before writing it into state. Trusting it blindly can lead to corrupt state or unexpected behaviour.
+
+???+ failure "Bad: storing unvalidated input"
+
+    ```python
+    def on_submit(e: me.ClickEvent):
+        state = me.state(State)
+        # Directly copying user-supplied value with no checks
+        state.age = int(state.age_input)   # crashes if input is not a number
+        state.email = state.email_input    # no format validation
+    ```
+
+???+ success "Good: validate before writing to state"
+
+    ```python
+    def on_submit(e: me.ClickEvent):
+        state = me.state(State)
+
+        # Validate age
+        try:
+            age = int(state.age_input)
+        except ValueError:
+            state.error = "Age must be a number."
+            return
+        if age < 0 or age > 150:
+            state.error = "Age must be between 0 and 150."
+            return
+
+        # Validate email (basic check)
+        if "@" not in state.email_input or "." not in state.email_input:
+            state.error = "Enter a valid email address."
+            return
+
+        state.age = age
+        state.email = state.email_input
+        state.error = ""
+    ```
+
+This is especially important for fields that end up in database queries, file paths, or external API calls.
+
+### Validate state before sending to external services
+
+State holds what the user submitted across one or more interactions. Before passing state values to a database, API, or any external service, validate them again at the point of use. Never assume that because data is in state it is already safe.
+
+???+ failure "Bad: using state values directly in a database call"
+
+    ```python
+    def on_save(e: me.ClickEvent):
+        state = me.state(State)
+        # No validation — anything could be in state.username
+        db.execute("INSERT INTO users (name) VALUES (?)", (state.username,))
+    ```
+
+???+ success "Good: re-validate at the service boundary"
+
+    ```python
+    import re
+
+    def on_save(e: me.ClickEvent):
+        state = me.state(State)
+
+        username = state.username.strip()
+        if not username or not re.match(r"^[a-zA-Z0-9_]{3,30}$", username):
+            state.error = "Username must be 3–30 alphanumeric characters."
+            return
+
+        db.execute("INSERT INTO users (name) VALUES (?)", (username,))
+    ```
+
+Use an ORM or parameterised queries to avoid SQL injection. If you call an external HTTP API, validate that URLs or IDs embedded in state are well-formed before constructing the request.
+
+### Be careful what you store in state
+
+Mesop serializes state and sends it between the server and the browser on every interaction. This has two important consequences:
+
+**State is visible to the client.** The serialized state travels over the network and can be inspected by a determined user. Do not store secrets, private keys, raw passwords, or other sensitive credentials in state.
+
+???+ failure "Bad: storing a secret in state"
+
+    ```python
+    @me.stateclass
+    class State:
+        api_key: str          # ❌ Will be sent to the browser
+        password_hash: str    # ❌ Leaks implementation details
+    ```
+
+???+ success "Good: keep secrets server-side"
+
+    ```python
+    import os
+
+    # Read once at startup and keep in server memory, not in state
+    _API_KEY = os.environ["MY_API_KEY"]
+
+    @me.stateclass
+    class State:
+        is_authenticated: bool   # ✅ Only the outcome goes in state
+
+    def call_api():
+        # Use the module-level constant, never state
+        return requests.get("https://api.example.com", headers={"Authorization": _API_KEY})
+    ```
+
+**State size affects performance.** Everything in state is serialized and sent on every round-trip. Avoid storing large blobs, full API responses, or entire datasets. Store only the minimum data needed to render the UI. See the [performance guide](./performance.md#optimizing-state-size) for details.
+
+???+ failure "Bad: storing a full API response"
+
+    ```python
+    @me.stateclass
+    class State:
+        raw_response: str   # ❌ Could be megabytes of JSON
+    ```
+
+???+ success "Good: store only what the UI needs"
+
+    ```python
+    @me.stateclass
+    class State:
+        result_count: int
+        result_titles: list[str]   # ✅ Just the fields displayed
+    ```
+
+**State is not a substitute for authentication.** State is scoped to a user session, but Mesop itself does not authenticate users. Do not rely on a flag like `state.is_admin = True` as your sole access control mechanism. Enforce authorization on the server side (e.g., check the session token in your event handler) before performing privileged operations.
+
+???+ failure "Bad: trusting state for authorization"
+
+    ```python
+    def on_delete(e: me.ClickEvent):
+        state = me.state(State)
+        if state.is_admin:   # ❌ Client can manipulate this
+            db.delete_all()
+    ```
+
+???+ success "Good: verify authorization server-side"
+
+    ```python
+    def on_delete(e: me.ClickEvent):
+        state = me.state(State)
+        user = get_current_user(state.session_token)
+        if not user or not user.has_permission("delete"):
+            state.error = "Permission denied."
+            return
+        db.delete_all()
+    ```
+
+**State does not persist across sessions.** When a user's session ends (e.g., they close the tab or the server restarts), state is lost. Do not use state as durable storage. Persist anything important — user preferences, saved work, etc. — to a database or other backend store before the session ends.
+
 ## Tips
 
 ### State performance issues
