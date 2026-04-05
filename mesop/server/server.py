@@ -14,6 +14,7 @@ from flask import (
   request,
   stream_with_context,
 )
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 import mesop.protos.ui_pb2 as pb
 from mesop.component_helpers import diff_component
@@ -21,6 +22,7 @@ from mesop.env.env import (
   MESOP_APP_BASE_PATH,
   MESOP_BASE_URL_PATH,
   MESOP_PROD_UNREDACTED_ERRORS,
+  MESOP_TRUST_PROXY_HEADERS,
   MESOP_WEBSOCKETS_ENABLED,
 )
 from mesop.events import LoadEvent
@@ -84,6 +86,20 @@ def configure_flask_app(
     static_folder=static_folder,
     static_url_path=static_url_path,
   )
+
+  if MESOP_TRUST_PROXY_HEADERS:
+    # Apply ProxyFix so that request.url_root and request.scheme reflect the
+    # external-facing URL reported by the reverse proxy (X-Forwarded-Proto,
+    # X-Forwarded-Host, etc.). This is required for the CSWSH/CSRF origin checks
+    # to work correctly when Mesop runs behind a load balancer or cloud proxy.
+    #
+    # Only enabled when MESOP_TRUST_PROXY_HEADERS is set (either explicitly or
+    # via auto-detection of known cloud platforms). Do NOT enable this in
+    # deployments that are not behind a trusted reverse proxy, as it would allow
+    # callers to spoof X-Forwarded-* headers and bypass origin checks.
+    flask_app.wsgi_app = ProxyFix(  # type: ignore[method-assign]
+      flask_app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1
+    )
 
   def render_loop(
     path: str,
@@ -357,6 +373,15 @@ def configure_flask_app(
 
     @sock.route(UI_PATH)
     def handle_websocket(ws: Server):
+      # Prevent cross-site WebSocket hijacking (CSWSH). Browsers don't enforce
+      # same-origin policy for WebSocket upgrades, so we validate the Origin header
+      # ourselves — matching the same logic used for the SSE endpoint above.
+      if not runtime().debug_mode and not is_same_site(
+        request.headers.get("Origin"), request.url_root
+      ):
+        ws.close(message="Rejecting cross-site WebSocket request to " + UI_PATH)
+        return
+
       def ws_generate_data(ws, ui_request):
         # Semaphore is always released here, whether generate_data succeeds or raises,
         # so the in-flight count stays accurate and slots are never leaked.

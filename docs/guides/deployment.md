@@ -197,6 +197,24 @@ MESOP_BASE_URL_PATH=/myapppath docker-compose up -d
 
 All routes, including the UI endpoint and static assets, will then be served from `/myapppath`.
 
+#### Trusting proxy forwarding headers
+
+When Mesop runs behind a reverse proxy (e.g. nginx, a cloud load balancer), the proxy typically communicates the original client's protocol and host via `X-Forwarded-Proto` and `X-Forwarded-Host` headers. Mesop needs to trust these headers so that its [CSRF/CSWSH origin checks](./web-security.md#cross-site-websocket-hijacking-cswsh) compare against the correct external URL.
+
+Mesop **automatically enables proxy-header trust** on the following managed platforms:
+
+- **Google Cloud Run** (detected via `K_SERVICE`)
+- **Google App Engine** (detected via `GAE_APPLICATION`)
+- **Kubernetes** (detected via `KUBERNETES_SERVICE_HOST`)
+
+For other reverse-proxy setups (e.g. nginx on a VPS), set the environment variable explicitly:
+
+```sh
+MESOP_TRUST_PROXY_HEADERS=true docker-compose up -d
+```
+
+> **Security warning:** Only set `MESOP_TRUST_PROXY_HEADERS=true` when Mesop is genuinely behind a trusted reverse proxy. In a direct (non-proxied) deployment, enabling this setting allows callers to spoof `X-Forwarded-*` headers and bypass origin-based security checks.
+
 
 ## Hugging Face Spaces
 

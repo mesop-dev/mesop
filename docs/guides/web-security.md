@@ -47,6 +47,20 @@ Mesop sets this value to `unsafe-none`, which is the default value. It is recomm
 
 For more information, see [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Cross-Origin-Opener-Policy) and [XS Leaks Wiki](https://xsleaks.dev/).
 
+## Cross-site WebSocket Hijacking (CSWSH)
+
+Unlike regular HTTP requests, browsers do **not** enforce same-origin policy for WebSocket connections. This means a malicious page on another origin could open a WebSocket to your Mesop server and interact with it on behalf of a logged-in user.
+
+To prevent this, Mesop validates the `Origin` header on every WebSocket upgrade request and rejects connections whose origin does not match the server's own URL. This check mirrors the existing CSRF protection on the SSE (`POST /__ui__`) endpoint.
+
+The check is skipped in [debug mode](./debugging.md) to support environments like Colab where the UI and the server may run on different origins.
+
+### Deployments behind a reverse proxy
+
+If your app is deployed behind a reverse proxy (Cloud Run, App Engine, Kubernetes, nginx, etc.), the server's apparent URL may differ from the external-facing URL seen by browsers. In that case the origin check could incorrectly reject legitimate connections.
+
+Mesop solves this by reading the `X-Forwarded-Proto` and `X-Forwarded-Host` headers set by the proxy, but only when proxy-header trust is enabled. See [Trusting proxy forwarding headers](./deployment.md#trusting-proxy-forwarding-headers) in the deployment guide for details.
+
 ## API
 
 You can configure the security policy at the page level. See [SecurityPolicy on the Page API docs](../api/page.md#mesop.security.security_policy.SecurityPolicy).

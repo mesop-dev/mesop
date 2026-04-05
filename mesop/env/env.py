@@ -55,3 +55,13 @@ MESOP_HTTP_CACHE_JS_BUNDLE = (
 MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY = os.environ.get(
   "MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY", None
 )
+
+# Trust reverse-proxy forwarding headers (X-Forwarded-Proto, X-Forwarded-Host, etc.).
+# Auto-enabled on known managed cloud platforms (Cloud Run, App Engine, Kubernetes).
+# Set MESOP_TRUST_PROXY_HEADERS=true to enable explicitly for other proxied deployments.
+MESOP_TRUST_PROXY_HEADERS = (
+  os.environ.get("MESOP_TRUST_PROXY_HEADERS", "false").lower() == "true"
+  or bool(os.environ.get("K_SERVICE"))  # Google Cloud Run
+  or bool(os.environ.get("GAE_APPLICATION"))  # Google App Engine
+  or bool(os.environ.get("KUBERNETES_SERVICE_HOST"))  # Kubernetes
+)
