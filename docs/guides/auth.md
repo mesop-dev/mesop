@@ -340,7 +340,7 @@ def app_page():
 - Always set `httponly=True` on the session cookie so JavaScript cannot read it.
 - Always set `secure=True` in production so the cookie is only sent over HTTPS.
 - Never store plaintext passwords — use `generate_password_hash` / `check_password_hash`.
-- Never store `SECRET_KEY` or password hashes in source code — use environment variables.
+- Never store `SECRET_KEY` or password hashes in source code or committed files — use a secret manager (e.g. [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)) or a `.env` file listed in `.gitignore` for local development.
 - Re-verify the session cookie on every protected `on_load`, not just once at login.
 - Validate and sanitize all user inputs before using them (see the [state management guide](./state-management.md#validate-input-before-updating-state)).
 
@@ -457,5 +457,5 @@ gunicorn --bind 0.0.0.0:8080 'your_module:app'
 
 - Only use HTTP Basic Auth behind HTTPS — credentials are only Base64-encoded, not encrypted.
 - Store only hashed passwords, never plaintext.
-- Keep credentials in environment variables, not source code.
+- Never put credentials in source code or committed files. Use your platform's secret management solution — for example [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/), or a `.env` file that is listed in `.gitignore` for local development.
 - Consider combining with an IP allowlist at the network/load-balancer level for extra protection.
