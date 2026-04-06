@@ -175,9 +175,9 @@ Because Mesop renders pages server-side within an ongoing SSE stream, `after_thi
 
 - Credentials are verified in an event handler, and `state.username` is set directly.
 - The page function checks `state.username` and renders either the login form or the protected content.
-- Mesop's own session mechanism persists state across navigations and page refreshes within the same browser tab. Opening a new tab requires logging in again.
+- Mesop state only persists within the same SPA session. Any hard browser navigation — page refresh, back/forward buttons, opening a new tab, or typing the URL directly — will clear state and require the user to log in again. Only `me.navigate()` (client-side navigation within the running app) preserves state.
 
-If cross-tab or cross-device persistence is required, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication) instead.
+If persistent sessions across refreshes and new tabs are required, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication) instead.
 
 **Prerequisites:**
 
