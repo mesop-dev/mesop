@@ -171,10 +171,12 @@ This approach is suitable for internal tools, prototypes, or apps that have a mi
 
 **How it works:**
 
-1. A `/login` page collects a username and password.
-2. The event handler verifies the password against a stored hash.
-3. On success, a signed, `HttpOnly` session cookie is set so authentication persists across page refreshes.
-4. Protected pages read and verify the cookie in their `on_load` handler.
+Because Mesop renders pages server-side within an ongoing SSE stream, there are two important constraints to keep in mind:
+
+- Do **not** call `me.navigate()` from an `on_load` handler to redirect unauthenticated users. This pattern is not reliably supported and produces a blank page.
+- A cookie set in a response (via `after_this_request`) is **not** visible in the same render cycle. Set state directly for immediate feedback, and use the cookie only to restore state on future visits.
+
+The pattern that works reliably is **conditional rendering on a single page**: the page function checks `state.username` and renders either the login form or the protected content. Mesop state persists within a session, and a signed cookie is used to restore state when the user opens a new browser session.
 
 **Prerequisites:**
 
@@ -188,151 +190,174 @@ Never store plaintext passwords. Use `werkzeug.security` to hash them at setup t
 ```python
 from werkzeug.security import generate_password_hash
 
-# Run this once to generate the hash, then store it (e.g. in a database or env var).
+# Run this once to generate the hash, then store it securely.
 print(generate_password_hash("my-secret-password"))
 ```
 
 **Step 2 — Full example**
 
 ```python
-# requirements: mesop (werkzeug and itsdangerous are included)
+# auth_app.py
+# Run: gunicorn --bind 0.0.0.0:8080 auth_app:me
+#
+# One-time setup:
+#   export SESSION_SECRET_KEY="$(python -c "import secrets; print(secrets.token_hex(32))")"
+#   export ALICE_PASSWORD_HASH="$(python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('hunter2'))")"
 
 import os
 import mesop as me
-from flask import request, after_this_request
-from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from flask import after_this_request, request
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 from werkzeug.security import check_password_hash
 
-# ------------------------------------------------------------------ #
-# Configuration
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
 
-# Generate with: python -c "import secrets; print(secrets.token_hex(32))"
-# Store in an environment variable, never in source code.
-SECRET_KEY = os.environ["SESSION_SECRET_KEY"]
+_signer = URLSafeTimedSerializer(os.environ["SESSION_SECRET_KEY"])
+SESSION_MAX_AGE = 8 * 60 * 60  # 8 hours
 
-# Session cookie expires after 8 hours.
-SESSION_MAX_AGE_SECONDS = 8 * 60 * 60
-
-_signer = URLSafeTimedSerializer(SECRET_KEY)
-
-# In production, load credentials from a database.
+# In production, load from a database.
 # Hashes were generated with werkzeug.security.generate_password_hash().
 USERS: dict[str, str] = {
     "alice": os.environ["ALICE_PASSWORD_HASH"],
 }
 
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
 # Session helpers
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
 
-def _create_session_cookie(username: str) -> str:
-    return _signer.dumps(username)
-
-
-def _verify_session_cookie(cookie: str) -> str | None:
-    """Return the username if the cookie is valid, otherwise None."""
-    try:
-        return _signer.loads(cookie, max_age=SESSION_MAX_AGE_SECONDS)
-    except (BadSignature, SignatureExpired):
-        return None
-
-
-def _get_authenticated_user() -> str | None:
-    """Read and verify the session cookie from the current request."""
+def _get_session_user() -> str | None:
+    """Verify the session cookie and return the username, or None."""
     cookie = request.cookies.get("session")
     if not cookie:
         return None
-    return _verify_session_cookie(cookie)
+    try:
+        return _signer.loads(cookie, max_age=SESSION_MAX_AGE)
+    except (BadSignature, SignatureExpired):
+        return None
 
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
 # State
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
 
 @me.stateclass
-class LoginState:
+class State:
+    username: str        # empty string means not logged in
     username_input: str
     password_input: str
     error: str
 
-
-@me.stateclass
-class AppState:
-    username: str
-
-# ------------------------------------------------------------------ #
-# Login page
-# ------------------------------------------------------------------ #
+# ---------------------------------------------------------------------------
+# Event handlers
+# ---------------------------------------------------------------------------
 
 def on_username_input(e: me.InputEvent):
-    me.state(LoginState).username_input = e.value
-
+    me.state(State).username_input = e.value
 
 def on_password_input(e: me.InputEvent):
-    me.state(LoginState).password_input = e.value
-
+    me.state(State).password_input = e.value
 
 def on_login(e: me.ClickEvent):
-    state = me.state(LoginState)
-
-    # Basic input validation.
+    state = me.state(State)
     username = state.username_input.strip()
+
     if not username or not state.password_input:
         state.error = "Please enter a username and password."
         return
 
-    # Verify credentials.
     stored_hash = USERS.get(username)
     if not stored_hash or not check_password_hash(stored_hash, state.password_input):
         state.error = "Invalid username or password."
+        state.password_input = ""
         return
 
-    # Set a signed, HttpOnly cookie so the session persists across refreshes.
-    token = _create_session_cookie(username)
+    # Set state immediately so the page re-renders as authenticated.
+    state.username = username
+    state.password_input = ""
+    state.error = ""
+
+    # Also set a signed cookie so auth survives a new browser session.
+    token = _signer.dumps(username)
 
     @after_this_request
     def set_cookie(response):
         response.set_cookie(
-            "session",
-            token,
-            max_age=SESSION_MAX_AGE_SECONDS,
+            "session", token,
+            max_age=SESSION_MAX_AGE,
             httponly=True,   # Not accessible from JavaScript.
-            secure=True,     # Only sent over HTTPS. Set to False for local dev.
+            secure=False,    # Set to True in production (requires HTTPS).
             samesite="Lax",
         )
         return response
 
-    me.navigate("/app")
+def on_logout(e: me.ClickEvent):
+    me.state(State).username = ""
 
+    @after_this_request
+    def clear_cookie(response):
+        response.delete_cookie("session")
+        return response
 
-@me.page(path="/login")
-def login_page():
-    state = me.state(LoginState)
-    with me.box(style=me.Style(padding=me.Padding.all(24), max_width=320)):
-        me.text("Sign in", type="headline-5")
-        if state.error:
-            me.text(state.error, style=me.Style(color="red"))
-        me.input(label="Username", on_input=on_username_input)
-        me.input(label="Password", type="password", on_input=on_password_input)
-        me.button("Sign in", on_click=on_login, type="flat")
+# ---------------------------------------------------------------------------
+# Page
+# ---------------------------------------------------------------------------
 
-# ------------------------------------------------------------------ #
-# Protected page
-# ------------------------------------------------------------------ #
+def on_load(e: me.LoadEvent):
+    """Restore auth from the session cookie when the user opens a new browser session."""
+    state = me.state(State)
+    if not state.username:
+        username = _get_session_user()
+        if username:
+            state.username = username
 
-def on_app_load(e: me.LoadEvent):
-    username = _get_authenticated_user()
-    if not username:
-        me.navigate("/login")
+@me.page(path="/", on_load=on_load)
+def main():
+    state = me.state(State)
+
+    if not state.username:
+        # Show the login form.
+        with me.box(style=me.Style(padding=me.Padding.all(32), max_width=320)):
+            me.text("Sign in", type="headline-5")
+            if state.error:
+                me.text(state.error, style=me.Style(color="red"))
+            me.input(label="Username", on_input=on_username_input)
+            me.input(label="Password", type="password", on_input=on_password_input)
+            me.button("Sign in", on_click=on_login, type="flat")
+    else:
+        # Show protected content.
+        with me.box(style=me.Style(padding=me.Padding.all(32))):
+            me.text(f"Welcome, {state.username}!")
+            me.button("Sign out", on_click=on_logout, type="flat")
+```
+
+**Multiple protected pages**
+
+For apps with several protected pages, apply the same pattern to each: use `on_load` to restore state from the cookie, and check `state.username` at the top of each page function:
+
+```python
+def on_load(e: me.LoadEvent):
+    state = me.state(State)
+    if not state.username:
+        username = _get_session_user()
+        if username:
+            state.username = username
+
+@me.page(path="/dashboard", on_load=on_load)
+def dashboard():
+    state = me.state(State)
+    if not state.username:
+        _render_login_form()
         return
-    me.state(AppState).username = username
+    # Protected dashboard content...
 
-
-@me.page(path="/app", on_load=on_app_load)
-def app_page():
-    state = me.state(AppState)
-    me.text(f"Welcome, {state.username}!")
-    # ... rest of the page
+@me.page(path="/settings", on_load=on_load)
+def settings():
+    state = me.state(State)
+    if not state.username:
+        _render_login_form()
+        return
+    # Protected settings content...
 ```
 
 **Security checklist:**
@@ -341,7 +366,6 @@ def app_page():
 - Always set `secure=True` in production so the cookie is only sent over HTTPS.
 - Never store plaintext passwords — use `generate_password_hash` / `check_password_hash`.
 - Never store `SECRET_KEY` or password hashes in source code or committed files — use a secret manager (e.g. [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)) or a `.env` file listed in `.gitignore` for local development.
-- Re-verify the session cookie on every protected `on_load`, not just once at login.
 - Validate and sanitize all user inputs before using them (see the [state management guide](./state-management.md#validate-input-before-updating-state)).
 
 ## HTTP Basic Auth
