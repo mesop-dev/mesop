@@ -307,12 +307,16 @@ def settings():
     # Protected settings content...
 ```
 
+> **Security warning:** This check is not tamper-proof. In Mesop's default SSE mode the serialized state is sent to the browser on every response and echoed back on every request. A determined attacker can decode the protobuf payload and forge `state.username` without ever entering valid credentials, bypassing this check entirely.
+>
+> **Only use this pattern for low-risk internal tools where all users are already trusted** (e.g. on a private network). Do not use it to protect sensitive data, PII, or any resource where impersonation would cause real harm. For genuine access control use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication), both of which authenticate at a layer the browser cannot influence.
+
 **Security checklist:**
 
 - Never store plaintext passwords — use `generate_password_hash` / `check_password_hash`.
 - Never store password hashes in source code or committed files — use a secret manager (e.g. [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)) or a `.env` file listed in `.gitignore` for local development.
 - Validate and sanitize all user inputs before using them (see the [state management guide](./state-management.md#validate-input-before-updating-state)).
-- For stronger security guarantees (persistent sessions, audit logs, MFA), use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication).
+- For genuine access control, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication).
 
 ## HTTP Basic Auth
 
