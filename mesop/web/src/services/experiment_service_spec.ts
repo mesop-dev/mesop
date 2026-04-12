@@ -2,7 +2,7 @@ import {ExperimentService} from 'mesop/mesop/web/src/services/experiment_service
 
 describe('ExperimentService', () => {
   afterEach(() => {
-    delete (window as any).__MESOP_EXPERIMENTS__;
+    (window as any).__MESOP_EXPERIMENTS__ = undefined;
   });
 
   it('uses default settings when __MESOP_EXPERIMENTS__ is not set', () => {
