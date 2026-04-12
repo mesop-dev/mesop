@@ -212,7 +212,7 @@ message UpdateStateEvent {
     optional string state_token = 4;
 }
 
-// Next ID: 8
+// Next ID: 9
 message Command {
     oneof command {
         NavigateCommand navigate = 1;
@@ -222,7 +222,13 @@ message Command {
         SetThemeDensity set_theme_density = 4;
         FocusComponentCommand focus_component = 5;
         SetPageTitle set_page_title = 7;
+        ApplyCookiesCommand apply_cookies = 8;
     }
+}
+
+message ApplyCookiesCommand {
+    // One-time server-side token used to retrieve and apply pending cookies.
+    optional string token = 1;
 }
 
 message NavigateCommand {

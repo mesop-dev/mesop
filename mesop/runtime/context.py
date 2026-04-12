@@ -27,6 +27,31 @@ Handler = Callable[[Any], Generator[None, None, None] | None]
 logger = logging.getLogger(__name__)
 
 
+@dataclass
+class PendingCookie:
+  """Represents a cookie to be set or deleted via the /__apply-cookies endpoint.
+
+  Attributes:
+    name: Cookie name.
+    value: Cookie value. Empty string when deleting.
+    max_age: Max age in seconds. None means session cookie. 0 means delete.
+    path: Cookie path scope.
+    domain: Cookie domain scope. None means current domain.
+    secure: Whether the cookie should only be sent over HTTPS.
+    httponly: Whether the cookie should be inaccessible to JavaScript.
+    samesite: SameSite policy: "Strict", "Lax", or "None".
+  """
+
+  name: str
+  value: str = ""
+  max_age: int | None = None
+  path: str = "/"
+  domain: str | None = None
+  secure: bool = True
+  httponly: bool = True
+  samesite: str = "Lax"
+
+
 @dataclass(kw_only=True)
 class NodeSlot:
   """Metadata for a node slot
@@ -127,6 +152,7 @@ class Context:
     self._theme_settings: pb.ThemeSettings | None = None
     self._js_modules: set[str] = set()
     self._query_params: dict[str, list[str]] = {}
+    self._pending_cookies: list[PendingCookie] = []
     if MESOP_WEBSOCKETS_ENABLED:
       self._lock = threading.Lock()
 
@@ -240,6 +266,54 @@ class Context:
     self._commands.append(
       pb.Command(set_page_title=pb.SetPageTitle(title=title))
     )
+
+  def set_cookie(
+    self,
+    name: str,
+    value: str,
+    *,
+    max_age: int | None = None,
+    path: str = "/",
+    domain: str | None = None,
+    secure: bool = True,
+    httponly: bool = True,
+    samesite: str = "Lax",
+  ) -> None:
+    self._pending_cookies.append(
+      PendingCookie(
+        name=name,
+        value=value,
+        max_age=max_age,
+        path=path,
+        domain=domain,
+        secure=secure,
+        httponly=httponly,
+        samesite=samesite,
+      )
+    )
+
+  def delete_cookie(
+    self,
+    name: str,
+    *,
+    path: str = "/",
+    domain: str | None = None,
+  ) -> None:
+    self._pending_cookies.append(
+      PendingCookie(
+        name=name,
+        value="",
+        max_age=0,
+        path=path,
+        domain=domain,
+      )
+    )
+
+  def pending_cookies(self) -> list[PendingCookie]:
+    return self._pending_cookies
+
+  def clear_pending_cookies(self) -> None:
+    self._pending_cookies = []
 
   def set_theme_density(self, density: int) -> None:
     self._commands.append(

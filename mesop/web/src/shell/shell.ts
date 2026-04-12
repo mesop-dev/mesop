@@ -46,6 +46,7 @@ import {
 } from '../services/error_dialog_service';
 import {MatDialog} from '@angular/material/dialog';
 import {ExperimentService} from '../services/experiment_service';
+import {prefixBasePath} from '../utils/base_path';
 // Keep the following comment to ensure there's a hook for adding TS imports in the downstream sync.
 // ADD_TS_IMPORT_HERE
 
@@ -242,6 +243,16 @@ export class Shell {
           } else if (command.hasUpdateQueryParam()) {
             updateUrlFromQueryParam(
               command.getUpdateQueryParam()!.getQueryParam()!,
+            );
+          } else if (command.hasApplyCookies()) {
+            const token = command.getApplyCookies()!.getToken();
+            // Apply cookies via a dedicated endpoint so that Set-Cookie headers
+            // can be sent on a normal HTTP response rather than SSE/WebSocket.
+            await fetch(
+              prefixBasePath(
+                `/__apply-cookies?t=${encodeURIComponent(token || '')}`,
+              ),
+              {method: 'GET', credentials: 'same-origin'},
             );
           } else {
             throw new Error(

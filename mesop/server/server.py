@@ -2,6 +2,7 @@ import base64
 import logging
 import secrets
 import threading
+import time
 import types
 from concurrent.futures import ThreadPoolExecutor
 from typing import Generator, Sequence
@@ -11,6 +12,7 @@ from flask import (
   Response,
   abort,
   copy_current_request_context,
+  make_response,
   request,
   stream_with_context,
 )
@@ -18,6 +20,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 import mesop.protos.ui_pb2 as pb
 from mesop.component_helpers import diff_component
+from mesop.runtime.context import PendingCookie
 from mesop.env.env import (
   MESOP_APP_BASE_PATH,
   MESOP_BASE_URL_PATH,
@@ -45,8 +48,48 @@ from mesop.utils.url_utils import remove_url_query_param
 from mesop.warn import warn
 
 UI_PATH = prefix_base_url("/__ui__")
+APPLY_COOKIES_PATH = prefix_base_url("/__apply-cookies")
 
 logger = logging.getLogger(__name__)
+
+_COOKIE_TOKEN_TTL_SECONDS = 60
+
+
+class _CookieTokenCache:
+  """Thread-safe one-time-use token cache for pending cookies.
+
+  Each token maps to a list of PendingCookie objects and expires after
+  _COOKIE_TOKEN_TTL_SECONDS seconds.  Tokens are consumed on first use
+  so they cannot be replayed.
+  """
+
+  def __init__(self) -> None:
+    self._lock = threading.Lock()
+    self._store: dict[str, tuple[list, float]] = {}  # token -> (cookies, expiry)
+
+  def put(self, cookies: list) -> str:
+    token = secrets.token_urlsafe(32)
+    expiry = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
+    with self._lock:
+      self._store[token] = (cookies, expiry)
+    return token
+
+  def pop(self, token: str) -> list | None:
+    """Returns the cookie list and removes the token (one-time use).
+
+    Returns None if the token is unknown or has expired.
+    """
+    with self._lock:
+      entry = self._store.pop(token, None)
+    if entry is None:
+      return None
+    cookies, expiry = entry
+    if time.monotonic() > expiry:
+      return None
+    return cookies
+
+
+_cookie_token_cache = _CookieTokenCache()
 
 
 def _process_on_load_result(result) -> Generator[None, None, None]:
@@ -99,6 +142,17 @@ def configure_flask_app(
     # callers to spoof X-Forwarded-* headers and bypass origin checks.
     flask_app.wsgi_app = ProxyFix(  # type: ignore[method-assign]
       flask_app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1
+    )
+
+  def maybe_append_apply_cookies_command() -> None:
+    """If the context has pending cookies, cache them and append an ApplyCookiesCommand."""
+    pending = runtime().context().pending_cookies()
+    if not pending:
+      return
+    token = _cookie_token_cache.put(list(pending))
+    runtime().context().clear_pending_cookies()
+    runtime().context().commands().append(
+      pb.Command(apply_cookies=pb.ApplyCookiesCommand(token=token))
     )
 
   def render_loop(
@@ -262,6 +316,7 @@ def configure_flask_app(
 
         result = runtime().context().run_event_handler(ui_request.user_event)
         for _ in result:
+          maybe_append_apply_cookies_command()
           navigate_commands = [
             command
             for command in runtime().context().commands()
@@ -341,6 +396,35 @@ def configure_flask_app(
 
     response = make_sse_response(stream_with_context(generate_data(ui_request)))
     return response
+
+  @flask_app.route(APPLY_COOKIES_PATH, methods=["GET"])
+  def apply_cookies() -> Response:
+    """One-time endpoint that sets cookies previously queued by me.set_cookie().
+
+    The Mesop client calls this endpoint after receiving an ApplyCookiesCommand
+    from the server.  The token is single-use and expires after
+    _COOKIE_TOKEN_TTL_SECONDS seconds, so replay attacks are not possible.
+    """
+    token = request.args.get("t", "")
+    if not token:
+      abort(400, "Missing token")
+    pending: list[PendingCookie] | None = _cookie_token_cache.pop(token)
+    if pending is None:
+      abort(400, "Invalid or expired token")
+
+    resp = make_response("", 204)
+    for cookie in pending:
+      resp.set_cookie(
+        cookie.name,
+        cookie.value,
+        max_age=cookie.max_age,
+        path=cookie.path,
+        domain=cookie.domain,
+        secure=cookie.secure,
+        httponly=cookie.httponly,
+        samesite=cookie.samesite,
+      )
+    return resp
 
   @flask_app.teardown_request
   def teardown_clear_stale_state_sessions(error=None):
