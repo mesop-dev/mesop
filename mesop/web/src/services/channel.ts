@@ -569,7 +569,7 @@ function createDeferred<T = void>(): {
 
 function generatePayloadString(request: UiRequest): string {
   let path = window.location.pathname;
-  const base = (window as any).__MESOP_BASE_URL_PATH__ as string | undefined;
+  const base = (window as any)['__MESOP_BASE_URL_PATH__'] as string | undefined;
   if (base && path.startsWith(base)) {
     path = path.slice(base.length) || '/';
   }
