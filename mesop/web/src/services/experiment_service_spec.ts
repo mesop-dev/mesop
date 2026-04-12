@@ -2,7 +2,7 @@ import {ExperimentService} from 'mesop/mesop/web/src/services/experiment_service
 
 describe('ExperimentService', () => {
   afterEach(() => {
-    delete (window as any)['__MESOP_EXPERIMENTS__'];
+    delete (window as any).__MESOP_EXPERIMENTS__;
   });
 
   it('uses default settings when __MESOP_EXPERIMENTS__ is not set', () => {
@@ -11,7 +11,7 @@ describe('ExperimentService', () => {
   });
 
   it('reads websocketsEnabled=true from window settings', () => {
-    (window as any)['__MESOP_EXPERIMENTS__'] = {
+    (window as any).__MESOP_EXPERIMENTS__ = {
       websocketsEnabled: true,
       webComponentsCacheKey: null,
     };
@@ -20,7 +20,7 @@ describe('ExperimentService', () => {
   });
 
   it('reads webComponentsCacheKey from window settings', () => {
-    (window as any)['__MESOP_EXPERIMENTS__'] = {
+    (window as any).__MESOP_EXPERIMENTS__ = {
       websocketsEnabled: false,
       webComponentsCacheKey: 'abc123',
     };
@@ -29,7 +29,7 @@ describe('ExperimentService', () => {
   });
 
   it('returns null webComponentsCacheKey when explicitly set to null', () => {
-    (window as any)['__MESOP_EXPERIMENTS__'] = {
+    (window as any).__MESOP_EXPERIMENTS__ = {
       websocketsEnabled: false,
       webComponentsCacheKey: null,
     };
