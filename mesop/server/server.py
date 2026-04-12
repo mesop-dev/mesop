@@ -20,7 +20,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 import mesop.protos.ui_pb2 as pb
 from mesop.component_helpers import diff_component
-from mesop.runtime.context import PendingCookie
 from mesop.env.env import (
   MESOP_APP_BASE_PATH,
   MESOP_BASE_URL_PATH,
@@ -31,6 +30,7 @@ from mesop.env.env import (
 from mesop.events import LoadEvent
 from mesop.exceptions import format_traceback
 from mesop.runtime import runtime
+from mesop.runtime.context import PendingCookie
 from mesop.server.constants import WEB_COMPONENTS_PATH_SEGMENT
 from mesop.server.server_debug_routes import configure_debug_routes
 from mesop.server.server_utils import (
@@ -65,7 +65,9 @@ class _CookieTokenCache:
 
   def __init__(self) -> None:
     self._lock = threading.Lock()
-    self._store: dict[str, tuple[list, float]] = {}  # token -> (cookies, expiry)
+    self._store: dict[
+      str, tuple[list, float]
+    ] = {}  # token -> (cookies, expiry)
 
   def put(self, cookies: list) -> str:
     token = secrets.token_urlsafe(32)

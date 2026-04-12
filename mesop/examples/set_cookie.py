@@ -8,8 +8,9 @@ This example simulates a simple login/logout flow:
   persists across hard refreshes and new tabs.
 """
 
-import mesop as me
 from flask import request
+
+import mesop as me
 
 
 @me.stateclass
@@ -23,7 +24,7 @@ def on_load(e: me.LoadEvent):
   session = request.cookies.get("demo_session", "")
   if session.startswith("user:"):
     state.logged_in = True
-    state.username = session[len("user:"):]
+    state.username = session[len("user:") :]
 
 
 @me.page(path="/set_cookie", on_load=on_load)
@@ -36,7 +37,9 @@ def page():
       me.button("Log out", on_click=on_logout, type="flat", color="warn")
     else:
       me.text("Not logged in.")
-      me.button("Log in as Alice", on_click=on_login, type="flat", color="primary")
+      me.button(
+        "Log in as Alice", on_click=on_login, type="flat", color="primary"
+      )
 
 
 def on_login(e: me.ClickEvent):
