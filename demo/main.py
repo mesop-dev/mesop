@@ -6,7 +6,7 @@ import base64
 import inspect
 import os
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal
 
 import mesop as me
@@ -81,6 +81,8 @@ import video as video
 class Example:
   # module_name (should also be the path name)
   name: str
+  # Additional files to show in the code viewer (relative to the demo's directory)
+  extra_files: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -217,6 +219,12 @@ COMPONENTS_SECTIONS = [
 
 ALL_SECTIONS = FIRST_SECTIONS + COMPONENTS_SECTIONS
 
+ALL_EXAMPLES: dict[str, Example] = {
+  example.name: example
+  for section in ALL_SECTIONS
+  for example in section.examples
+}
+
 BORDER_SIDE = me.BorderSide(
   style="solid",
   width=1,
@@ -228,6 +236,7 @@ BORDER_SIDE = me.BorderSide(
 class State:
   current_demo: str
   panel_fullscreen: Literal["preview", "editor", None] = None
+  selected_file: str = ""  # "" = main Python file; otherwise a value from extra_files
 
 
 screenshots: dict[str, str] = {}
@@ -357,12 +366,14 @@ def example_card(name: str):
 
 
 def on_load_embed(e: me.LoadEvent):
+  state = me.state(State)
   if me.state(ThemeState).dark_mode:
     me.set_theme_mode("dark")
   else:
     me.set_theme_mode("system")
   if not is_desktop():
-    me.state(State).panel_fullscreen = "preview"
+    state.panel_fullscreen = "preview"
+  state.selected_file = ""
 
 
 def create_main_fn(example: Example):
@@ -417,7 +428,7 @@ def body(current_demo: str):
       if state.panel_fullscreen != "editor":
         demo_ui(src)
       if state.panel_fullscreen != "preview":
-        demo_code(inspect.getsource(get_module(current_demo)))
+        demo_code(ALL_EXAMPLES[current_demo])
 
 
 def demo_ui(src: str):
@@ -494,7 +505,37 @@ def toggle_fullscreen(e: me.ClickEvent):
     state.panel_fullscreen = "preview"
 
 
-def demo_code(code_arg: str):
+_LANG_MAP: dict[str, str] = {
+  "py": "python",
+  "js": "javascript",
+  "ts": "typescript",
+  "css": "css",
+  "html": "html",
+}
+
+
+def _get_code_for_example(example: Example) -> tuple[str, str]:
+  """Returns (source_code, language) for the currently selected file."""
+  state = me.state(State)
+  module = get_module(example.name)
+  if not state.selected_file:
+    return inspect.getsource(module), "python"
+  module_dir = os.path.dirname(os.path.abspath(module.__file__))
+  path = os.path.join(module_dir, state.selected_file)
+  with open(path) as f:
+    code = f.read()
+  ext = state.selected_file.rsplit(".", 1)[-1] if "." in state.selected_file else ""
+  return code, _LANG_MAP.get(ext, "")
+
+
+def on_file_select(e: me.SelectSelectionChangeEvent):
+  me.state(State).selected_file = e.value
+
+
+def demo_code(example: Example):
+  state = me.state(State)
+  module = get_module(example.name)
+  main_filename = os.path.basename(module.__file__)
   with me.box(
     style=me.Style(
       flex_grow=1,
@@ -515,22 +556,39 @@ def demo_code(code_arg: str):
         background=me.theme_var("background"),
       )
     ):
-      me.text(
-        "Code",
-        style=me.Style(
-          font_weight=500,
-          padding=me.Padding.all(14),
-        ),
-      )
+      if example.extra_files:
+        me.select(
+          options=[
+            me.SelectOption(label=main_filename, value=""),
+            *[
+              me.SelectOption(
+                label=os.path.basename(f), value=f
+              )
+              for f in example.extra_files
+            ],
+          ],
+          value=state.selected_file,
+          on_selection_change=on_file_select,
+          style=me.Style(
+            margin=me.Margin(top=4, bottom=4, left=8),
+            width=220,
+          ),
+        )
+      else:
+        me.text(
+          "Code",
+          style=me.Style(
+            font_weight=500,
+            padding=me.Padding.all(14),
+          ),
+        )
       if not is_desktop():
         swap_button()
+    code, lang = _get_code_for_example(example)
     # Use four backticks for code fence to avoid conflicts with backticks being used
     # within the displayed code.
     me.markdown(
-      f"""````python
-{code_arg}
-````
-              """,
+      f"````{lang}\n{code}\n````",
       style=me.Style(
         border=me.Border(
           right=BORDER_SIDE,
