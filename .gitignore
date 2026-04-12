@@ -14,6 +14,7 @@ __pycache__
 /ai/outputs/
 /ai/**/gen/
 /demo/screenshots/
+mesop/protos/ui_pb2.py
 
 # Allow .env file to be loaded for Mesop development if it exists.
 .env
