@@ -1,5 +1,5 @@
 export function prefixBasePath(path: string): string {
-  const base = (window as any).__MESOP_BASE_URL_PATH__ as string | undefined;
+  const base = (window as any)['__MESOP_BASE_URL_PATH__'] as string | undefined;
   if (!base) {
     return path;
   }

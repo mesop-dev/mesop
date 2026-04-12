@@ -12,7 +12,7 @@ export class ExperimentService {
   private readonly settings: ExperimentSettings;
 
   constructor() {
-    const windowSettings = (window as any).__MESOP_EXPERIMENTS__;
+    const windowSettings = (window as any)['__MESOP_EXPERIMENTS__'];
     this.settings = windowSettings ?? {
       websocketsEnabled: false,
     };
