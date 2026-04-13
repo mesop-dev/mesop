@@ -74,6 +74,7 @@ class _CookieTokenCache:
     expiry = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
     with self._lock:
       self._store[token] = (cookies, expiry)
+      self._evict_expired_locked()
     return token
 
   def pop(self, token: str) -> list | None:
@@ -83,12 +84,20 @@ class _CookieTokenCache:
     """
     with self._lock:
       entry = self._store.pop(token, None)
+      self._evict_expired_locked()
     if entry is None:
       return None
     cookies, expiry = entry
     if time.monotonic() > expiry:
       return None
     return cookies
+
+  def _evict_expired_locked(self) -> None:
+    """Remove all expired entries. Must be called with self._lock held."""
+    now = time.monotonic()
+    expired = [k for k, (_, exp) in self._store.items() if now > exp]
+    for k in expired:
+      del self._store[k]
 
 
 _cookie_token_cache = _CookieTokenCache()
@@ -263,10 +272,12 @@ def configure_flask_app(
           # the generator object. This also handles async generators and coroutines.
           if result:
             for _ in _process_on_load_result(result):
+              maybe_append_apply_cookies_command()
               yield from render_loop(path=ui_request.path, init_request=True)
               runtime().context().set_previous_node_from_current_node()
               runtime().context().reset_current_node()
           else:
+            maybe_append_apply_cookies_command()
             yield from render_loop(path=ui_request.path, init_request=True)
         else:
           yield from render_loop(path=ui_request.path, init_request=True)
@@ -375,6 +386,7 @@ def configure_flask_app(
     # the generator object. This also handles async generators and coroutines.
     if result:
       for _ in _process_on_load_result(result):
+        maybe_append_apply_cookies_command()
         yield from render_loop(path=path, init_request=True)
         runtime().context().set_previous_node_from_current_node()
         runtime().context().reset_current_node()
@@ -399,15 +411,16 @@ def configure_flask_app(
     response = make_sse_response(stream_with_context(generate_data(ui_request)))
     return response
 
-  @flask_app.route(APPLY_COOKIES_PATH, methods=["GET"])
+  @flask_app.route(APPLY_COOKIES_PATH, methods=["POST"])
   def apply_cookies() -> Response:
     """One-time endpoint that sets cookies previously queued by me.set_cookie().
 
-    The Mesop client calls this endpoint after receiving an ApplyCookiesCommand
-    from the server.  The token is single-use and expires after
-    _COOKIE_TOKEN_TTL_SECONDS seconds, so replay attacks are not possible.
+    The Mesop client POSTs the token in the request body (not the URL) to keep
+    it out of server access logs and browser history.  The token is single-use
+    and expires after _COOKIE_TOKEN_TTL_SECONDS seconds, so replay attacks are
+    not possible.
     """
-    token = request.args.get("t", "")
+    token = request.form.get("t", "")
     if not token:
       abort(400, "Missing token")
     pending: list[PendingCookie] | None = _cookie_token_cache.pop(token)
@@ -415,6 +428,8 @@ def configure_flask_app(
       abort(400, "Invalid or expired token")
 
     resp = make_response("", 204)
+    # Prevent intermediary caching of this tokenised response.
+    resp.headers["Cache-Control"] = "no-store"
     for cookie in pending:
       resp.set_cookie(
         cookie.name,

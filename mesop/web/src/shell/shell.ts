@@ -246,14 +246,28 @@ export class Shell {
             );
           } else if (command.hasApplyCookies()) {
             const token = command.getApplyCookies()!.getToken();
-            // Apply cookies via a dedicated endpoint so that Set-Cookie headers
-            // can be sent on a normal HTTP response rather than SSE/WebSocket.
-            await fetch(
-              prefixBasePath(
-                `/__apply-cookies?t=${encodeURIComponent(token || '')}`,
-              ),
-              {method: 'GET', credentials: 'same-origin'},
-            );
+            if (token == null || token.trim() === '') {
+              throw new Error('ApplyCookies: token is missing or empty');
+            }
+            // POST the token in the request body (not the URL) to keep it out
+            // of server access logs and browser history. Set-Cookie headers on
+            // the response are processed automatically by the browser.
+            const body = new URLSearchParams();
+            body.set('t', token);
+            const applyResp = await fetch(prefixBasePath('/__apply-cookies'), {
+              method: 'POST',
+              credentials: 'same-origin',
+              cache: 'no-store',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: body.toString(),
+            });
+            if (!applyResp.ok) {
+              throw new Error(
+                `ApplyCookies request failed with status ${applyResp.status}`,
+              );
+            }
           } else {
             throw new Error(
               `Unhandled command: ${command.getCommandCase().toString()}`,

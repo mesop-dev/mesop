@@ -279,6 +279,15 @@ class Context:
     httponly: bool = True,
     samesite: str = "Lax",
   ) -> None:
+    _VALID_SAMESITE = ("Strict", "Lax", "None")
+    if samesite not in _VALID_SAMESITE:
+      raise MesopDeveloperException(
+        f"Invalid samesite value '{samesite}'. Must be one of: {', '.join(_VALID_SAMESITE)}."
+      )
+    if samesite == "None" and not secure:
+      raise MesopDeveloperException(
+        "samesite='None' requires secure=True (SameSite=None cookies must be Secure per RFC 6265bis)."
+      )
     self._pending_cookies.append(
       PendingCookie(
         name=name,

@@ -1,6 +1,34 @@
 import {test, expect} from '@playwright/test';
 
 test.describe('set_cookie / delete_cookie', () => {
+  test('/__apply-cookies token is single-use (replay returns 400)', async ({
+    page,
+  }) => {
+    // Intercept the POST to /__apply-cookies and capture the token from the
+    // request body so we can attempt a replay after the first use.
+    let capturedToken: string | null = null;
+    await page.route('**/__apply-cookies', async (route) => {
+      const postData = route.request().postData() ?? '';
+      const params = new URLSearchParams(postData);
+      capturedToken = params.get('t');
+      await route.continue();
+    });
+
+    await page.goto('/set_cookie');
+    await page.getByRole('button', {name: 'Log in as Alice'}).click();
+    await expect(page.getByText('Logged in as: alice')).toBeVisible();
+
+    // The token must have been captured by the route interceptor.
+    expect(capturedToken).not.toBeNull();
+
+    // Replay the same token — server must reject it with 400.
+    const replayResp = await page.request.post(
+      page.url().replace(/\/set_cookie.*/, '/__apply-cookies'),
+      {form: {t: capturedToken!}},
+    );
+    expect(replayResp.status()).toBe(400);
+  });
+
   test('login sets cookie and persists after reload', async ({page}) => {
     await page.goto('/set_cookie');
 
