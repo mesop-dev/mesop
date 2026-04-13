@@ -601,22 +601,23 @@ def demo_code(example: Example):
           if state.selected_file in example.extra_files
           else main_filename
         )
-        me.select(
-          options=[
-            me.SelectOption(label=main_filename, value=main_filename),
-            *[
-              me.SelectOption(label=os.path.basename(f), value=f)
-              for f in example.extra_files
+        with me.box(style=me.Style(flex_grow=1, overflow_x="hidden")):
+          me.select(
+            options=[
+              me.SelectOption(label=main_filename, value=main_filename),
+              *[
+                me.SelectOption(label=os.path.basename(f), value=f)
+                for f in example.extra_files
+              ],
             ],
-          ],
-          value=effective_value,
-          appearance="outline",
-          on_selection_change=on_file_select,
-          style=me.Style(
-            margin=me.Margin(top=4, bottom=4, left=8, right=8),
-            flex_grow=1,
-          ),
-        )
+            value=effective_value,
+            appearance="outline",
+            on_selection_change=on_file_select,
+            style=me.Style(
+              margin=me.Margin(top=4, bottom=4, left=8, right=8),
+              width="100%",
+            ),
+          )
       else:
         me.text(
           "Code",
