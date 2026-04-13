@@ -3,9 +3,11 @@
 # ruff: noqa: E402
 
 import base64
+import importlib.util
 import inspect
 import os
 import sys
+import types
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -17,6 +19,28 @@ import mesop as me
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
   sys.path.append(current_dir)
+
+
+def _import_demo_subdir(demo_name: str) -> types.ModuleType:
+  """Load app.py from a demo subdirectory.
+
+  Adds the subdirectory to sys.path so that app.py can import its sibling
+  files (e.g. component .py/.js) without needing relative or package-qualified
+  imports.
+  """
+  subdir = os.path.join(current_dir, demo_name)
+  if subdir not in sys.path:
+    sys.path.append(subdir)
+  spec = importlib.util.spec_from_file_location(
+    demo_name,
+    os.path.join(subdir, "app.py"),
+  )
+  assert spec is not None and spec.loader is not None
+  module = importlib.util.module_from_spec(spec)
+  sys.modules[demo_name] = module
+  spec.loader.exec_module(module)  # type: ignore[union-attr]
+  return module
+
 
 import glob
 
@@ -75,7 +99,8 @@ import textarea as textarea
 import tooltip as tooltip
 import uploader as uploader
 import video as video
-from copy_to_clipboard import app as copy_to_clipboard
+
+copy_to_clipboard = _import_demo_subdir("copy_to_clipboard")
 
 
 @dataclass

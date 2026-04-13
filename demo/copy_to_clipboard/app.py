@@ -1,5 +1,5 @@
 import mesop as me
-from .copy_to_clipboard_component import copy_to_clipboard_component
+from copy_to_clipboard_component import copy_to_clipboard_component
 
 TEXT = """
 Lorem ipsum odor amet, consectetuer adipiscing elit. Libero maecenas curae
