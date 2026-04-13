@@ -75,6 +75,7 @@ import textarea as textarea
 import tooltip as tooltip
 import uploader as uploader
 import video as video
+from copy_to_clipboard import app as copy_to_clipboard
 
 
 @dataclass
@@ -207,6 +208,13 @@ COMPONENTS_SECTIONS = [
       Example(name="embed"),
       Example(name="html_demo"),
       Example(name="link"),
+      Example(
+        name="copy_to_clipboard",
+        extra_files=[
+          "copy_to_clipboard_component.py",
+          "copy_to_clipboard_component.js",
+        ],
+      ),
     ],
   ),
   Section(
