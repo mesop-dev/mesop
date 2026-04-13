@@ -233,6 +233,11 @@ COMPONENTS_SECTIONS = [
       Example(name="embed"),
       Example(name="html_demo"),
       Example(name="link"),
+    ],
+  ),
+  Section(
+    name="Web Components",
+    examples=[
       Example(
         name="copy_to_clipboard",
         extra_files=[
@@ -551,7 +556,7 @@ def _get_code_for_example(example: Example) -> tuple[str, str]:
   """Returns (source_code, language) for the currently selected file."""
   state = me.state(State)
   module = get_module(example.name)
-  if not state.selected_file:
+  if state.selected_file not in example.extra_files:
     return inspect.getsource(module), "python"
   module_dir = os.path.dirname(os.path.abspath(module.__file__))
   path = os.path.join(module_dir, state.selected_file)
@@ -590,21 +595,24 @@ def demo_code(example: Example):
       )
     ):
       if example.extra_files:
+        effective_value = (
+          state.selected_file
+          if state.selected_file in example.extra_files
+          else main_filename
+        )
         me.select(
           options=[
-            me.SelectOption(label=main_filename, value=""),
+            me.SelectOption(label=main_filename, value=main_filename),
             *[
-              me.SelectOption(
-                label=os.path.basename(f), value=f
-              )
+              me.SelectOption(label=os.path.basename(f), value=f)
               for f in example.extra_files
             ],
           ],
-          value=state.selected_file,
+          value=effective_value,
           on_selection_change=on_file_select,
           style=me.Style(
             margin=me.Margin(top=4, bottom=4, left=8),
-            width=220,
+            width=300,
           ),
         )
       else:
