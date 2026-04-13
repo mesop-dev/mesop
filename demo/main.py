@@ -409,6 +409,7 @@ def on_load_embed(e: me.LoadEvent):
     me.set_theme_mode("dark")
   else:
     me.set_theme_mode("system")
+  me.set_theme_density(-2)
   if not is_desktop():
     state.panel_fullscreen = "preview"
   state.selected_file = ""
@@ -609,10 +610,11 @@ def demo_code(example: Example):
             ],
           ],
           value=effective_value,
+          appearance="outline",
           on_selection_change=on_file_select,
           style=me.Style(
-            margin=me.Margin(top=4, bottom=4, left=8),
-            width=300,
+            margin=me.Margin(top=4, bottom=4, left=8, right=8),
+            flex_grow=1,
           ),
         )
       else:
