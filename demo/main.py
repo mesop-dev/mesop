@@ -274,7 +274,9 @@ BORDER_SIDE = me.BorderSide(
 class State:
   current_demo: str
   panel_fullscreen: Literal["preview", "editor", None] = None
-  selected_file: str = ""  # "" = main Python file; otherwise a value from extra_files
+  selected_file: str = (
+    ""  # "" = main Python file; otherwise a value from extra_files
+  )
 
 
 screenshots: dict[str, str] = {}
@@ -563,7 +565,9 @@ def _get_code_for_example(example: Example) -> tuple[str, str]:
   path = os.path.join(module_dir, state.selected_file)
   with open(path) as f:
     code = f.read()
-  ext = state.selected_file.rsplit(".", 1)[-1] if "." in state.selected_file else ""
+  ext = (
+    state.selected_file.rsplit(".", 1)[-1] if "." in state.selected_file else ""
+  )
   return code, _LANG_MAP.get(ext, "")
 
 
@@ -601,7 +605,11 @@ def demo_code(example: Example):
           if state.selected_file in example.extra_files
           else main_filename
         )
-        with me.box(style=me.Style(flex_grow=1, overflow_x="hidden")):
+        with me.box(
+          style=me.Style(
+            flex_grow=1, overflow_x="hidden", margin=me.Margin(bottom=-21)
+          )
+        ):
           me.select(
             options=[
               me.SelectOption(label=main_filename, value=main_filename),
@@ -611,10 +619,8 @@ def demo_code(example: Example):
               ],
             ],
             value=effective_value,
-            appearance="outline",
             on_selection_change=on_file_select,
             style=me.Style(
-              margin=me.Margin(top=4, bottom=4, left=8, right=8),
               width="100%",
             ),
           )
