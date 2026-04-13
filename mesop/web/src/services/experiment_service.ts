@@ -13,8 +13,9 @@ export class ExperimentService {
 
   constructor() {
     const windowSettings = (window as any)['__MESOP_EXPERIMENTS__'];
-    this.settings = windowSettings ?? {
-      websocketsEnabled: false,
+    this.settings = {
+      websocketsEnabled: windowSettings?.['websocketsEnabled'] ?? false,
+      webComponentsCacheKey: windowSettings?.['webComponentsCacheKey'] ?? null,
     };
   }
 
