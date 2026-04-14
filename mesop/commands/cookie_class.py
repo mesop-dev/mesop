@@ -141,22 +141,40 @@ def cookieclass(
 # ---------------------------------------------------------------------------
 
 
-def cookie(cls: type[T]) -> T:
-  """Read a cookieclass instance from the current request's cookies.
+def cookie(cls: "type[T] | str") -> "T | str":
+  """Read a cookie from the current request's cookies.
 
   !!! warning "Experimental"
       This API is experimental and may change in future releases.
 
-  If the cookie is absent, fails signature verification, or cannot be
-  parsed, a fresh instance with all default field values is returned —
-  no exception is raised.
+  **Two call forms:**
+
+  **High-level** — pass a ``@me.cookieclass`` type to get a typed instance.
+  If the cookie is absent, fails signature verification, or cannot be parsed,
+  a fresh instance with all default field values is returned — no exception
+  is raised.
+
+  .. code-block:: python
+
+      session = me.cookie(SessionCookie)   # returns a SessionCookie instance
+
+  **Low-level** — pass a plain string cookie name to get the raw value.
+  Returns an empty string ``""`` if the cookie is absent.
+
+  .. code-block:: python
+
+      token = me.cookie("session_id")      # returns str
 
   Args:
-    cls: A class decorated with ``@me.cookieclass``.
+    cls: A ``@me.cookieclass``-decorated class (high-level), or a plain
+      ``str`` cookie name (low-level).
 
   Returns:
-    A populated instance of *cls*.
+    A populated instance of *cls* (high-level) or a raw ``str`` (low-level).
   """
+  if isinstance(cls, str):
+    return _get_request_cookie(cls)
+
   _assert_is_cookieclass(cls)
   meta = _COOKIE_CLASSES[cls]
 

@@ -576,6 +576,13 @@ If you need full control over the cookie name and value format — for example w
 
 > **When to use which form:** prefer the cookieclass form for structured data.  Use the low-level form only for raw opaque values.
 
+#### `me.cookie()`
+
+```python
+token = me.cookie("session_id")         # low-level: raw string value (or "" if absent)
+session = me.cookie(SessionCookie)      # high-level: typed cookieclass instance
+```
+
 #### `me.set_cookie()`
 
 ```python
