@@ -178,32 +178,6 @@ def save_cookie(
   )
 
 
-def delete_cookieclass(
-  cls: type,
-  *,
-  path: str = "/",
-  domain: str | None = None,
-) -> None:
-  """Delete the browser cookie associated with a cookieclass.
-
-  !!! warning "Experimental"
-      This API is experimental and may change in future releases.
-
-  This is the cookieclass-aware counterpart of ``me.delete_cookie()``.
-  It looks up the cookie name automatically from the registered class.
-
-  Args:
-    cls: A class decorated with ``@me.cookieclass``.
-    path: Must match the ``path`` used when the cookie was created.
-    domain: Must match the ``domain`` used when the cookie was created.
-  """
-  _assert_is_cookieclass(cls)
-  cookie_name = _COOKIE_CLASSES[cls]
-  from mesop.runtime import runtime
-
-  runtime().context().delete_cookie(cookie_name, path=path, domain=domain)
-
-
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
