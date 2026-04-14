@@ -48,7 +48,7 @@ def set_cookie(
 
 
 def delete_cookie(
-  name: str,
+  name: "str | type",
   *,
   path: str = "/",
   domain: str | None = None,
@@ -60,9 +60,25 @@ def delete_cookie(
   its ``Max-Age`` to ``0``.  The ``path`` and ``domain`` must match the
   values used when the cookie was originally set.
 
+  *name* can be either a plain string cookie name **or** a class decorated
+  with ``@me.cookieclass``, in which case the cookie name is looked up
+  automatically.
+
   Args:
-    name: Cookie name to delete.
+    name: Cookie name (``str``) or a ``@me.cookieclass``-decorated class.
     path: URL path scope that was used when creating the cookie.
     domain: Domain scope that was used when creating the cookie.
   """
-  runtime().context().delete_cookie(name, path=path, domain=domain)
+  if isinstance(name, str):
+    runtime().context().delete_cookie(name, path=path, domain=domain)
+  else:
+    # Treat as a cookieclass type — look up its cookie name.
+    from mesop.commands.cookie_class import (
+      _COOKIE_CLASSES,
+      _assert_is_cookieclass,
+    )
+
+    _assert_is_cookieclass(name)
+    runtime().context().delete_cookie(
+      _COOKIE_CLASSES[name], path=path, domain=domain
+    )

@@ -1,16 +1,26 @@
-"""Example demonstrating me.set_cookie() and me.delete_cookie().
+"""Example demonstrating @me.cookieclass, me.cookie(), me.save_cookie(),
+and me.delete_cookie().
 
-This example simulates a simple login/logout flow:
-- On "Log in", a session cookie is set and the UI shows the logged-in state.
-- On "Log out", the session cookie is deleted and the UI returns to the
-  logged-out state.
-- On page load the cookie is read from the request so the login state
-  persists across hard refreshes and new tabs.
+This example simulates a simple login/logout flow using the structured
+cookieclass API:
+- @me.cookieclass turns a plain dataclass into a cookie-backed store whose
+  fields are JSON-serialised automatically.
+- me.cookie(SessionCookie) reads the cookie from the current request and
+  returns a populated instance (or a default instance if the cookie is absent).
+- me.save_cookie(instance) serialises the instance and schedules the browser
+  to set the cookie via the /__apply-cookies endpoint.
+- me.delete_cookie(SessionCookie) removes the cookie by class.
+
+The login state persists across hard refreshes and new tabs because the
+cookie is read in on_load.
 """
 
-from flask import request
-
 import mesop as me
+
+
+@me.cookieclass
+class SessionCookie:
+  username: str = ""
 
 
 @me.stateclass
@@ -20,11 +30,11 @@ class State:
 
 
 def on_load(e: me.LoadEvent):
-  state = me.state(State)
-  session = request.cookies.get("demo_session", "")
-  if session.startswith("user:"):
+  session = me.cookie(SessionCookie)
+  if session.username:
+    state = me.state(State)
     state.logged_in = True
-    state.username = session[len("user:") :]
+    state.username = session.username
 
 
 @me.page(path="/set_cookie", on_load=on_load)
@@ -46,20 +56,13 @@ def on_login(e: me.ClickEvent):
   state = me.state(State)
   state.logged_in = True
   state.username = "alice"
-  me.set_cookie(
-    "demo_session",
-    "user:alice",
-    # Short max_age so the demo cookie doesn't linger indefinitely.
-    max_age=3600,
-    httponly=True,
-    # secure=False so the example works over plain HTTP in local dev.
-    secure=False,
-    samesite="Lax",
-  )
+  # save_cookie uses secure=None which auto-detects HTTPS vs HTTP so this
+  # works in both local dev (HTTP) and production (HTTPS).
+  me.save_cookie(SessionCookie(username="alice"), max_age=3600)
 
 
 def on_logout(e: me.ClickEvent):
   state = me.state(State)
   state.logged_in = False
   state.username = ""
-  me.delete_cookie("demo_session")
+  me.delete_cookie(SessionCookie)

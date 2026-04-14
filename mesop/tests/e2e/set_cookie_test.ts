@@ -42,10 +42,15 @@ test.describe('set_cookie / delete_cookie', () => {
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
 
     // Verify the cookie was actually set by the /__apply-cookies endpoint.
+    // The @me.cookieclass decorator derives the cookie name from the class
+    // name: SessionCookie → session_cookie.
     const cookies = await page.context().cookies();
-    const sessionCookie = cookies.find((c) => c.name === 'demo_session');
+    const sessionCookie = cookies.find((c) => c.name === 'session_cookie');
     expect(sessionCookie).toBeDefined();
-    expect(sessionCookie?.value).toBe('user:alice');
+    // Value is JSON-serialised by me.save_cookie().
+    expect(JSON.parse(sessionCookie?.value ?? '{}')).toMatchObject({
+      username: 'alice',
+    });
     expect(sessionCookie?.httpOnly).toBe(true);
 
     // Hard-reload: the on_load handler should read the cookie and restore state.
@@ -80,7 +85,7 @@ test.describe('set_cookie / delete_cookie', () => {
 
     // Cookie should be gone (or expired with max_age=0).
     const cookies = await page.context().cookies();
-    const sessionCookie = cookies.find((c) => c.name === 'demo_session');
+    const sessionCookie = cookies.find((c) => c.name === 'session_cookie');
     expect(sessionCookie).toBeUndefined();
 
     // Reload confirms logged-out state is persistent.
