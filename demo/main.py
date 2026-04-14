@@ -31,11 +31,15 @@ def _import_demo_subdir(demo_name: str) -> types.ModuleType:
   subdir = os.path.join(current_dir, demo_name)
   if subdir not in sys.path:
     sys.path.append(subdir)
+  app_path = os.path.join(subdir, "app.py")
   spec = importlib.util.spec_from_file_location(
     demo_name,
-    os.path.join(subdir, "app.py"),
+    app_path,
   )
-  assert spec is not None and spec.loader is not None
+  if spec is None or spec.loader is None:
+    raise ImportError(
+      f"Could not load demo module '{demo_name}' from {app_path}"
+    )
   module = importlib.util.module_from_spec(spec)
   sys.modules[demo_name] = module
   spec.loader.exec_module(module)  # type: ignore[union-attr]
@@ -274,9 +278,10 @@ BORDER_SIDE = me.BorderSide(
 class State:
   current_demo: str
   panel_fullscreen: Literal["preview", "editor", None] = None
-  selected_file: str = (
-    ""  # "" = main Python file; otherwise a value from extra_files
-  )
+  # "" on initial load/reset; the main filename (e.g. "app.py") when the user
+  # explicitly selects it; or one of the extra_files values otherwise.
+  # _get_code_for_example treats any value not in extra_files as the main file.
+  selected_file: str = ""
 
 
 screenshots: dict[str, str] = {}
@@ -562,8 +567,12 @@ def _get_code_for_example(example: Example) -> tuple[str, str]:
   if state.selected_file not in example.extra_files:
     return inspect.getsource(module), "python"
   module_dir = os.path.dirname(os.path.abspath(module.__file__))
-  path = os.path.join(module_dir, state.selected_file)
-  with open(path) as f:
+  path = os.path.abspath(os.path.join(module_dir, state.selected_file))
+  # Defense in depth: reject any path that escapes the demo's own directory,
+  # even though selected_file is already validated against the extra_files allowlist.
+  if not path.startswith(module_dir + os.sep):
+    return inspect.getsource(module), "python"
+  with open(path, encoding="utf-8") as f:
     code = f.read()
   ext = (
     state.selected_file.rsplit(".", 1)[-1] if "." in state.selected_file else ""
