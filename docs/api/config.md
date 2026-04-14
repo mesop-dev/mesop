@@ -286,6 +286,46 @@ Enables HTTP caching for the web component entry point modules.
 
 Note: this does *not* cache JS files imported by the web component entry modules.
 
+### SECRET_KEY
+
+!!! warning "Experimental"
+    The signed/encrypted cookie API is experimental and may change in future releases.
+
+Secret key used by the cookie security features.  Required when any
+``@me.cookieclass`` is decorated with ``signed=True`` or ``encrypted=True``.
+
+- **Signed cookies** (``signed=True``): The value is HMAC-signed so any
+  client-side tampering is detected on the next read.  Contents are still
+  visible (Base64-encoded) in browser DevTools.
+- **Encrypted cookies** (``encrypted=True``): The value is Fernet-encrypted,
+  hiding the contents entirely.  Also requires ``pip install cryptography``.
+
+Generate a strong key for production:
+
+```sh
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Set it before starting Mesop:
+
+```sh
+SECRET_KEY=your-random-secret mesop main.py
+```
+
+Or in a `.env` file:
+
+```sh title=".env"
+SECRET_KEY=your-random-secret
+```
+
+**Security notes:**
+
+- Use a long, random value (32+ bytes of entropy).
+- Rotate the key if it is ever compromised — all signed/encrypted cookies
+  issued with the old key will become invalid on the next read (users will
+  get default instances rather than an error).
+- Never commit the key to source control.
+
 ## Usage Examples
 
 ### One-liner

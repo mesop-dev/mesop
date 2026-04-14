@@ -1,4 +1,4 @@
-"""Example demonstrating @me.cookieclass, me.cookie(), me.save_cookie(),
+"""Example demonstrating @me.cookieclass, me.cookie(), me.set_cookie(),
 and me.delete_cookie().
 
 This example simulates a simple login/logout flow using the structured
@@ -7,7 +7,7 @@ cookieclass API:
   fields are JSON-serialised automatically.
 - me.cookie(SessionCookie) reads the cookie from the current request and
   returns a populated instance (or a default instance if the cookie is absent).
-- me.save_cookie(instance) serialises the instance and schedules the browser
+- me.set_cookie(instance) serialises the instance and schedules the browser
   to set the cookie via the /__apply-cookies endpoint.
 - me.delete_cookie(SessionCookie) removes the cookie by class.
 
@@ -56,9 +56,9 @@ def on_login(e: me.ClickEvent):
   state = me.state(State)
   state.logged_in = True
   state.username = "alice"
-  # save_cookie uses secure=None which auto-detects HTTPS vs HTTP so this
-  # works in both local dev (HTTP) and production (HTTPS).
-  me.save_cookie(SessionCookie(username="alice"), max_age=3600)
+  # secure=None (default) auto-detects HTTPS vs HTTP so this works in both
+  # local dev (HTTP) and production (HTTPS) without any extra config.
+  me.set_cookie(SessionCookie(username="alice"), max_age=3600)
 
 
 def on_logout(e: me.ClickEvent):

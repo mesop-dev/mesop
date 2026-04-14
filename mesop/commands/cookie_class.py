@@ -11,10 +11,24 @@ Usage::
     session = me.cookie(SessionCookie)
 
     # In an event handler: write/update the cookie.
-    me.save_cookie(SessionCookie(username="alice", role="admin"), max_age=3600)
+    me.set_cookie(SessionCookie(username="alice", role="admin"), max_age=3600)
 
     # Delete the cookie.
     me.delete_cookie(SessionCookie)
+
+Signed cookies (tamper-proof, contents readable)::
+
+    @me.cookieclass(signed=True)
+    class SessionCookie:
+        username: str = ""
+
+Encrypted cookies (tamper-proof, contents hidden)::
+
+    @me.cookieclass(encrypted=True)
+    class SessionCookie:
+        username: str = ""
+
+Both ``signed`` and ``encrypted`` require ``SECRET_KEY`` to be set.
 """
 
 from __future__ import annotations
@@ -22,14 +36,22 @@ from __future__ import annotations
 import dataclasses
 import json
 import re
-from typing import Any, Type, TypeVar, overload
+from typing import Any, TypeVar, overload
 
 from mesop.exceptions import MesopDeveloperException
 
 T = TypeVar("T")
 
-# Maps cookieclass types → their cookie name.
-_COOKIE_CLASSES: dict[type, str] = {}
+
+@dataclasses.dataclass
+class _CookieClassMeta:
+  name: str
+  signed: bool
+  encrypted: bool
+
+
+# Maps cookieclass types → metadata.
+_COOKIE_CLASSES: dict[type, _CookieClassMeta] = {}
 
 
 # ---------------------------------------------------------------------------
@@ -43,11 +65,20 @@ def cookieclass(cls: type[T]) -> type[T]: ...
 
 @overload
 def cookieclass(
-  *, name: str | None = None
+  *,
+  name: str | None = None,
+  signed: bool = False,
+  encrypted: bool = False,
 ) -> "Callable[[type[T]], type[T]]": ...  # type: ignore[name-defined]
 
 
-def cookieclass(cls: type[T] | None = None, *, name: str | None = None):
+def cookieclass(
+  cls: type[T] | None = None,
+  *,
+  name: str | None = None,
+  signed: bool = False,
+  encrypted: bool = False,
+):
   """Decorator that marks a dataclass as a cookie-backed structured store.
 
   !!! warning "Experimental"
@@ -58,27 +89,44 @@ def cookieclass(cls: type[T] | None = None, *, name: str | None = None):
   ``float``, ``bool``, ``None``, or nested combinations thereof).
 
   The cookie name defaults to the snake_case version of the class name.
-  Override it with the optional ``name`` keyword argument::
+  Override it with the optional ``name`` keyword argument.
 
-      @me.cookieclass(name="my_session")
-      class SessionCookie:
-          username: str = ""
+  **Signed cookies** (``signed=True``) add an HMAC to the cookie value so
+  any tampering is detected on read.  The contents are still Base64-visible
+  in DevTools.  Requires ``SECRET_KEY`` to be set.
+
+  **Encrypted cookies** (``encrypted=True``) use Fernet symmetric encryption
+  so the contents are completely hidden.  Requires the ``cryptography``
+  package (``pip install cryptography``) and ``SECRET_KEY`` to be set.
+
+  ``signed`` and ``encrypted`` are mutually exclusive.
 
   Args:
     cls: The class to decorate (used when the decorator is applied without
       parentheses, e.g. ``@me.cookieclass``).
     name: Explicit cookie name.  Defaults to snake_case of the class name.
+    signed: When ``True``, the serialised value is HMAC-signed so tampering
+      is detected.  Requires ``SECRET_KEY``.
+    encrypted: When ``True``, the serialised value is Fernet-encrypted.
+      Requires ``SECRET_KEY`` and ``pip install cryptography``.
 
   Returns:
-    The decorated class (unchanged except for being registered as a
-    cookieclass and ensured to be a ``dataclass``).
+    The decorated class (registered as a cookieclass and ensured to be a
+    ``dataclass``).
   """
+  if signed and encrypted:
+    raise MesopDeveloperException(
+      "cookieclass: 'signed' and 'encrypted' are mutually exclusive. "
+      "Use 'encrypted=True' alone — it already implies integrity protection."
+    )
 
   def decorator(c: type[T]) -> type[T]:
     if not dataclasses.is_dataclass(c):
       c = dataclasses.dataclass(c)
     cookie_name = name if name is not None else _to_snake_case(c.__name__)
-    _COOKIE_CLASSES[c] = cookie_name
+    _COOKIE_CLASSES[c] = _CookieClassMeta(
+      name=cookie_name, signed=signed, encrypted=encrypted
+    )
     return c
 
   if cls is not None:
@@ -99,8 +147,9 @@ def cookie(cls: type[T]) -> T:
   !!! warning "Experimental"
       This API is experimental and may change in future releases.
 
-  If the cookie is absent or its value cannot be parsed, a fresh instance
-  with all default field values is returned — no exception is raised.
+  If the cookie is absent, fails signature verification, or cannot be
+  parsed, a fresh instance with all default field values is returned —
+  no exception is raised.
 
   Args:
     cls: A class decorated with ``@me.cookieclass``.
@@ -109,14 +158,18 @@ def cookie(cls: type[T]) -> T:
     A populated instance of *cls*.
   """
   _assert_is_cookieclass(cls)
-  cookie_name = _COOKIE_CLASSES[cls]
+  meta = _COOKIE_CLASSES[cls]
 
-  raw = _get_request_cookie(cookie_name)
+  raw = _get_request_cookie(meta.name)
   if not raw:
     return cls()  # type: ignore[call-arg]
 
+  decoded = _decode_value(raw, meta)
+  if decoded is None:
+    return cls()  # type: ignore[call-arg]
+
   try:
-    data: dict[str, Any] = json.loads(raw)
+    data: dict[str, Any] = json.loads(decoded)
   except (json.JSONDecodeError, ValueError):
     return cls()  # type: ignore[call-arg]
 
@@ -126,60 +179,111 @@ def cookie(cls: type[T]) -> T:
   return cls(**filtered)  # type: ignore[call-arg]
 
 
-def save_cookie(
-  instance: Any,
-  *,
-  max_age: int | None = None,
-  path: str = "/",
-  domain: str | None = None,
-  secure: bool | None = None,
-  httponly: bool = True,
-  samesite: str = "Lax",
-) -> None:
-  """Persist a cookieclass instance as a browser cookie.
+# ---------------------------------------------------------------------------
+# Internal helpers — cookie encoding / decoding
+# ---------------------------------------------------------------------------
 
-  !!! warning "Experimental"
-      This API is experimental and may change in future releases.
 
-  The instance is JSON-serialised and stored under the cookie name derived
-  from its class.  Call this inside an event handler (or ``on_load``).
+def _encode_value(json_str: str, meta: _CookieClassMeta) -> str:
+  """Return the cookie value to store, applying signing or encryption."""
+  if meta.encrypted:
+    return _fernet_encrypt(json_str, _get_secret_key())
+  if meta.signed:
+    return _itsdangerous_sign(json_str, meta.name, _get_secret_key())
+  return json_str
 
-  Args:
-    instance: An instance of a ``@me.cookieclass``-decorated class.
-    max_age: Cookie lifetime in seconds.  ``None`` (default) creates a
-      session cookie.
-    path: URL path scope.  Defaults to ``"/"``.
-    domain: Domain scope.  ``None`` means the current domain.
-    secure: When ``True``, cookie is HTTPS-only.  When ``None`` (default),
-      auto-detects from the current request (``True`` on HTTPS, ``False``
-      on HTTP — useful for local development).
-    httponly: Prevent JavaScript from accessing the cookie.  Defaults to
-      ``True``.
-    samesite: ``"Lax"`` (default), ``"Strict"``, or ``"None"``.
-  """
-  cls = type(instance)
-  _assert_is_cookieclass(cls)
-  cookie_name = _COOKIE_CLASSES[cls]
 
-  resolved_secure = _resolve_secure(secure)
+def _decode_value(raw: str, meta: _CookieClassMeta) -> str | None:
+  """Reverse of ``_encode_value``.  Returns ``None`` on verification failure."""
+  if meta.encrypted:
+    return _fernet_decrypt(raw, _get_secret_key())
+  if meta.signed:
+    return _itsdangerous_unsign(raw, meta.name, _get_secret_key())
+  return raw
 
-  # Lazy import to avoid circular deps at module-import time.
-  from mesop.runtime import runtime
 
-  runtime().context().set_cookie(
-    cookie_name,
-    json.dumps(dataclasses.asdict(instance)),
-    max_age=max_age,
-    path=path,
-    domain=domain,
-    secure=resolved_secure,
-    httponly=httponly,
-    samesite=samesite,
+def _get_secret_key() -> str:
+  """Return the app's SECRET_KEY, raising a helpful error if unset."""
+  try:
+    from flask import current_app
+
+    key = current_app.secret_key
+  except RuntimeError:
+    key = None
+
+  if not key:
+    raise MesopDeveloperException(
+      "SECRET_KEY must be set to use signed or encrypted cookies.\n"
+      "Set it as an environment variable before starting Mesop:\n"
+      "  SECRET_KEY=<your-secret> mesop main.py\n"
+      "Generate a strong key with:\n"
+      "  python -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+  return key if isinstance(key, str) else key.decode()
+
+
+def _itsdangerous_sign(value: str, salt: str, secret_key: str) -> str:
+  from itsdangerous import URLSafeSerializer
+
+  return URLSafeSerializer(secret_key, salt=f"mesop-cookie-{salt}").dumps(
+    value
   )
 
 
+def _itsdangerous_unsign(
+  value: str, salt: str, secret_key: str
+) -> str | None:
+  from itsdangerous import BadSignature, URLSafeSerializer
+
+  try:
+    return URLSafeSerializer(secret_key, salt=f"mesop-cookie-{salt}").loads(
+      value
+    )
+  except BadSignature:
+    return None
+
+
+def _fernet_encrypt(value: str, secret_key: str) -> str:
+  try:
+    from cryptography.fernet import Fernet
+  except ImportError as exc:
+    raise MesopDeveloperException(
+      "encrypted=True requires the 'cryptography' package.\n"
+      "Install it with: pip install cryptography"
+    ) from exc
+
+  import base64
+  import hashlib
+
+  key = base64.urlsafe_b64encode(
+    hashlib.sha256(secret_key.encode()).digest()
+  )
+  return Fernet(key).encrypt(value.encode()).decode()
+
+
+def _fernet_decrypt(value: str, secret_key: str) -> str | None:
+  try:
+    from cryptography.fernet import Fernet, InvalidToken
+  except ImportError as exc:
+    raise MesopDeveloperException(
+      "encrypted=True requires the 'cryptography' package.\n"
+      "Install it with: pip install cryptography"
+    ) from exc
+
+  import base64
+  import hashlib
+
+  key = base64.urlsafe_b64encode(
+    hashlib.sha256(secret_key.encode()).digest()
+  )
+  try:
+    return Fernet(key).decrypt(value.encode()).decode()
+  except (InvalidToken, Exception):
+    return None
+
+
 # ---------------------------------------------------------------------------
-# Internal helpers
+# Internal helpers — misc
 # ---------------------------------------------------------------------------
 
 
@@ -206,15 +310,3 @@ def _get_request_cookie(name: str) -> str:
   except RuntimeError:
     # Outside a Flask request context (e.g., tests).
     return ""
-
-
-def _resolve_secure(secure: bool | None) -> bool:
-  """Resolve ``secure=None`` to the actual boolean for the current request."""
-  if secure is not None:
-    return secure
-  try:
-    from flask import request
-
-    return request.is_secure
-  except RuntimeError:
-    return False

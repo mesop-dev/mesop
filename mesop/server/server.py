@@ -1,5 +1,6 @@
 import base64
 import logging
+import os
 import secrets
 import threading
 import time
@@ -140,6 +141,11 @@ def configure_flask_app(
     static_folder=static_folder,
     static_url_path=static_url_path,
   )
+
+  # SECRET_KEY is used by the signed/encrypted cookieclass API.
+  # When unset it defaults to empty string; a MesopDeveloperException is
+  # raised at runtime only if an app actually uses signed/encrypted cookies.
+  flask_app.secret_key = os.environ.get("SECRET_KEY", "")
 
   if MESOP_TRUST_PROXY_HEADERS:
     # Apply ProxyFix so that request.url_root and request.scheme reflect the

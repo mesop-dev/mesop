@@ -9,7 +9,6 @@ from mesop.commands.navigate import navigate as navigate
 from mesop.commands.scroll_into_view import scroll_into_view as scroll_into_view
 from mesop.commands.cookie_class import cookie as cookie
 from mesop.commands.cookie_class import cookieclass as cookieclass
-from mesop.commands.cookie_class import save_cookie as save_cookie
 from mesop.commands.set_cookie import delete_cookie as delete_cookie
 from mesop.commands.set_cookie import set_cookie as set_cookie
 from mesop.commands.set_page_title import (
