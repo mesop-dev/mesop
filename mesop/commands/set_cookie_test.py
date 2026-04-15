@@ -1,5 +1,6 @@
 """Unit tests for mesop/commands/set_cookie.py."""
 
+import dataclasses
 import json
 from unittest.mock import MagicMock, patch
 
@@ -93,6 +94,7 @@ def test_set_cookie_string_missing_value_raises():
 # ---------------------------------------------------------------------------
 
 
+@dataclasses.dataclass
 @cookieclass
 class _Prefs:
   theme: str = "light"
@@ -159,6 +161,7 @@ def test_delete_cookie_secure_auto_detected_on_https(mock_context):
 # ---------------------------------------------------------------------------
 
 
+@dataclasses.dataclass
 @cookieclass
 class _Session:
   username: str = ""

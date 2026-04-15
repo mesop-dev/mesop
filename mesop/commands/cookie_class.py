@@ -67,11 +67,12 @@ def cookieclass(cls: type[T]) -> type[T]: ...
 
 @overload
 def cookieclass(
+  cls: None = None,
   *,
   name: str | None = None,
   signed: bool = False,
   encrypted: bool = False,
-) -> Callable[[type[T]], type[T]]: ...
+) -> Callable[[type[T]], type[T]]: ...  # type: ignore[misc]
 
 
 def cookieclass(
@@ -80,7 +81,7 @@ def cookieclass(
   name: str | None = None,
   signed: bool = False,
   encrypted: bool = False,
-):
+) -> type[T] | Callable[[type[T]], type[T]]:
   """Decorator that marks a dataclass as a cookie-backed structured store.
 
   !!! warning "Experimental"
@@ -144,6 +145,14 @@ def cookieclass(
 # ---------------------------------------------------------------------------
 # Public helpers
 # ---------------------------------------------------------------------------
+
+
+@overload
+def cookie(cls: str) -> str: ...
+
+
+@overload
+def cookie(cls: type[T]) -> T: ...
 
 
 def cookie(cls: type[T] | str) -> T | str:
@@ -242,7 +251,7 @@ def _get_secret_key() -> str:
       "Generate a strong key with:\n"
       '  python -c "import secrets; print(secrets.token_hex(32))"'
     )
-  return key if isinstance(key, str) else key.decode()
+  return key if isinstance(key, str) else bytes(key).decode()
 
 
 def _itsdangerous_sign(value: str, salt: str, secret_key: str) -> str:

@@ -15,9 +15,12 @@ The login state persists across hard refreshes and new tabs because the
 cookie is read in on_load.
 """
 
+import dataclasses
+
 import mesop as me
 
 
+@dataclasses.dataclass
 @me.cookieclass
 class SessionCookie:
   username: str = ""
