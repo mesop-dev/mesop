@@ -35,8 +35,13 @@ test.describe('set_cookie / delete_cookie', () => {
     // Initial state: not logged in.
     await expect(page.getByText('Not logged in.')).toBeVisible();
 
-    // Click "Log in as Alice".
+    // Click and wait for both the UI update and the /__apply-cookies POST
+    // to complete.  The DOM update comes from the SSE response; the cookie
+    // is set by a separate follow-up POST to /__apply-cookies, so we must
+    // wait for that response before checking the browser's cookie jar.
+    const applyCookiesResponse = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log in as Alice'}).click();
+    await applyCookiesResponse;
 
     // After login the UI should show the logged-in state.
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
@@ -47,7 +52,7 @@ test.describe('set_cookie / delete_cookie', () => {
     const cookies = await page.context().cookies();
     const sessionCookie = cookies.find((c) => c.name === 'session_cookie');
     expect(sessionCookie).toBeDefined();
-    // Value is JSON-serialised by me.save_cookie().
+    // Value is JSON-serialised by me.set_cookie().
     expect(JSON.parse(sessionCookie?.value ?? '{}')).toMatchObject({
       username: 'alice',
     });
@@ -61,8 +66,10 @@ test.describe('set_cookie / delete_cookie', () => {
   test('login state persists in a new tab', async ({page, context}) => {
     await page.goto('/set_cookie');
 
-    // Log in.
+    // Log in and wait for the cookie to be set before opening a new tab.
+    const applyCookies = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log in as Alice'}).click();
+    await applyCookies;
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
 
     // Open the same page in a new tab — the cookie should already be present.
@@ -75,12 +82,16 @@ test.describe('set_cookie / delete_cookie', () => {
   test('logout deletes cookie', async ({page}) => {
     await page.goto('/set_cookie');
 
-    // Log in first.
+    // Log in first and wait for the cookie to be set.
+    const loginCookies = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log in as Alice'}).click();
+    await loginCookies;
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
 
-    // Log out.
+    // Log out and wait for the deletion cookie to be applied.
+    const logoutCookies = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log out'}).click();
+    await logoutCookies;
     await expect(page.getByText('Not logged in.')).toBeVisible();
 
     // Cookie should be gone (or expired with max_age=0).
