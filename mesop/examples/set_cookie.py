@@ -20,8 +20,8 @@ import dataclasses
 import mesop as me
 
 
-@dataclasses.dataclass
 @me.cookieclass
+@dataclasses.dataclass
 class SessionCookie:
   username: str = ""
 

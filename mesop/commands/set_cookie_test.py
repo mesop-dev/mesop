@@ -94,8 +94,8 @@ def test_set_cookie_string_missing_value_raises():
 # ---------------------------------------------------------------------------
 
 
-@dataclasses.dataclass
 @cookieclass
+@dataclasses.dataclass
 class _Prefs:
   theme: str = "light"
   font_size: int = 14
@@ -161,8 +161,8 @@ def test_delete_cookie_secure_auto_detected_on_https(mock_context):
 # ---------------------------------------------------------------------------
 
 
-@dataclasses.dataclass
 @cookieclass
+@dataclasses.dataclass
 class _Session:
   username: str = ""
 
