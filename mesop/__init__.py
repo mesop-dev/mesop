@@ -4,11 +4,11 @@ from typing import Any, Callable, TypeVar, cast
 
 from mesop.colab.colab_run import colab_run as colab_run
 from mesop.colab.colab_show import colab_show as colab_show
+from mesop.commands.cookie_class import cookie as cookie
+from mesop.commands.cookie_class import cookieclass as cookieclass
 from mesop.commands.focus_component import focus_component as focus_component
 from mesop.commands.navigate import navigate as navigate
 from mesop.commands.scroll_into_view import scroll_into_view as scroll_into_view
-from mesop.commands.cookie_class import cookie as cookie
-from mesop.commands.cookie_class import cookieclass as cookieclass
 from mesop.commands.set_cookie import delete_cookie as delete_cookie
 from mesop.commands.set_cookie import set_cookie as set_cookie
 from mesop.commands.set_page_title import (

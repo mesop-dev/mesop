@@ -450,7 +450,10 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
 
   def update_state(self, states: pb.States) -> None:
     for state, previous_state, proto_state in zip(
-      self._states.values(), self._previous_states.values(), states.states, strict=False
+      self._states.values(),
+      self._previous_states.values(),
+      states.states,
+      strict=False,
     ):
       update_dataclass_from_json(state, proto_state.data)
       update_dataclass_from_json(previous_state, proto_state.data)
