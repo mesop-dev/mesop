@@ -53,6 +53,17 @@ def test_to_snake_case_single_word():
   assert _to_snake_case("Cookie") == "cookie"
 
 
+def test_to_snake_case_with_digit():
+  # Digits behave like lowercase letters: they trigger a split before
+  # a following capital, but not after one.
+  assert _to_snake_case("Session2Cookie") == "session2_cookie"
+
+
+def test_to_snake_case_leading_underscore():
+  # A leading underscore is preserved; the camelCase transition still fires.
+  assert _to_snake_case("_Session") == "__session"
+
+
 # ---------------------------------------------------------------------------
 # @cookieclass decorator
 # ---------------------------------------------------------------------------
