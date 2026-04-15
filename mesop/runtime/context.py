@@ -307,7 +307,14 @@ class Context:
     *,
     path: str = "/",
     domain: str | None = None,
+    secure: bool = False,
   ) -> None:
+    # secure=False by default: deletion cookies (Max-Age=0) must be visible
+    # to the browser regardless of protocol so it can expire the original
+    # cookie.  Browsers match cookies by name/path/domain, not the Secure
+    # attribute, so a non-Secure deletion header correctly expires a Secure
+    # cookie.  The caller (set_cookie.delete_cookie) passes the auto-detected
+    # value from _resolve_secure so HTTPS deployments still get Secure=True.
     self._pending_cookies.append(
       PendingCookie(
         name=name,
@@ -315,6 +322,7 @@ class Context:
         max_age=0,
         path=path,
         domain=domain,
+        secure=secure,
       )
     )
 

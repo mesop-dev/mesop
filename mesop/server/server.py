@@ -380,6 +380,10 @@ def configure_flask_app(
     except Exception as e:
       if e in exceptions_to_propagate:
         raise e
+      # Clear any pending cookies queued by the failing handler so they do
+      # not leak into the next event cycle.  This matters most in WebSockets
+      # mode where the Context is long-lived across multiple requests.
+      runtime().context().clear_pending_cookies()
       yield from yield_errors(
         error=pb.ServerError(exception=str(e), traceback=format_traceback())
       )

@@ -38,6 +38,7 @@ import json
 import re
 from typing import Any, TypeVar, overload
 
+from mesop.dataclass_utils import dataclass_with_defaults
 from mesop.exceptions import MesopDeveloperException
 
 T = TypeVar("T")
@@ -121,8 +122,11 @@ def cookieclass(
     )
 
   def decorator(c: type[T]) -> type[T]:
-    if not dataclasses.is_dataclass(c):
-      c = dataclasses.dataclass(c)
+    # dataclass_with_defaults ensures every field has a default value so
+    # that cls() can always be called without arguments — this is required
+    # by me.cookie() which falls back to a default instance when the cookie
+    # is absent or unparseable.
+    c = dataclass_with_defaults(c)
     cookie_name = name if name is not None else _to_snake_case(c.__name__)
     _COOKIE_CLASSES[c] = _CookieClassMeta(
       name=cookie_name, signed=signed, encrypted=encrypted

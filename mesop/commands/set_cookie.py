@@ -137,6 +137,7 @@ def delete_cookie(
   *,
   path: str = "/",
   domain: str | None = None,
+  secure: bool | None = None,
 ) -> None:
   """Delete a browser cookie from within a Mesop event handler.
 
@@ -157,9 +158,16 @@ def delete_cookie(
     name: Cookie name (``str``) or a ``@me.cookieclass``-decorated class.
     path: URL path scope that was used when creating the cookie.
     domain: Domain scope that was used when creating the cookie.
+    secure: When ``True``, the deletion ``Set-Cookie`` header carries the
+      ``Secure`` attribute.  When ``None`` (default), auto-detects from the
+      current request — ``True`` on HTTPS, ``False`` on plain HTTP.  Pass
+      ``False`` explicitly to force non-Secure (rarely needed).
   """
+  resolved_secure = _resolve_secure(secure)
   if isinstance(name, str):
-    runtime().context().delete_cookie(name, path=path, domain=domain)
+    runtime().context().delete_cookie(
+      name, path=path, domain=domain, secure=resolved_secure
+    )
   else:
     from mesop.commands.cookie_class import (
       _COOKIE_CLASSES,
@@ -168,5 +176,8 @@ def delete_cookie(
 
     _assert_is_cookieclass(name)
     runtime().context().delete_cookie(
-      _COOKIE_CLASSES[name].name, path=path, domain=domain
+      _COOKIE_CLASSES[name].name,
+      path=path,
+      domain=domain,
+      secure=resolved_secure,
     )

@@ -132,16 +132,25 @@ def test_set_cookie_non_cookieclass_raises(mock_context):
 
 
 def test_delete_cookie_string(mock_context):
+  # secure=None outside a request context resolves to False.
   delete_cookie("session_id")
   mock_context.delete_cookie.assert_called_once_with(
-    "session_id", path="/", domain=None
+    "session_id", path="/", domain=None, secure=False
   )
 
 
 def test_delete_cookie_string_with_path(mock_context):
   delete_cookie("session_id", path="/app", domain="example.com")
   mock_context.delete_cookie.assert_called_once_with(
-    "session_id", path="/app", domain="example.com"
+    "session_id", path="/app", domain="example.com", secure=False
+  )
+
+
+def test_delete_cookie_secure_auto_detected_on_https(mock_context):
+  with _req_ctx(secure=True):
+    delete_cookie("session_id")
+  mock_context.delete_cookie.assert_called_once_with(
+    "session_id", path="/", domain=None, secure=True
   )
 
 
@@ -158,7 +167,7 @@ class _Session:
 def test_delete_cookie_class(mock_context):
   delete_cookie(_Session)
   mock_context.delete_cookie.assert_called_once_with(
-    _COOKIE_CLASSES[_Session].name, path="/", domain=None
+    _COOKIE_CLASSES[_Session].name, path="/", domain=None, secure=False
   )
 
 
