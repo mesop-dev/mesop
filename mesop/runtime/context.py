@@ -3,8 +3,9 @@ import logging
 import threading
 import types
 import urllib.parse as urlparse
+from collections.abc import Callable, Generator, Sequence
 from dataclasses import dataclass
-from typing import Any, Callable, Generator, Sequence, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 import mesop.protos.ui_pb2 as pb
 from mesop.dataclass_utils import (
@@ -426,7 +427,7 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
   def diff_state(self) -> pb.States:
     states = pb.States()
     for state, previous_state in zip(
-      self._states.values(), self._previous_states.values()
+      self._states.values(), self._previous_states.values(), strict=False
     ):
       states.states.append(pb.State(data=diff_state(previous_state, state)))
     return states
@@ -449,7 +450,7 @@ Did you forget to decorate your state class `{state.__name__}` with @stateclass?
 
   def update_state(self, states: pb.States) -> None:
     for state, previous_state, proto_state in zip(
-      self._states.values(), self._previous_states.values(), states.states
+      self._states.values(), self._previous_states.values(), states.states, strict=False
     ):
       update_dataclass_from_json(state, proto_state.data)
       update_dataclass_from_json(previous_state, proto_state.data)

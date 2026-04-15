@@ -1,7 +1,7 @@
 """Unit tests for mesop/commands/set_cookie.py."""
 
 import json
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask

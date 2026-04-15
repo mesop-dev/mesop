@@ -36,6 +36,7 @@ from __future__ import annotations
 import dataclasses
 import json
 import re
+from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
 from mesop.dataclass_utils import dataclass_with_defaults
@@ -70,7 +71,7 @@ def cookieclass(
   name: str | None = None,
   signed: bool = False,
   encrypted: bool = False,
-) -> "Callable[[type[T]], type[T]]": ...  # type: ignore[name-defined]
+) -> Callable[[type[T]], type[T]]: ...
 
 
 def cookieclass(
@@ -145,7 +146,7 @@ def cookieclass(
 # ---------------------------------------------------------------------------
 
 
-def cookie(cls: "type[T] | str") -> "T | str":
+def cookie(cls: type[T] | str) -> T | str:
   """Read a cookie from the current request's cookies.
 
   !!! warning "Experimental"
@@ -239,7 +240,7 @@ def _get_secret_key() -> str:
       "Set it as an environment variable before starting Mesop:\n"
       "  SECRET_KEY=<your-secret> mesop main.py\n"
       "Generate a strong key with:\n"
-      "  python -c \"import secrets; print(secrets.token_hex(32))\""
+      '  python -c "import secrets; print(secrets.token_hex(32))"'
     )
   return key if isinstance(key, str) else key.decode()
 
@@ -247,14 +248,10 @@ def _get_secret_key() -> str:
 def _itsdangerous_sign(value: str, salt: str, secret_key: str) -> str:
   from itsdangerous import URLSafeSerializer
 
-  return URLSafeSerializer(secret_key, salt=f"mesop-cookie-{salt}").dumps(
-    value
-  )
+  return URLSafeSerializer(secret_key, salt=f"mesop-cookie-{salt}").dumps(value)
 
 
-def _itsdangerous_unsign(
-  value: str, salt: str, secret_key: str
-) -> str | None:
+def _itsdangerous_unsign(value: str, salt: str, secret_key: str) -> str | None:
   from itsdangerous import BadSignature, URLSafeSerializer
 
   try:
@@ -277,9 +274,7 @@ def _fernet_encrypt(value: str, secret_key: str) -> str:
   import base64
   import hashlib
 
-  key = base64.urlsafe_b64encode(
-    hashlib.sha256(secret_key.encode()).digest()
-  )
+  key = base64.urlsafe_b64encode(hashlib.sha256(secret_key.encode()).digest())
   return Fernet(key).encrypt(value.encode()).decode()
 
 
@@ -295,9 +290,7 @@ def _fernet_decrypt(value: str, secret_key: str) -> str | None:
   import base64
   import hashlib
 
-  key = base64.urlsafe_b64encode(
-    hashlib.sha256(secret_key.encode()).digest()
-  )
+  key = base64.urlsafe_b64encode(hashlib.sha256(secret_key.encode()).digest())
   try:
     return Fernet(key).decrypt(value.encode()).decode()
   except (InvalidToken, Exception):

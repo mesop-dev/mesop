@@ -25,9 +25,9 @@ from mesop.exceptions import MesopDeveloperException
 _flask_app = Flask(__name__)
 
 
-def _req_ctx(cookies: dict[str, str] = {}):
+def _req_ctx(cookies: dict[str, str] | None = None):
   """Return a Flask test request context with the given cookies pre-set."""
-  cookie_header = "; ".join(f"{k}={v}" for k, v in cookies.items())
+  cookie_header = "; ".join(f"{k}={v}" for k, v in (cookies or {}).items())
   headers = {"Cookie": cookie_header} if cookie_header else {}
   return _flask_app.test_request_context("/", headers=headers)
 
@@ -256,7 +256,9 @@ def test_signed_cookie_read_discards_tampered_value():
 
   with _req_ctx(tampered_cookie):
     _flask_app.secret_key = "key-b"
-    with patch("mesop.commands.cookie_class._get_secret_key", return_value="key-b"):
+    with patch(
+      "mesop.commands.cookie_class._get_secret_key", return_value="key-b"
+    ):
       result = cookie(_SignedCookie)
   assert result.token == ""
 
@@ -275,7 +277,7 @@ def test_signed_missing_secret_key_raises():
 
 
 def test_encrypted_encode_decode_roundtrip():
-  cryptography = pytest.importorskip("cryptography")
+  pytest.importorskip("cryptography")
 
   @cookieclass(encrypted=True)
   class _EncCookie:
