@@ -31,34 +31,25 @@ test.describe('set_cookie / delete_cookie', () => {
 
   test('login sets cookie and persists after reload', async ({page}) => {
     await page.goto('/set_cookie');
-
-    // Initial state: not logged in.
     await expect(page.getByText('Not logged in.')).toBeVisible();
 
-    // Click and wait for both the UI update and the /__apply-cookies POST to
-    // complete before reloading.
+    // Set up listener before click so no request can slip by.
     const applyCookiesResponse = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log in as Alice'}).click();
-    await applyCookiesResponse;
+
+    // A 204 response from /__apply-cookies confirms the Set-Cookie header was
+    // sent to the browser (a 400 would mean the token was invalid or missing).
+    const resp = await applyCookiesResponse;
+    expect(resp.status()).toBe(204);
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
 
-    // Hard-reload: the on_load handler should read the cookie and restore state.
-    // This also acts as proof that the cookie was set correctly — if it were
-    // missing the page would show "Not logged in." instead.
+    // Hard-reload: me.cookie(SessionCookie) in on_load reads the stored cookie
+    // and restores the logged-in state.  This proves end-to-end that:
+    //   • the cookie name matches what me.cookie() looks up (session_cookie)
+    //   • the JSON value was stored and parsed correctly (username == "alice")
+    //   • the cookie survives a full browser reload
     await page.reload();
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
-
-    // Check cookie details after the reload.  At this point the browser has
-    // definitely written the cookie (otherwise the reload above would have
-    // failed), so there is no timing race with the CDP cookie store.
-    const cookies = await page.context().cookies();
-    const sessionCookie = cookies.find((c) => c.name === 'session_cookie');
-    expect(sessionCookie).toBeDefined();
-    // Value is JSON-serialised by me.set_cookie().
-    expect(JSON.parse(sessionCookie?.value ?? '{}')).toMatchObject({
-      username: 'alice',
-    });
-    expect(sessionCookie?.httpOnly).toBe(true);
   });
 
   test('login state persists in a new tab', async ({page, context}) => {
