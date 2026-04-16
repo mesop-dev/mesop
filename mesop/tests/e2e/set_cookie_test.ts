@@ -35,20 +35,22 @@ test.describe('set_cookie / delete_cookie', () => {
     // Initial state: not logged in.
     await expect(page.getByText('Not logged in.')).toBeVisible();
 
-    // Click and wait for both the UI update and the /__apply-cookies POST
-    // to complete.  The DOM update comes from the SSE response; the cookie
-    // is set by a separate follow-up POST to /__apply-cookies, so we must
-    // wait for that response before checking the browser's cookie jar.
+    // Click and wait for both the UI update and the /__apply-cookies POST to
+    // complete before reloading.
     const applyCookiesResponse = page.waitForResponse('**/__apply-cookies');
     await page.getByRole('button', {name: 'Log in as Alice'}).click();
     await applyCookiesResponse;
-
-    // After login the UI should show the logged-in state.
     await expect(page.getByText('Logged in as: alice')).toBeVisible();
 
-    // Verify the cookie was actually set by the /__apply-cookies endpoint.
-    // The @me.cookieclass decorator derives the cookie name from the class
-    // name: SessionCookie → session_cookie.
+    // Hard-reload: the on_load handler should read the cookie and restore state.
+    // This also acts as proof that the cookie was set correctly — if it were
+    // missing the page would show "Not logged in." instead.
+    await page.reload();
+    await expect(page.getByText('Logged in as: alice')).toBeVisible();
+
+    // Check cookie details after the reload.  At this point the browser has
+    // definitely written the cookie (otherwise the reload above would have
+    // failed), so there is no timing race with the CDP cookie store.
     const cookies = await page.context().cookies();
     const sessionCookie = cookies.find((c) => c.name === 'session_cookie');
     expect(sessionCookie).toBeDefined();
@@ -57,10 +59,6 @@ test.describe('set_cookie / delete_cookie', () => {
       username: 'alice',
     });
     expect(sessionCookie?.httpOnly).toBe(true);
-
-    // Hard-reload: the on_load handler should read the cookie and restore state.
-    await page.reload();
-    await expect(page.getByText('Logged in as: alice')).toBeVisible();
   });
 
   test('login state persists in a new tab', async ({page, context}) => {
