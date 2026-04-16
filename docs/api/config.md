@@ -291,8 +291,9 @@ Note: this does *not* cache JS files imported by the web component entry modules
 !!! warning "Experimental"
     The signed/encrypted cookie API is experimental and may change in future releases.
 
-Secret key used by the cookie security features.  Required when any
-``@me.cookieclass`` is decorated with ``signed=True`` or ``encrypted=True``.
+Secret key used by the cookie security features.  Required for
+``me.set_cookie()`` / ``me.delete_cookie()`` and when any ``@me.cookieclass``
+is decorated with ``signed=True`` or ``encrypted=True``.
 
 - **Signed cookies** (``signed=True``): The value is HMAC-signed so any
   client-side tampering is detected on the next read.  Contents are still
@@ -325,6 +326,20 @@ MESOP_COOKIE_SECRET_KEY=your-random-secret
   issued with the old key will become invalid on the next read (users will
   get default instances rather than an error).
 - Never commit the key to source control.
+
+**Multi-worker single-use behaviour:**
+
+When ``me.set_cookie()`` is called, Mesop issues a short-lived signed token
+that the browser exchanges for the actual ``Set-Cookie`` header.  The token
+is single-use *within a single server process*: once a worker has seen a
+token's nonce it will reject replays.  In multi-worker deployments, a
+replay request routed to a *different* worker would be accepted because each
+worker tracks used nonces independently.  In practice this is mitigated by
+the CSRF ``Origin`` check on ``/__apply-cookies`` (cross-origin replay is
+blocked) and the 60-second token TTL, but it is not cryptographically
+guaranteed across workers.  If strict single-use across all workers is
+required, ensure session affinity (sticky sessions) so that
+``/__apply-cookies`` always returns to the originating worker.
 
 ## Usage Examples
 
