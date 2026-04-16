@@ -6,8 +6,8 @@ import secrets
 import threading
 import time
 import types
+from collections.abc import Generator, Sequence
 from concurrent.futures import ThreadPoolExecutor
-from typing import Generator, Sequence
 
 from flask import (
   Flask,
@@ -116,7 +116,11 @@ class _CookieTokenCache:
 
     Returns ``None`` if the token is invalid, expired, or already consumed.
     """
-    from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+    from itsdangerous import (
+      BadSignature,
+      SignatureExpired,
+      URLSafeTimedSerializer,
+    )
 
     try:
       payload = URLSafeTimedSerializer(
