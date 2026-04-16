@@ -429,7 +429,14 @@ def configure_flask_app(
     it out of server access logs and browser history.  The token is single-use
     and expires after _COOKIE_TOKEN_TTL_SECONDS seconds, so replay attacks are
     not possible.
+
+    Same-site origin validation (matching ui_stream) prevents a cross-site
+    attacker from replaying a valid token against a victim's browser.
     """
+    if not runtime().debug_mode and not is_same_site(
+      request.headers.get("Origin"), request.url_root
+    ):
+      abort(403, "Rejecting cross-site POST request to " + APPLY_COOKIES_PATH)
     token = request.form.get("t", "")
     if not token:
       abort(400, "Missing token")

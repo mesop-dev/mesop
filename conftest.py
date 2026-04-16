@@ -50,17 +50,28 @@ def _stub_generated_protos() -> None:
 
 
 class _Pb2Finder:
-  """Meta path finder that returns a MagicMock for any *_pb2 module."""
+  """Meta path finder that returns a MagicMock for any mesop.*_pb2 module.
 
-  def find_module(self, fullname: str, path=None):  # legacy interface
-    if fullname.endswith("_pb2"):
-      return self
+  Restricted to the ``mesop.`` namespace to avoid shadowing real protobuf
+  modules (e.g. ``google.protobuf.*_pb2``).  Uses the modern ``find_spec`` /
+  ``create_module`` / ``exec_module`` importlib API instead of the deprecated
+  ``find_module`` / ``load_module`` pair.
+  """
+
+  def find_spec(self, fullname: str, path=None, target=None):
+    import importlib.util
+
+    if fullname.startswith("mesop.") and fullname.endswith("_pb2"):
+      return importlib.util.spec_from_loader(fullname, loader=self)  # type: ignore[arg-type]
     return None
 
-  def load_module(self, fullname: str):
-    if fullname not in sys.modules:
-      sys.modules[fullname] = MagicMock()
-    return sys.modules[fullname]
+  def create_module(self, spec):
+    # Return a MagicMock as the module object — Python's import machinery
+    # stores this in sys.modules[spec.name] so attribute access just works.
+    return MagicMock()
+
+  def exec_module(self, module):
+    pass  # MagicMock is already fully set up by create_module
 
 
 def _stub_mesop_package() -> None:
