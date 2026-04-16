@@ -33,7 +33,20 @@ def _stub_bazel_modules() -> None:
 
 
 def _stub_generated_protos() -> None:
-  """Stub mesop.protos.ui_pb2 and all component-level *_pb2 modules."""
+  """Stub mesop.protos.ui_pb2 and all component-level *_pb2 modules.
+
+  This is a no-op when the real Bazel-generated proto modules are already
+  importable (e.g. inside a Bazel test run), so it won't shadow them.
+  """
+  # If the real protobuf module is importable, the Bazel build has already
+  # made all *_pb2 modules available — don't install any stubs.
+  try:
+    import mesop.protos.ui_pb2  # noqa: F401
+
+    return
+  except ImportError:
+    pass
+
   # Parent proto package
   if "mesop.protos" not in sys.modules:
     pkg = types.ModuleType("mesop.protos")
@@ -46,7 +59,8 @@ def _stub_generated_protos() -> None:
   # Component-level *_pb2 modules (e.g. accordion_pb2, button_pb2, ...) are
   # imported by mesop/components/**/*.py.  We register a blanket finder so
   # any import matching mesop.*_pb2 returns a MagicMock automatically.
-  sys.meta_path.insert(0, _Pb2Finder())
+  # Appended (not inserted) so that real modules on sys.path take precedence.
+  sys.meta_path.append(_Pb2Finder())
 
 
 class _Pb2Finder:

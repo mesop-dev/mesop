@@ -327,8 +327,8 @@ class Context:
       )
     )
 
-  def pending_cookies(self) -> list[PendingCookie]:
-    return self._pending_cookies
+  def pending_cookies(self) -> tuple[PendingCookie, ...]:
+    return tuple(self._pending_cookies)
 
   def clear_pending_cookies(self) -> None:
     self._pending_cookies = []

@@ -1,4 +1,5 @@
 import base64
+import dataclasses
 import logging
 import os
 import secrets
@@ -56,21 +57,47 @@ logger = logging.getLogger(__name__)
 _COOKIE_TOKEN_TTL_SECONDS = 60
 
 
-class _CookieTokenCache:
-  """Thread-safe one-time-use token cache for pending cookies.
+def _get_optional_secret_key() -> str | None:
+  """Return Flask's SECRET_KEY if configured, else None."""
+  try:
+    from flask import current_app
 
-  Each token maps to a list of PendingCookie objects and expires after
-  _COOKIE_TOKEN_TTL_SECONDS seconds.  Tokens are consumed on first use
-  so they cannot be replayed.
+    key = current_app.secret_key
+    if key:
+      return key if isinstance(key, str) else bytes(key).decode()
+  except RuntimeError:
+    pass
+  return None
+
+
+class _CookieTokenCache:
+  """Token store for pending cookies.
+
+  **Stateless mode** (used when Flask's ``SECRET_KEY`` is configured):
+  ``put()`` encodes the cookie list into a self-contained
+  ``itsdangerous``-signed token.  Any server replica can verify it, so
+  this mode works correctly in multi-worker / multi-replica deployments
+  *without* requiring sticky sessions.  Expiry is cryptographically
+  enforced; strict single-use is not — replay within the TTL window is
+  theoretically possible, but the same-site CSRF Origin check on
+  ``/__apply-cookies`` and HTTPS in production make it impractical.
+
+  **In-memory mode** (used when ``SECRET_KEY`` is not set):
+  ``put()`` stores cookies under a random token in a per-process dict.
+  Tokens are strictly single-use (popped on first ``pop()``), but the
+  store is not shared across workers.  Multi-worker deployments without
+  ``SECRET_KEY`` must use sticky sessions — the same requirement as
+  Mesop's in-memory state-session backend.
   """
 
   def __init__(self) -> None:
     self._lock = threading.Lock()
-    self._store: dict[
-      str, tuple[list, float]
-    ] = {}  # token -> (cookies, expiry)
+    self._store: dict[str, tuple[list[PendingCookie], float]] = {}
 
-  def put(self, cookies: list) -> str:
+  def put(self, cookies: list[PendingCookie]) -> str:
+    secret = _get_optional_secret_key()
+    if secret:
+      return self._make_signed_token(cookies, secret)
     token = secrets.token_urlsafe(32)
     expiry = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
     with self._lock:
@@ -78,11 +105,16 @@ class _CookieTokenCache:
       self._evict_expired_locked()
     return token
 
-  def pop(self, token: str) -> list | None:
-    """Returns the cookie list and removes the token (one-time use).
+  def pop(self, token: str) -> list[PendingCookie] | None:
+    """Return the cookie list for *token* and invalidate it.
 
-    Returns None if the token is unknown or has expired.
+    In stateless mode the token is a signed blob verified here; in
+    in-memory mode the token is removed from the store (one-time use).
+    Returns ``None`` if the token is unknown, expired, or tampered.
     """
+    secret = _get_optional_secret_key()
+    if secret:
+      return self._decode_signed_token(token, secret)
     with self._lock:
       entry = self._store.pop(token, None)
       self._evict_expired_locked()
@@ -92,6 +124,30 @@ class _CookieTokenCache:
     if time.monotonic() > expiry:
       return None
     return cookies
+
+  def _make_signed_token(self, cookies: list[PendingCookie], secret: str) -> str:
+    from itsdangerous import URLSafeTimedSerializer
+
+    payload = [dataclasses.asdict(c) for c in cookies]
+    return URLSafeTimedSerializer(secret, salt="mesop-apply-cookies").dumps(
+      payload
+    )
+
+  def _decode_signed_token(
+    self, token: str, secret: str
+  ) -> list[PendingCookie] | None:
+    from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
+
+    try:
+      payload = URLSafeTimedSerializer(secret, salt="mesop-apply-cookies").loads(
+        token, max_age=_COOKIE_TOKEN_TTL_SECONDS
+      )
+    except (BadSignature, SignatureExpired):
+      return None
+    try:
+      return [PendingCookie(**c) for c in payload]
+    except (TypeError, KeyError):
+      return None
 
   def _evict_expired_locked(self) -> None:
     """Remove all expired entries. Must be called with self._lock held."""
