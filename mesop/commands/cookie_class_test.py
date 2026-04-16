@@ -265,7 +265,9 @@ def test_signed_cookie_read_discards_tampered_value():
 def test_signed_missing_secret_key_raises():
   meta = _make_signed_meta()
   with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": ""}):
-    with pytest.raises(MesopDeveloperException, match="MESOP_COOKIE_SECRET_KEY"):
+    with pytest.raises(
+      MesopDeveloperException, match="MESOP_COOKIE_SECRET_KEY"
+    ):
       _encode_value(json.dumps({"token": "abc"}), meta)
 
 
