@@ -449,8 +449,8 @@ Mesop provides a first-class cookie API so you can persist small pieces of data 
 Mesop event handlers run inside a streaming response (SSE or WebSockets). HTTP response headers — including `Set-Cookie` — are committed to the client *before* the event-handler body executes, so cookies cannot be set directly on the handler response. Instead, cookies are applied via a lightweight two-step protocol:
 
 1. Your event handler calls `me.set_cookie()`.
-2. Mesop stores the pending cookies server-side under a short-lived single-use token, then sends an `ApplyCookiesCommand` to the browser.
-3. The Mesop client POSTs the token to `/__apply-cookies`, which responds with the `Set-Cookie` headers.
+2. Mesop encodes the pending cookie operations into a short-lived itsdangerous-signed token and sends an `ApplyCookiesCommand` to the browser.  Any server worker that holds the same [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) can verify and redeem the token.
+3. The Mesop client POSTs the token to `/__apply-cookies`, which verifies the signature, marks the token's nonce as used (single-use within a process), and responds with the `Set-Cookie` headers.
 
 This is transparent to your application code.
 

@@ -227,7 +227,7 @@ message Command {
 }
 
 message ApplyCookiesCommand {
-    // One-time server-side token used to retrieve and apply pending cookies.
+    // One-time signed token used to apply pending cookies.
     optional string token = 1;
 }
 

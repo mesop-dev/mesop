@@ -462,12 +462,14 @@ def configure_flask_app(
 
   @flask_app.route(APPLY_COOKIES_PATH, methods=["POST"])
   def apply_cookies() -> Response:
-    """One-time endpoint that sets cookies previously queued by me.set_cookie().
+    """Endpoint that sets cookies previously queued by me.set_cookie().
 
     The Mesop client POSTs the token in the request body (not the URL) to keep
-    it out of server access logs and browser history.  The token is single-use
-    and expires after _COOKIE_TOKEN_TTL_SECONDS seconds, so replay attacks are
-    not possible.
+    it out of server access logs and browser history.  The token expires after
+    _COOKIE_TOKEN_TTL_SECONDS seconds and is enforced as single-use within a
+    given server process (used nonces are tracked in memory).  In multi-worker
+    deployments, a replay routed to a different worker may still succeed;
+    the CSRF Origin check and short TTL reduce that risk in practice.
 
     Same-site origin validation (matching ui_stream) prevents a cross-site
     attacker from replaying a valid token against a victim's browser.
