@@ -1,6 +1,7 @@
 import sys
 import types
-from typing import Any, Callable, TypeVar, cast
+from collections.abc import Callable
+from typing import Any, TypeVar, cast
 
 from mesop.colab.colab_run import colab_run as colab_run
 from mesop.colab.colab_show import colab_show as colab_show
