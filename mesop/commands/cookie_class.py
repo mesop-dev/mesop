@@ -100,7 +100,7 @@ def cookieclass(
 
   **Encrypted cookies** (``encrypted=True``) use Fernet symmetric encryption
   so the contents are completely hidden.  Requires the ``cryptography``
-  package (``pip install cryptography``) and ``SECRET_KEY`` to be set.
+  package (``pip install cryptography``) and ``MESOP_COOKIE_SECRET_KEY`` to be set.
 
   ``signed`` and ``encrypted`` are mutually exclusive.
 

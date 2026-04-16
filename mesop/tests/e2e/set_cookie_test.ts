@@ -24,14 +24,18 @@ test.describe('set_cookie / delete_cookie', () => {
     // Replay the same token — server must reject it with 400.
     // Include the Origin header so the CSRF check passes; only the
     // single-use token check should fire (returning 400).
-    const origin = new URL(page.url()).origin;
-    const replayResp = await page.request.post(
-      page.url().replace(/\/set_cookie.*/, '/__apply-cookies'),
-      {
-        form: {t: capturedToken!},
-        headers: {Origin: origin},
-      },
+    // Use pathname replacement rather than a full-URL regex so that any
+    // MESOP_BASE_URL_PATH prefix is preserved.
+    const currentUrl = new URL(page.url());
+    const replayUrl = new URL(currentUrl.toString());
+    replayUrl.pathname = replayUrl.pathname.replace(
+      /\/set_cookie$/,
+      '/__apply-cookies',
     );
+    const replayResp = await page.request.post(replayUrl.toString(), {
+      form: {t: capturedToken!},
+      headers: {Origin: currentUrl.origin},
+    });
     expect(replayResp.status()).toBe(400);
   });
 

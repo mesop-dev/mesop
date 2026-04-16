@@ -547,7 +547,7 @@ def on_logout(e: me.ClickEvent):
 
 ### Signed and encrypted cookies
 
-By default `@me.cookieclass` stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting `signed=True` or `encrypted=True` on the decorator.  Both require [`SECRET_KEY`](../api/config.md#secret_key) to be set.
+By default `@me.cookieclass` stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting `signed=True` or `encrypted=True` on the decorator.  Both require [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) to be set.
 
 | Option | Protection | Contents visible? | Extra dependency |
 |---|---|---|---|

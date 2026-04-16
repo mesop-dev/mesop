@@ -286,7 +286,7 @@ Enables HTTP caching for the web component entry point modules.
 
 Note: this does *not* cache JS files imported by the web component entry modules.
 
-### SECRET_KEY
+### MESOP_COOKIE_SECRET_KEY
 
 !!! warning "Experimental"
     The signed/encrypted cookie API is experimental and may change in future releases.
@@ -309,13 +309,13 @@ python -c "import secrets; print(secrets.token_hex(32))"
 Set it before starting Mesop:
 
 ```sh
-SECRET_KEY=your-random-secret mesop main.py
+MESOP_COOKIE_SECRET_KEY=your-random-secret mesop main.py
 ```
 
 Or in a `.env` file:
 
 ```sh title=".env"
-SECRET_KEY=your-random-secret
+MESOP_COOKIE_SECRET_KEY=your-random-secret
 ```
 
 **Security notes:**
