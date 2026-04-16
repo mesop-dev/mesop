@@ -4,7 +4,6 @@ import logging
 import os
 import secrets
 import threading
-import time
 import types
 from concurrent.futures import ThreadPoolExecutor
 from typing import Generator, Sequence
@@ -30,7 +29,7 @@ from mesop.env.env import (
   MESOP_WEBSOCKETS_ENABLED,
 )
 from mesop.events import LoadEvent
-from mesop.exceptions import format_traceback
+from mesop.exceptions import MesopDeveloperException, format_traceback
 from mesop.runtime import runtime
 from mesop.runtime.context import PendingCookie
 from mesop.server.constants import WEB_COMPONENTS_PATH_SEGMENT
@@ -57,104 +56,64 @@ logger = logging.getLogger(__name__)
 _COOKIE_TOKEN_TTL_SECONDS = 60
 
 
-def _get_optional_secret_key() -> str | None:
-  """Return Flask's SECRET_KEY if configured, else None."""
+def _get_cookie_secret_key() -> str:
+  """Return Flask's SECRET_KEY, raising MesopDeveloperException if unset.
+
+  SECRET_KEY is required for me.set_cookie() / me.delete_cookie() so that
+  cookie tokens are cryptographically signed and safe in multi-worker
+  deployments.
+  """
   try:
     from flask import current_app
 
     key = current_app.secret_key
-    if key:
-      return key if isinstance(key, str) else bytes(key).decode()
   except RuntimeError:
-    pass
-  return None
+    key = None
+  if not key:
+    raise MesopDeveloperException(
+      "SECRET_KEY must be set to use me.set_cookie() or me.delete_cookie().\n"
+      "Set it as an environment variable before starting Mesop:\n"
+      "  SECRET_KEY=<your-secret> mesop main.py\n"
+      "Generate a strong key with:\n"
+      '  python -c "import secrets; print(secrets.token_hex(32))"'
+    )
+  return key if isinstance(key, str) else bytes(key).decode()
 
 
 class _CookieTokenCache:
-  """Token store for pending cookies.
+  """Stateless cookie token store backed by itsdangerous signed tokens.
 
-  **Stateless mode** (used when Flask's ``SECRET_KEY`` is configured):
-  ``put()`` encodes the cookie list into a self-contained
-  ``itsdangerous``-signed token.  Any server replica can verify it, so
-  this mode works correctly in multi-worker / multi-replica deployments
-  *without* requiring sticky sessions.  Expiry is cryptographically
-  enforced; strict single-use is not — replay within the TTL window is
-  theoretically possible, but the same-site CSRF Origin check on
-  ``/__apply-cookies`` and HTTPS in production make it impractical.
+  Tokens are self-contained signed blobs so any server replica can verify
+  them — multi-worker / multi-replica deployments work without sticky
+  sessions.  Expiry is cryptographically enforced by the signer.
 
-  **In-memory mode** (used when ``SECRET_KEY`` is not set):
-  ``put()`` stores cookies under a random token in a per-process dict.
-  Tokens are strictly single-use (popped on first ``pop()``), but the
-  store is not shared across workers.  Multi-worker deployments without
-  ``SECRET_KEY`` must use sticky sessions — the same requirement as
-  Mesop's in-memory state-session backend.
+  ``SECRET_KEY`` must be configured; ``_get_cookie_secret_key()`` raises
+  ``MesopDeveloperException`` with a clear message if it is not set.
   """
 
-  def __init__(self) -> None:
-    self._lock = threading.Lock()
-    self._store: dict[str, tuple[list[PendingCookie], float]] = {}
-
   def put(self, cookies: list[PendingCookie]) -> str:
-    secret = _get_optional_secret_key()
-    if secret:
-      return self._make_signed_token(cookies, secret)
-    token = secrets.token_urlsafe(32)
-    expiry = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
-    with self._lock:
-      self._store[token] = (cookies, expiry)
-      self._evict_expired_locked()
-    return token
-
-  def pop(self, token: str) -> list[PendingCookie] | None:
-    """Return the cookie list for *token* and invalidate it.
-
-    In stateless mode the token is a signed blob verified here; in
-    in-memory mode the token is removed from the store (one-time use).
-    Returns ``None`` if the token is unknown, expired, or tampered.
-    """
-    secret = _get_optional_secret_key()
-    if secret:
-      return self._decode_signed_token(token, secret)
-    with self._lock:
-      entry = self._store.pop(token, None)
-      self._evict_expired_locked()
-    if entry is None:
-      return None
-    cookies, expiry = entry
-    if time.monotonic() > expiry:
-      return None
-    return cookies
-
-  def _make_signed_token(self, cookies: list[PendingCookie], secret: str) -> str:
+    """Serialise and sign *cookies*, returning a self-contained token."""
     from itsdangerous import URLSafeTimedSerializer
 
     payload = [dataclasses.asdict(c) for c in cookies]
-    return URLSafeTimedSerializer(secret, salt="mesop-apply-cookies").dumps(
-      payload
-    )
+    return URLSafeTimedSerializer(
+      _get_cookie_secret_key(), salt="mesop-apply-cookies"
+    ).dumps(payload)
 
-  def _decode_signed_token(
-    self, token: str, secret: str
-  ) -> list[PendingCookie] | None:
+  def pop(self, token: str) -> list[PendingCookie] | None:
+    """Verify *token* and return the cookie list, or None if invalid/expired."""
     from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
     try:
-      payload = URLSafeTimedSerializer(secret, salt="mesop-apply-cookies").loads(
-        token, max_age=_COOKIE_TOKEN_TTL_SECONDS
-      )
+      payload = URLSafeTimedSerializer(
+        _get_cookie_secret_key(), salt="mesop-apply-cookies"
+      ).loads(token, max_age=_COOKIE_TOKEN_TTL_SECONDS)
     except (BadSignature, SignatureExpired):
       return None
     try:
       return [PendingCookie(**c) for c in payload]
     except (TypeError, KeyError):
       return None
-
-  def _evict_expired_locked(self) -> None:
-    """Remove all expired entries. Must be called with self._lock held."""
-    now = time.monotonic()
-    expired = [k for k, (_, exp) in self._store.items() if now > exp]
-    for k in expired:
-      del self._store[k]
 
 
 _cookie_token_cache = _CookieTokenCache()
@@ -198,9 +157,10 @@ def configure_flask_app(
     static_url_path=static_url_path,
   )
 
-  # SECRET_KEY is used by the signed/encrypted cookieclass API.
-  # When unset it defaults to empty string; a MesopDeveloperException is
-  # raised at runtime only if an app actually uses signed/encrypted cookies.
+  # SECRET_KEY is required by me.set_cookie(), me.delete_cookie(), and the
+  # signed/encrypted cookieclass API.  When unset it defaults to empty string;
+  # a MesopDeveloperException is raised at runtime if any of those APIs are
+  # used without a key configured.
   flask_app.secret_key = os.environ.get("SECRET_KEY", "")
 
   if MESOP_TRUST_PROXY_HEADERS:

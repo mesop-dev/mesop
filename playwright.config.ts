@@ -55,6 +55,8 @@ export default defineConfig({
       process.env.MESOP_STATE_SESSION_BACKEND || 'none'
     } MESOP_STATIC_FOLDER=${
       process.env.MESOP_STATIC_FOLDER || ''
+    } SECRET_KEY=${
+      process.env.SECRET_KEY || 'mesop-e2e-test-secret-key'
     } bazel run //mesop/cli -- --path=mesop/mesop/example_index.py --prod=${
       process.env.MESOP_DEBUG_MODE === 'true' ? 'false' : 'true'
     }`,
