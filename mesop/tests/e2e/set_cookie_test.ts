@@ -22,9 +22,15 @@ test.describe('set_cookie / delete_cookie', () => {
     expect(capturedToken).not.toBeNull();
 
     // Replay the same token — server must reject it with 400.
+    // Include the Origin header so the CSRF check passes; only the
+    // single-use token check should fire (returning 400).
+    const origin = new URL(page.url()).origin;
     const replayResp = await page.request.post(
       page.url().replace(/\/set_cookie.*/, '/__apply-cookies'),
-      {form: {t: capturedToken!}},
+      {
+        form: {t: capturedToken!},
+        headers: {Origin: origin},
+      },
     );
     expect(replayResp.status()).toBe(400);
   });
