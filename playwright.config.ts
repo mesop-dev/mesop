@@ -51,7 +51,9 @@ export default defineConfig({
 
   /* Run your local server before starting the tests */
   webServer: {
-    command: `MESOP_STATE_SESSION_BACKEND=${
+    command: `MESOP_COOKIE_SECRET_KEY=${
+      process.env.MESOP_COOKIE_SECRET_KEY || 'playwright-test-secret-key'
+    } MESOP_STATE_SESSION_BACKEND=${
       process.env.MESOP_STATE_SESSION_BACKEND || 'none'
     } MESOP_STATIC_FOLDER=${
       process.env.MESOP_STATIC_FOLDER || ''

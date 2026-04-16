@@ -1,4 +1,5 @@
 import base64
+import dataclasses
 import logging
 import os
 import secrets
@@ -29,7 +30,7 @@ from mesop.env.env import (
   MESOP_WEBSOCKETS_ENABLED,
 )
 from mesop.events import LoadEvent
-from mesop.exceptions import format_traceback
+from mesop.exceptions import MesopDeveloperException, format_traceback
 from mesop.runtime import runtime
 from mesop.runtime.context import PendingCookie
 from mesop.server.constants import WEB_COMPONENTS_PATH_SEGMENT
@@ -56,54 +57,92 @@ logger = logging.getLogger(__name__)
 _COOKIE_TOKEN_TTL_SECONDS = 60
 
 
+def _get_cookie_secret_key() -> str:
+  """Return MESOP_COOKIE_SECRET_KEY, raising MesopDeveloperException if unset."""
+  key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
+  if not key:
+    raise MesopDeveloperException(
+      "MESOP_COOKIE_SECRET_KEY must be set to use me.set_cookie() or me.delete_cookie().\n"
+      "Set it as an environment variable before starting Mesop:\n"
+      "  MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py\n"
+      "Generate a strong key with:\n"
+      '  python -c "import secrets; print(secrets.token_hex(32))"'
+    )
+  return key
+
+
 class _CookieTokenCache:
-  """Thread-safe one-time-use token cache for pending cookies.
+  """Self-contained itsdangerous-signed cookie token store.
 
-  Tokens are cryptographically random opaque identifiers — cookie values
-  are stored server-side so they never pass through the browser JavaScript
-  runtime (preserving httponly semantics).  Each token is consumed on first
-  use (strictly single-use) and expires after _COOKIE_TOKEN_TTL_SECONDS
-  seconds so stale tokens don't accumulate indefinitely.
+  Each token is an itsdangerous-signed blob containing the pending cookies
+  plus a one-time nonce.  Because the token carries all the data, any
+  server replica that holds the same MESOP_COOKIE_SECRET_KEY can verify
+  and redeem it — multi-worker deployments work without sticky sessions
+  (unlike the previous ``MESOP_STATE_SESSION_BACKEND=none`` limitation,
+  which required sticky sessions for state; here no sticky sessions are
+  needed at all).
 
-  This is a per-process in-memory store.  Multi-worker deployments require
-  sticky sessions so that POST /__apply-cookies reaches the same process
-  that issued the token — the same requirement as Mesop's in-memory
-  state-session backend.
+  **Single-use enforcement:** consumed nonces are tracked per-process in a
+  small in-memory set bounded by the TTL window.  Within a single process
+  replays are rejected strictly.  Across multiple workers, a token *could*
+  theoretically be replayed to a different worker that has not yet seen the
+  nonce, but the CSRF Origin check on ``/__apply-cookies`` and HTTPS in
+  production make this impractical.
+
+  **Note on value visibility:** the payload is signed, not encrypted, so
+  cookie values are Base64-visible in the token as it passes through browser
+  JavaScript.  For complete value privacy use ``@me.cookieclass(encrypted=True)``
+  which Fernet-encrypts the value before it ever leaves the server.
   """
 
   def __init__(self) -> None:
     self._lock = threading.Lock()
-    self._store: dict[str, tuple[list[PendingCookie], float]] = {}
+    self._used_nonces: dict[str, float] = {}  # nonce -> expiry (monotonic)
 
   def put(self, cookies: list[PendingCookie]) -> str:
-    token = secrets.token_urlsafe(32)
-    expiry = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
-    with self._lock:
-      self._store[token] = (cookies, expiry)
-      self._evict_expired_locked()
-    return token
+    """Sign and return a self-contained token encoding *cookies*."""
+    from itsdangerous import URLSafeTimedSerializer
+
+    payload = {
+      "n": secrets.token_urlsafe(16),
+      "c": [dataclasses.asdict(c) for c in cookies],
+    }
+    return URLSafeTimedSerializer(
+      _get_cookie_secret_key(), salt="mesop-apply-cookies"
+    ).dumps(payload)
 
   def pop(self, token: str) -> list[PendingCookie] | None:
-    """Remove and return the cookie list (one-time use).
+    """Verify *token*, mark its nonce used, and return the cookie list.
 
-    Returns None if the token is unknown or has expired.
+    Returns ``None`` if the token is invalid, expired, or already consumed.
     """
-    with self._lock:
-      entry = self._store.pop(token, None)
-      self._evict_expired_locked()
-    if entry is None:
-      return None
-    cookies, expiry = entry
-    if time.monotonic() > expiry:
-      return None
-    return cookies
+    from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
-  def _evict_expired_locked(self) -> None:
-    """Remove all expired entries. Must be called with self._lock held."""
+    try:
+      payload = URLSafeTimedSerializer(
+        _get_cookie_secret_key(), salt="mesop-apply-cookies"
+      ).loads(token, max_age=_COOKIE_TOKEN_TTL_SECONDS)
+    except (BadSignature, SignatureExpired):
+      return None
+
+    nonce = payload.get("n", "")
+    with self._lock:
+      if nonce in self._used_nonces:
+        return None
+      self._used_nonces[nonce] = time.monotonic() + _COOKIE_TOKEN_TTL_SECONDS
+      self._evict_used_locked()
+
+    try:
+      return [PendingCookie(**c) for c in payload["c"]]
+    except (TypeError, KeyError):
+      return None
+
+  def _evict_used_locked(self) -> None:
+    """Discard expired nonce entries. Must be called with self._lock held."""
     now = time.monotonic()
-    expired = [k for k, (_, exp) in self._store.items() if now > exp]
+    expired = [k for k, exp in self._used_nonces.items() if now > exp]
     for k in expired:
-      del self._store[k]
+      del self._used_nonces[k]
 
 
 _cookie_token_cache = _CookieTokenCache()
