@@ -28,7 +28,7 @@ Encrypted cookies (tamper-proof, contents hidden)::
     class SessionCookie:
         username: str = ""
 
-Both ``signed`` and ``encrypted`` require ``SECRET_KEY`` to be set.
+Both ``signed`` and ``encrypted`` require ``MESOP_COOKIE_SECRET_KEY`` to be set.
 """
 
 from __future__ import annotations
@@ -96,7 +96,7 @@ def cookieclass(
 
   **Signed cookies** (``signed=True``) add an HMAC to the cookie value so
   any tampering is detected on read.  The contents are still Base64-visible
-  in DevTools.  Requires ``SECRET_KEY`` to be set.
+  in DevTools.  Requires ``MESOP_COOKIE_SECRET_KEY`` to be set.
 
   **Encrypted cookies** (``encrypted=True``) use Fernet symmetric encryption
   so the contents are completely hidden.  Requires the ``cryptography``
@@ -109,9 +109,9 @@ def cookieclass(
       parentheses, e.g. ``@me.cookieclass``).
     name: Explicit cookie name.  Defaults to snake_case of the class name.
     signed: When ``True``, the serialised value is HMAC-signed so tampering
-      is detected.  Requires ``SECRET_KEY``.
+      is detected.  Requires ``MESOP_COOKIE_SECRET_KEY``.
     encrypted: When ``True``, the serialised value is Fernet-encrypted.
-      Requires ``SECRET_KEY`` and ``pip install cryptography``.
+      Requires ``MESOP_COOKIE_SECRET_KEY`` and ``pip install cryptography``.
 
   Returns:
     The decorated class (registered as a cookieclass and ensured to be a
@@ -235,23 +235,19 @@ def _decode_value(raw: str, meta: _CookieClassMeta) -> str | None:
 
 
 def _get_secret_key() -> str:
-  """Return the app's SECRET_KEY, raising a helpful error if unset."""
-  try:
-    from flask import current_app
+  """Return MESOP_COOKIE_SECRET_KEY, raising a helpful error if unset."""
+  import os
 
-    key = current_app.secret_key
-  except RuntimeError:
-    key = None
-
+  key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
   if not key:
     raise MesopDeveloperException(
-      "SECRET_KEY must be set to use signed or encrypted cookies.\n"
+      "MESOP_COOKIE_SECRET_KEY must be set to use signed or encrypted cookies.\n"
       "Set it as an environment variable before starting Mesop:\n"
-      "  SECRET_KEY=<your-secret> mesop main.py\n"
+      "  MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py\n"
       "Generate a strong key with:\n"
       '  python -c "import secrets; print(secrets.token_hex(32))"'
     )
-  return key if isinstance(key, str) else bytes(key).decode()
+  return key
 
 
 def _itsdangerous_sign(value: str, salt: str, secret_key: str) -> str:

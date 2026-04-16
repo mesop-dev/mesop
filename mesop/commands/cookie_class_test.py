@@ -2,6 +2,7 @@
 
 import dataclasses
 import json
+import os
 from unittest.mock import patch
 
 import pytest
@@ -225,8 +226,7 @@ def _make_signed_meta():
 
 def test_signed_encode_decode_roundtrip():
   meta = _make_signed_meta()
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "test-secret-key"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "test-secret-key"}):
     original = json.dumps({"token": "abc"})
     encoded = _encode_value(original, meta)
     assert encoded != original  # value is transformed
@@ -236,8 +236,7 @@ def test_signed_encode_decode_roundtrip():
 
 def test_signed_tamper_returns_none():
   meta = _make_signed_meta()
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "test-secret-key"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "test-secret-key"}):
     encoded = _encode_value(json.dumps({"token": "abc"}), meta)
     tampered = encoded[:-4] + "XXXX"
     assert _decode_value(tampered, meta) is None
@@ -245,40 +244,28 @@ def test_signed_tamper_returns_none():
 
 def test_signed_wrong_key_returns_none():
   meta = _make_signed_meta()
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "key-a"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "key-a"}):
     encoded = _encode_value(json.dumps({"token": "abc"}), meta)
-
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "key-b"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "key-b"}):
     assert _decode_value(encoded, meta) is None
 
 
 def test_signed_cookie_read_discards_tampered_value():
   """me.cookie() should return a default instance when the signature fails."""
   meta = _make_signed_meta()
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "key-a"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "key-a"}):
     encoded = _encode_value(json.dumps({"token": "real"}), meta)
-
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "key-b"
-    tampered_cookie = {_COOKIE_CLASSES[_SignedCookie].name: encoded}
-
+  tampered_cookie = {_COOKIE_CLASSES[_SignedCookie].name: encoded}
   with _req_ctx(tampered_cookie):
-    _flask_app.secret_key = "key-b"
-    with patch(
-      "mesop.commands.cookie_class._get_secret_key", return_value="key-b"
-    ):
+    with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "key-b"}):
       result = cookie(_SignedCookie)
   assert result.token == ""
 
 
 def test_signed_missing_secret_key_raises():
   meta = _make_signed_meta()
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = ""  # unset
-    with pytest.raises(MesopDeveloperException, match="SECRET_KEY"):
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": ""}):
+    with pytest.raises(MesopDeveloperException, match="MESOP_COOKIE_SECRET_KEY"):
       _encode_value(json.dumps({"token": "abc"}), meta)
 
 
@@ -295,8 +282,7 @@ def test_encrypted_encode_decode_roundtrip():
     secret: str = ""
 
   meta = _COOKIE_CLASSES[_EncCookie]
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "test-secret-key"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "test-secret-key"}):
     original = json.dumps({"secret": "hidden"})
     encoded = _encode_value(original, meta)
     assert encoded != original
@@ -312,8 +298,7 @@ def test_encrypted_tamper_returns_none():
     secret: str = ""
 
   meta = _COOKIE_CLASSES[_EncCookie2]
-  with _flask_app.test_request_context("/"):
-    _flask_app.secret_key = "test-secret-key"
+  with patch.dict(os.environ, {"MESOP_COOKIE_SECRET_KEY": "test-secret-key"}):
     assert _decode_value("not-valid-fernet-token", meta) is None
 
 

@@ -57,27 +57,17 @@ _COOKIE_TOKEN_TTL_SECONDS = 60
 
 
 def _get_cookie_secret_key() -> str:
-  """Return Flask's SECRET_KEY, raising MesopDeveloperException if unset.
-
-  SECRET_KEY is required for me.set_cookie() / me.delete_cookie() so that
-  cookie tokens are cryptographically signed and safe in multi-worker
-  deployments.
-  """
-  try:
-    from flask import current_app
-
-    key = current_app.secret_key
-  except RuntimeError:
-    key = None
+  """Return MESOP_COOKIE_SECRET_KEY, raising MesopDeveloperException if unset."""
+  key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
   if not key:
     raise MesopDeveloperException(
-      "SECRET_KEY must be set to use me.set_cookie() or me.delete_cookie().\n"
+      "MESOP_COOKIE_SECRET_KEY must be set to use me.set_cookie() or me.delete_cookie().\n"
       "Set it as an environment variable before starting Mesop:\n"
-      "  SECRET_KEY=<your-secret> mesop main.py\n"
+      "  MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py\n"
       "Generate a strong key with:\n"
       '  python -c "import secrets; print(secrets.token_hex(32))"'
     )
-  return key if isinstance(key, str) else bytes(key).decode()
+  return key
 
 
 class _CookieTokenCache:
@@ -157,11 +147,11 @@ def configure_flask_app(
     static_url_path=static_url_path,
   )
 
-  # SECRET_KEY is required by me.set_cookie(), me.delete_cookie(), and the
-  # signed/encrypted cookieclass API.  When unset it defaults to empty string;
-  # a MesopDeveloperException is raised at runtime if any of those APIs are
-  # used without a key configured.
-  flask_app.secret_key = os.environ.get("SECRET_KEY", "")
+  # MESOP_COOKIE_SECRET_KEY is required by me.set_cookie(), me.delete_cookie(),
+  # and the signed/encrypted cookieclass API.  When unset it defaults to empty
+  # string; a MesopDeveloperException is raised at runtime if any of those APIs
+  # are used without a key configured.
+  flask_app.secret_key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
 
   if MESOP_TRUST_PROXY_HEADERS:
     # Apply ProxyFix so that request.url_root and request.scheme reflect the
