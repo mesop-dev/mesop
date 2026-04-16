@@ -147,12 +147,6 @@ def configure_flask_app(
     static_url_path=static_url_path,
   )
 
-  # MESOP_COOKIE_SECRET_KEY is required by me.set_cookie(), me.delete_cookie(),
-  # and the signed/encrypted cookieclass API.  When unset it defaults to empty
-  # string; a MesopDeveloperException is raised at runtime if any of those APIs
-  # are used without a key configured.
-  flask_app.secret_key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
-
   if MESOP_TRUST_PROXY_HEADERS:
     # Apply ProxyFix so that request.url_root and request.scheme reflect the
     # external-facing URL reported by the reverse proxy (X-Forwarded-Proto,
