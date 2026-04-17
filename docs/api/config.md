@@ -291,9 +291,7 @@ Note: this does *not* cache JS files imported by the web component entry modules
 !!! warning "Experimental"
     The signed/encrypted cookie API is experimental and may change in future releases.
 
-Secret key used by the cookie security features.  Required for
-``me.set_cookie()`` / ``me.delete_cookie()`` and when any ``@me.cookieclass``
-is decorated with ``signed=True`` or ``encrypted=True``.
+Secret key required for using Mesop cookies.
 
 - **Signed cookies** (``signed=True``): The value is HMAC-signed so any
   client-side tampering is detected on the next read.  Contents are still

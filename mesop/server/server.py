@@ -62,7 +62,7 @@ def _get_cookie_secret_key() -> str:
   key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
   if not key:
     raise MesopDeveloperException(
-      "MESOP_COOKIE_SECRET_KEY must be set to use me.set_cookie() or me.delete_cookie().\n"
+      "MESOP_COOKIE_SECRET_KEY must be set to use Mesop cookies.\n"
       "Set it as an environment variable before starting Mesop:\n"
       "  MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py\n"
       "Generate a strong key with:\n"

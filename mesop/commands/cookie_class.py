@@ -94,13 +94,15 @@ def cookieclass(
   The cookie name defaults to the snake_case version of the class name.
   Override it with the optional ``name`` keyword argument.
 
+  Requires ``MESOP_COOKIE_SECRET_KEY`` to be set.
+
   **Signed cookies** (``signed=True``) add an HMAC to the cookie value so
   any tampering is detected on read.  The contents are still Base64-visible
-  in DevTools.  Requires ``MESOP_COOKIE_SECRET_KEY`` to be set.
+  in DevTools.
 
   **Encrypted cookies** (``encrypted=True``) use Fernet symmetric encryption
   so the contents are completely hidden.  Requires the ``cryptography``
-  package (``pip install cryptography``) and ``MESOP_COOKIE_SECRET_KEY`` to be set.
+  package (``pip install cryptography``).
 
   ``signed`` and ``encrypted`` are mutually exclusive.
 
@@ -109,9 +111,9 @@ def cookieclass(
       parentheses, e.g. ``@me.cookieclass``).
     name: Explicit cookie name.  Defaults to snake_case of the class name.
     signed: When ``True``, the serialised value is HMAC-signed so tampering
-      is detected.  Requires ``MESOP_COOKIE_SECRET_KEY``.
+      is detected.
     encrypted: When ``True``, the serialised value is Fernet-encrypted.
-      Requires ``MESOP_COOKIE_SECRET_KEY`` and ``pip install cryptography``.
+      Requires ``pip install cryptography``.
 
   Returns:
     The decorated class (registered as a cookieclass and ensured to be a
@@ -241,7 +243,7 @@ def _get_secret_key() -> str:
   key = os.environ.get("MESOP_COOKIE_SECRET_KEY", "")
   if not key:
     raise MesopDeveloperException(
-      "MESOP_COOKIE_SECRET_KEY must be set to use signed or encrypted cookies.\n"
+      "MESOP_COOKIE_SECRET_KEY must be set to use Mesop cookies.\n"
       "Set it as an environment variable before starting Mesop:\n"
       "  MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py\n"
       "Generate a strong key with:\n"
