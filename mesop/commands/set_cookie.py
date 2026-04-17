@@ -82,8 +82,15 @@ def set_cookie(
       ``None`` (default), auto-detects from the request: ``True`` on
       HTTPS, ``False`` on plain HTTP.  Pass ``False`` explicitly to force
       HTTP-only (rarely needed).
-    httponly: When ``True`` (default), JavaScript cannot access the cookie,
-      which mitigates XSS theft of session tokens.
+    httponly: When ``True`` (default), JavaScript cannot access the cookie
+      after it is stored in the browser, which mitigates XSS theft of
+      session tokens.  Note that during the ``/__apply-cookies`` round-trip
+      the cookie value is embedded in the signed ``ApplyCookiesCommand``
+      token and briefly passes through browser JavaScript — so the value is
+      not fully opaque to JS at write-time.  For values that must never be
+      readable by JavaScript, store only an opaque server-side ID in the
+      cookie and use ``@me.cookieclass(encrypted=True)`` to encrypt the
+      token payload.
     samesite: ``"Lax"`` (default), ``"Strict"``, or ``"None"``.  Use
       ``"None"`` only together with ``secure=True``.
   """

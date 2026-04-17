@@ -414,6 +414,8 @@ def configure_flask_app(
           yield from render_loop(path=path)
           runtime().context().set_previous_node_from_current_node()
           runtime().context().reset_current_node()
+        # Flush any cookies queued by a generator handler that yielded 0 times.
+        maybe_append_apply_cookies_command()
         if not MESOP_WEBSOCKETS_ENABLED:
           yield create_update_state_event(diff=True)
         yield STREAM_END

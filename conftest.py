@@ -94,9 +94,21 @@ def _stub_mesop_package() -> None:
   This prevents mesop/__init__.py from running (it imports every component
   and their Bazel-generated proto files).  The stub's __path__ points at
   the real mesop/ directory so submodule imports still resolve correctly.
+
+  This is a no-op when the real Bazel-generated proto modules are already
+  importable (same condition used by _stub_generated_protos), because in
+  that environment mesop/__init__.py can run successfully without stubs.
   """
   if "mesop" in sys.modules:
     return
+  # If real proto modules are importable we're inside a Bazel build that has
+  # already generated them — don't shadow the real package.
+  try:
+    import mesop.protos.ui_pb2  # noqa: F401
+
+    return
+  except ImportError:
+    pass
   stub = types.ModuleType("mesop")
   stub.__path__ = [os.path.join(_REPO_ROOT, "mesop")]  # type: ignore[attr-defined]
   stub.__package__ = "mesop"

@@ -444,8 +444,12 @@ gunicorn --bind 0.0.0.0:8080 'your_module:app'
 
 Mesop provides a first-class cookie API so you can persist small pieces of data (session tokens, user preferences, etc.) in the browser without managing raw `Set-Cookie` headers yourself.
 
-!!! note "MESOP_COOKIE_SECRET_KEY required"
-    All cookie operations — `me.set_cookie()`, `me.delete_cookie()`, and `me.cookie()` with a `@me.cookieclass` — require [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) to be set.  Mesop uses it to sign the short-lived token that applies cookies to the browser.
+!!! note "MESOP_COOKIE_SECRET_KEY requirements"
+    [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) must be set for cookie **write** operations — `me.set_cookie()` and `me.delete_cookie()` — because Mesop uses it to sign the short-lived token that applies cookies to the browser.
+
+    It is also required when **reading** a `@me.cookieclass` with `me.cookie()` if that cookieclass uses `signed=True` or `encrypted=True`.
+
+    For plain (unsigned, unencrypted) cookieclasses, `me.cookie()` decodes the JSON value without needing `MESOP_COOKIE_SECRET_KEY`.
 
     ```sh
     MESOP_COOKIE_SECRET_KEY=your-random-secret mesop main.py
