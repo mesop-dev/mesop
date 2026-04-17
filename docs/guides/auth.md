@@ -444,6 +444,19 @@ gunicorn --bind 0.0.0.0:8080 'your_module:app'
 
 Mesop provides a first-class cookie API so you can persist small pieces of data (session tokens, user preferences, etc.) in the browser without managing raw `Set-Cookie` headers yourself.
 
+!!! note "MESOP_COOKIE_SECRET_KEY required"
+    All cookie operations — `me.set_cookie()`, `me.delete_cookie()`, and `me.cookie()` with a `@me.cookieclass` — require [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) to be set.  Mesop uses it to sign the short-lived token that applies cookies to the browser.
+
+    ```sh
+    MESOP_COOKIE_SECRET_KEY=your-random-secret mesop main.py
+    ```
+
+    Generate a strong key:
+
+    ```sh
+    python -c "import secrets; print(secrets.token_hex(32))"
+    ```
+
 ### How it works
 
 Mesop event handlers run inside a streaming response (SSE or WebSockets). HTTP response headers — including `Set-Cookie` — are committed to the client *before* the event-handler body executes, so cookies cannot be set directly on the handler response. Instead, cookies are applied via a lightweight two-step protocol:
@@ -547,7 +560,7 @@ def on_logout(e: me.ClickEvent):
 
 ### Signed and encrypted cookies
 
-By default `@me.cookieclass` stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting `signed=True` or `encrypted=True` on the decorator.  Both require [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) to be set.
+By default `@me.cookieclass` stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting `signed=True` or `encrypted=True` on the decorator.  [`MESOP_COOKIE_SECRET_KEY`](../api/config.md#mesop_cookie_secret_key) is already required for all cookie ops; these options add extra protection on top of that.
 
 | Option | Protection | Contents visible? | Extra dependency |
 |---|---|---|---|
