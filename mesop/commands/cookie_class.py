@@ -28,7 +28,6 @@ Encrypted cookies (tamper-proof, contents hidden)::
     class SessionCookie:
         username: str = ""
 
-Both ``signed`` and ``encrypted`` require ``MESOP_COOKIE_SECRET_KEY`` to be set.
 """
 
 from __future__ import annotations

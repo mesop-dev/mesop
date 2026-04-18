@@ -14,8 +14,7 @@ cookieclass API:
 The login state persists across hard refreshes and new tabs because the
 cookie is read in on_load.
 
-Note: me.set_cookie() and me.delete_cookie() require MESOP_COOKIE_SECRET_KEY
-to be set so that cookie tokens are cryptographically signed.  Start Mesop with:
+Start Mesop with:
   MESOP_COOKIE_SECRET_KEY=<your-secret> mesop main.py
 """
 

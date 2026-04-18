@@ -1,8 +1,11 @@
 import dataclasses
 import json
+import logging
 from typing import Any
 
 from mesop.runtime import runtime
+
+logger = logging.getLogger(__name__)
 
 
 def _resolve_secure(secure: bool | None) -> bool:
@@ -18,6 +21,13 @@ def _resolve_secure(secure: bool | None) -> bool:
 
     return request.is_secure
   except RuntimeError:
+    # Flask raises RuntimeError when request is accessed outside an active
+    # request context (e.g. unit tests). This should not occur in production
+    # where event handlers always run inside a request context.
+    logger.warning(
+      "set_cookie: could not detect HTTPS (no active Flask request context);"
+      " defaulting secure=False. This is expected in tests."
+    )
     return False
 
 
