@@ -6,9 +6,8 @@ Mesop is designed to be auth provider agnostic. You can integrate any auth libra
 |---|---|
 | [Google Cloud IAP](#google-cloud-iap) | Apps already on App Engine or Cloud Run |
 | [Firebase Authentication](#firebase-authentication) | Apps that need social sign-in or multi-provider auth |
-| [Username & Password](#username-and-password) | Simple internal tools or apps with a mix of public and private pages |
 | [HTTP Basic Auth](#http-basic-auth) | Internal tools where a browser pop-up is acceptable and no login UI is needed |
-| [Cookies](#cookies) | Persisting session tokens or structured data across requests (experimental) |
+| [Cookies](#cookies) | Persisting session tokens or structured data across requests; includes a [username/password login example](#username-and-password) (experimental) |
 
 > **Important:** Regardless of which approach you choose, always enforce authorization on the server side in your event handlers. Never rely solely on client-visible state to gate privileged actions. See the [state management security guide](./state-management.md#security-best-practices) for more details.
 
@@ -163,161 +162,6 @@ Let's put it all together:
 ### Next steps
 
 Congrats! You've now built an authenticated app with Mesop from start to finish. Read the [Firebase Auth docs](https://firebase.google.com/docs/auth) to learn how to configure additional sign-in options and much more.
-
-## Username and Password
-
-This approach is suitable for internal tools, prototypes, or apps that have a mix of public and private pages and do not need social sign-in. It does not require any external service.
-
-> **Warning:** Rolling your own auth is error-prone. For production apps with many users, prefer a managed solution like [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication). If you do use this approach, make sure you understand the security considerations below.
-
-**How it works:**
-
-Because Mesop renders pages server-side within an ongoing SSE stream, `after_this_request` callbacks (normally used to set cookies) run before the generator body executes — meaning cookies cannot be set from within event handlers. The pattern that works reliably is **state-based auth with conditional rendering**:
-
-- Credentials are verified in an event handler, and `state.username` is set directly.
-- The page function checks `state.username` and renders either the login form or the protected content.
-- Mesop state only persists within the same SPA session. Any hard browser navigation — page refresh, back/forward buttons, opening a new tab, or typing the URL directly — will clear state and require the user to log in again. Only `me.navigate()` (client-side navigation within the running app) preserves state.
-
-If persistent sessions across refreshes and new tabs are required, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication) instead.
-
-**Prerequisites:**
-
-- `werkzeug` (already installed with Mesop — used for password hashing)
-
-**Step 1 — Store hashed passwords**
-
-Never store plaintext passwords. Use `werkzeug.security` to hash them at setup time and store only the hash.
-
-```python
-from werkzeug.security import generate_password_hash
-
-# Run this once to generate the hash, then store it securely.
-print(generate_password_hash("my-secret-password"))
-```
-
-**Step 2 — Full example**
-
-```python
-# auth_app.py
-# Run: gunicorn --bind 0.0.0.0:8080 auth_app:me
-#
-# One-time setup:
-#   export ALICE_PASSWORD_HASH="$(python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('hunter2'))")"
-#
-# Login with: username "alice", password "hunter2"
-
-import os
-import mesop as me
-from werkzeug.security import check_password_hash
-
-# In production, load from a database.
-# Hashes were generated with werkzeug.security.generate_password_hash().
-USERS: dict[str, str] = {
-    "alice": os.environ["ALICE_PASSWORD_HASH"],
-}
-
-# ---------------------------------------------------------------------------
-# State
-# ---------------------------------------------------------------------------
-
-@me.stateclass
-class State:
-    username: str        # empty string means not logged in
-    username_input: str
-    password_input: str
-    error: str
-
-# ---------------------------------------------------------------------------
-# Event handlers
-# ---------------------------------------------------------------------------
-
-def on_username_input(e: me.InputEvent):
-    me.state(State).username_input = e.value
-
-def on_password_input(e: me.InputEvent):
-    me.state(State).password_input = e.value
-
-def on_login(e: me.ClickEvent):
-    state = me.state(State)
-    username = state.username_input.strip()
-
-    if not username or not state.password_input:
-        state.error = "Please enter a username and password."
-        return
-
-    stored_hash = USERS.get(username)
-    if not stored_hash or not check_password_hash(stored_hash, state.password_input):
-        state.error = "Invalid username or password."
-        state.password_input = ""
-        return
-
-    state.username = username
-    state.password_input = ""
-    state.error = ""
-
-def on_logout(e: me.ClickEvent):
-    me.state(State).username = ""
-
-# ---------------------------------------------------------------------------
-# Page
-# ---------------------------------------------------------------------------
-
-@me.page(path="/")
-def main():
-    state = me.state(State)
-
-    if not state.username:
-        # Show the login form.
-        with me.box(style=me.Style(padding=me.Padding.all(32), max_width=320)):
-            me.text("Sign in", type="headline-5")
-            if state.error:
-                me.text(state.error, style=me.Style(color="red"))
-            me.input(label="Username", on_input=on_username_input)
-            me.input(label="Password", type="password", on_input=on_password_input)
-            me.button("Sign in", on_click=on_login, type="flat")
-    else:
-        # Show protected content.
-        with me.box(style=me.Style(padding=me.Padding.all(32))):
-            me.text(f"Welcome, {state.username}!")
-            me.button("Sign out", on_click=on_logout, type="flat")
-```
-
-**Multiple protected pages**
-
-For apps with several protected pages, check `state.username` at the top of each page function:
-
-```python
-def _require_login() -> bool:
-    """Returns True if the user is logged in, False if the login form was rendered."""
-    state = me.state(State)
-    if not state.username:
-        _render_login_form()
-        return False
-    return True
-
-@me.page(path="/dashboard")
-def dashboard():
-    if not _require_login():
-        return
-    # Protected dashboard content...
-
-@me.page(path="/settings")
-def settings():
-    if not _require_login():
-        return
-    # Protected settings content...
-```
-
-> **Security warning:** This check is not tamper-proof. In Mesop's default SSE mode the serialized state is sent to the browser on every response and echoed back on every request. A determined attacker can decode the protobuf payload and forge `state.username` without ever entering valid credentials, bypassing this check entirely.
->
-> **Only use this pattern for low-risk internal tools where all users are already trusted** (e.g. on a private network). Do not use it to protect sensitive data, PII, or any resource where impersonation would cause real harm. For genuine access control use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication), both of which authenticate at a layer the browser cannot influence.
-
-**Security checklist:**
-
-- Never store plaintext passwords — use `generate_password_hash` / `check_password_hash`.
-- Never store password hashes in source code or committed files — use a secret manager (e.g. [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)) or a `.env` file listed in `.gitignore` for local development.
-- Validate and sanitize all user inputs before using them (see the [state management guide](./state-management.md#validate-input-before-updating-state)).
-- For genuine access control, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication).
 
 ## HTTP Basic Auth
 
@@ -621,6 +465,144 @@ me.set_cookie(SessionCookie(username="alice"), max_age=3600)
 me.delete_cookie("session_id")      # low-level: explicit string name
 me.delete_cookie(SessionCookie)     # high-level: class lookup
 ```
+
+### Username and Password
+
+This example combines a username/password login form with cookie-backed sessions. After a successful login the verified username is written to a signed cookie, so the session persists across page refreshes and new tabs — unlike a state-only approach, which is cleared on any hard navigation.
+
+> **Warning:** Rolling your own auth is error-prone. For production apps with many users, prefer a managed solution like [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication).
+
+**Prerequisites:**
+
+- `werkzeug` (already installed with Mesop — used for password hashing)
+
+**Step 1 — Store hashed passwords**
+
+Never store plaintext passwords. Use `werkzeug.security` to hash them at setup time and store only the hash.
+
+```python
+from werkzeug.security import generate_password_hash
+
+# Run this once to generate the hash, then store it securely.
+print(generate_password_hash("my-secret-password"))
+```
+
+**Step 2 — Full example**
+
+```python
+# cookie_auth_app.py
+# Run: gunicorn --bind 0.0.0.0:8080 cookie_auth_app:me
+#
+# One-time setup:
+#   export ALICE_PASSWORD_HASH="$(python -c "from werkzeug.security import generate_password_hash; print(generate_password_hash('hunter2'))")"
+#
+# Login with: username "alice", password "hunter2"
+
+import os
+import mesop as me
+from werkzeug.security import check_password_hash
+
+# In production, load from a database.
+USERS: dict[str, str] = {
+    "alice": os.environ["ALICE_PASSWORD_HASH"],
+}
+
+@me.cookieclass(signed=True)
+class SessionCookie:
+    username: str = ""
+
+@me.stateclass
+class State:
+    username: str = ""
+    username_input: str = ""
+    password_input: str = ""
+    error: str = ""
+
+def on_load(e: me.LoadEvent):
+    session = me.cookie(SessionCookie)
+    if session.username:
+        me.state(State).username = session.username
+
+def on_username_input(e: me.InputEvent):
+    me.state(State).username_input = e.value
+
+def on_password_input(e: me.InputEvent):
+    me.state(State).password_input = e.value
+
+def on_login(e: me.ClickEvent):
+    state = me.state(State)
+    username = state.username_input.strip()
+
+    if not username or not state.password_input:
+        state.error = "Please enter a username and password."
+        return
+
+    stored_hash = USERS.get(username)
+    if not stored_hash or not check_password_hash(stored_hash, state.password_input):
+        state.error = "Invalid username or password."
+        state.password_input = ""
+        return
+
+    state.username = username
+    state.password_input = ""
+    state.error = ""
+    me.set_cookie(SessionCookie(username=username), max_age=86400)  # 1 day
+
+def on_logout(e: me.ClickEvent):
+    state = me.state(State)
+    state.username = ""
+    me.delete_cookie(SessionCookie)
+
+@me.page(path="/", on_load=on_load)
+def main():
+    state = me.state(State)
+
+    if not state.username:
+        with me.box(style=me.Style(padding=me.Padding.all(32), max_width=320)):
+            me.text("Sign in", type="headline-5")
+            if state.error:
+                me.text(state.error, style=me.Style(color="red"))
+            me.input(label="Username", on_input=on_username_input)
+            me.input(label="Password", type="password", on_input=on_password_input)
+            me.button("Sign in", on_click=on_login, type="flat")
+    else:
+        with me.box(style=me.Style(padding=me.Padding.all(32))):
+            me.text(f"Welcome, {state.username}!")
+            me.button("Sign out", on_click=on_logout, type="flat")
+```
+
+**Multiple protected pages**
+
+For apps with several protected pages, add `on_load=on_load` to each page and check `state.username` at the top:
+
+```python
+def _require_login() -> bool:
+    state = me.state(State)
+    if not state.username:
+        _render_login_form()
+        return False
+    return True
+
+@me.page(path="/dashboard", on_load=on_load)
+def dashboard():
+    if not _require_login():
+        return
+    # Protected dashboard content...
+
+@me.page(path="/settings", on_load=on_load)
+def settings():
+    if not _require_login():
+        return
+    # Protected settings content...
+```
+
+**Security checklist:**
+
+- Never store plaintext passwords — use `generate_password_hash` / `check_password_hash`.
+- Never store password hashes in source code or committed files — use a secret manager (e.g. [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)) or a `.env` file listed in `.gitignore` for local development.
+- Use `@me.cookieclass(signed=True)` (or `encrypted=True`) to prevent cookie tampering or content inspection.
+- Validate and sanitize all user inputs (see the [state management guide](./state-management.md#validate-input-before-updating-state)).
+- For genuine access control, use [Google Cloud IAP](#google-cloud-iap) or [Firebase Authentication](#firebase-authentication).
 
 ### Security notes
 
