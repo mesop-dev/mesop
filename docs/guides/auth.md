@@ -6,8 +6,8 @@ Mesop is designed to be auth provider agnostic. You can integrate any auth libra
 |---|---|
 | [Google Cloud IAP](#google-cloud-iap) | Apps already on App Engine or Cloud Run |
 | [Firebase Authentication](#firebase-authentication) | Apps that need social sign-in or multi-provider auth |
-| [HTTP Basic Auth](#http-basic-auth) | Internal tools where a browser pop-up is acceptable and no login UI is needed |
 | [Cookies](#cookies) | Persisting session tokens or structured data across requests; includes a [username/password login example](#username-and-password) (experimental) |
+| [HTTP Basic Auth](#http-basic-auth) | Internal tools where a browser pop-up is acceptable and no login UI is needed |
 
 > **Important:** Regardless of which approach you choose, always enforce authorization on the server side in your event handlers. Never rely solely on client-visible state to gate privileged actions. See the [state management security guide](./state-management.md#security-best-practices) for more details.
 
@@ -162,124 +162,6 @@ Let's put it all together:
 ### Next steps
 
 Congrats! You've now built an authenticated app with Mesop from start to finish. Read the [Firebase Auth docs](https://firebase.google.com/docs/auth) to learn how to configure additional sign-in options and much more.
-
-## HTTP Basic Auth
-
-HTTP Basic Auth lets the browser display a native username/password pop-up with no login page required. It is a good fit for internal tools where:
-
-- The entire app should be protected (no public pages)
-- You want the simplest possible setup with zero UI code
-- The app is served over HTTPS (required — Basic Auth sends credentials in plaintext otherwise)
-
-> **Warning:** Do not use HTTP Basic Auth over plain HTTP. Always deploy behind HTTPS.
-
-**How it works:**
-
-A WSGI middleware wrapper intercepts every request before it reaches Mesop. If the `Authorization` header is missing or the credentials are wrong, the middleware returns a `401` response immediately and the browser shows its built-in sign-in dialog. Valid requests are passed through to Mesop as normal.
-
-**Prerequisites:**
-
-- `werkzeug` (already installed with Mesop)
-
-**Example:**
-
-```python
-import base64
-import os
-import mesop as me
-from werkzeug.security import check_password_hash, generate_password_hash
-from mesop import create_wsgi_app
-
-# In production, load from environment variables or a database.
-# Generate hashes with: werkzeug.security.generate_password_hash("my-password")
-USERS: dict[str, str] = {
-    "alice": os.environ["ALICE_PASSWORD_HASH"],
-}
-
-REALM = "My Internal Tool"
-
-
-class BasicAuthMiddleware:
-    """WSGI middleware that enforces HTTP Basic Auth on every request."""
-
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        # Parse the Authorization header.
-        auth_header = environ.get("HTTP_AUTHORIZATION", "")
-        username = self._check_credentials(auth_header)
-
-        if username is None:
-            # Credentials missing or wrong — ask the browser to prompt.
-            start_response(
-                "401 Unauthorized",
-                [
-                    ("Content-Type", "text/plain"),
-                    ("WWW-Authenticate", f'Basic realm="{REALM}"'),
-                ],
-            )
-            return [b"Unauthorized"]
-
-        # Pass the verified username to the app via an environment variable
-        # so Mesop handlers can read it with os.environ or flask.request.environ.
-        environ["basic_auth_user"] = username
-        return self.app(environ, start_response)
-
-    def _check_credentials(self, auth_header: str) -> str | None:
-        """Return the username if credentials are valid, otherwise None."""
-        if not auth_header.startswith("Basic "):
-            return None
-        try:
-            decoded = base64.b64decode(auth_header[6:]).decode("utf-8")
-            username, _, password = decoded.partition(":")
-        except Exception:
-            return None
-
-        stored_hash = USERS.get(username)
-        if stored_hash and check_password_hash(stored_hash, password):
-            return username
-        return None
-
-
-# ------------------------------------------------------------------ #
-# Mesop app
-# ------------------------------------------------------------------ #
-
-@me.stateclass
-class State:
-    username: str
-
-
-def on_load(e: me.LoadEvent):
-    from flask import request
-    # Read the username set by the middleware.
-    me.state(State).username = request.environ.get("basic_auth_user", "")
-
-
-@me.page(path="/", on_load=on_load)
-def page():
-    me.text(f"Hello, {me.state(State).username}!")
-
-
-# Wrap the Mesop WSGI app with the Basic Auth middleware.
-app = BasicAuthMiddleware(create_wsgi_app(debug_mode=False))
-```
-
-Run with Gunicorn:
-
-```
-gunicorn --bind 0.0.0.0:8080 'your_module:app'
-```
-
-**Security checklist:**
-
-- Only use HTTP Basic Auth behind HTTPS — credentials are only Base64-encoded, not encrypted.
-- Store only hashed passwords, never plaintext.
-- Never put credentials in source code or committed files. Use your platform's secret management solution — for example [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/), or a `.env` file that is listed in `.gitignore` for local development.
-- Consider combining with an IP allowlist at the network/load-balancer level for extra protection.
-
----
 
 ## Cookies
 
@@ -568,3 +450,121 @@ def settings():
 - **Cookie value size:** Browsers limit individual cookies to ~4 KB.  Use server-side session storage (database, Redis, etc.) for larger payloads and store only an opaque session ID in the cookie.
 - **Sensitive data:** Use `@me.cookieclass(encrypted=True)` to hide cookie contents, or store only an opaque token and keep sensitive data server-side.
 - **Cookie value visibility during apply:** When `me.set_cookie()` is called, the pending cookie values are embedded in the `ApplyCookiesCommand` token that passes through browser JavaScript before being POSTed to `/__apply-cookies`.  The token is HMAC-signed but not encrypted, so the values are Base64-readable in that brief window.  For cookies that must never be visible to JavaScript (e.g. an `httponly` session token whose raw value is sensitive), use `@me.cookieclass(encrypted=True)` — the value is Fernet-encrypted before it ever leaves the server, so the token carries only ciphertext.
+
+---
+
+## HTTP Basic Auth
+
+HTTP Basic Auth lets the browser display a native username/password pop-up with no login page required. It is a good fit for internal tools where:
+
+- The entire app should be protected (no public pages)
+- You want the simplest possible setup with zero UI code
+- The app is served over HTTPS (required — Basic Auth sends credentials in plaintext otherwise)
+
+> **Warning:** Do not use HTTP Basic Auth over plain HTTP. Always deploy behind HTTPS.
+
+**How it works:**
+
+A WSGI middleware wrapper intercepts every request before it reaches Mesop. If the `Authorization` header is missing or the credentials are wrong, the middleware returns a `401` response immediately and the browser shows its built-in sign-in dialog. Valid requests are passed through to Mesop as normal.
+
+**Prerequisites:**
+
+- `werkzeug` (already installed with Mesop)
+
+**Example:**
+
+```python
+import base64
+import os
+import mesop as me
+from werkzeug.security import check_password_hash, generate_password_hash
+from mesop import create_wsgi_app
+
+# In production, load from environment variables or a database.
+# Generate hashes with: werkzeug.security.generate_password_hash("my-password")
+USERS: dict[str, str] = {
+    "alice": os.environ["ALICE_PASSWORD_HASH"],
+}
+
+REALM = "My Internal Tool"
+
+
+class BasicAuthMiddleware:
+    """WSGI middleware that enforces HTTP Basic Auth on every request."""
+
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        # Parse the Authorization header.
+        auth_header = environ.get("HTTP_AUTHORIZATION", "")
+        username = self._check_credentials(auth_header)
+
+        if username is None:
+            # Credentials missing or wrong — ask the browser to prompt.
+            start_response(
+                "401 Unauthorized",
+                [
+                    ("Content-Type", "text/plain"),
+                    ("WWW-Authenticate", f'Basic realm="{REALM}"'),
+                ],
+            )
+            return [b"Unauthorized"]
+
+        # Pass the verified username to the app via an environment variable
+        # so Mesop handlers can read it with os.environ or flask.request.environ.
+        environ["basic_auth_user"] = username
+        return self.app(environ, start_response)
+
+    def _check_credentials(self, auth_header: str) -> str | None:
+        """Return the username if credentials are valid, otherwise None."""
+        if not auth_header.startswith("Basic "):
+            return None
+        try:
+            decoded = base64.b64decode(auth_header[6:]).decode("utf-8")
+            username, _, password = decoded.partition(":")
+        except Exception:
+            return None
+
+        stored_hash = USERS.get(username)
+        if stored_hash and check_password_hash(stored_hash, password):
+            return username
+        return None
+
+
+# ------------------------------------------------------------------ #
+# Mesop app
+# ------------------------------------------------------------------ #
+
+@me.stateclass
+class State:
+    username: str
+
+
+def on_load(e: me.LoadEvent):
+    from flask import request
+    # Read the username set by the middleware.
+    me.state(State).username = request.environ.get("basic_auth_user", "")
+
+
+@me.page(path="/", on_load=on_load)
+def page():
+    me.text(f"Hello, {me.state(State).username}!")
+
+
+# Wrap the Mesop WSGI app with the Basic Auth middleware.
+app = BasicAuthMiddleware(create_wsgi_app(debug_mode=False))
+```
+
+Run with Gunicorn:
+
+```
+gunicorn --bind 0.0.0.0:8080 'your_module:app'
+```
+
+**Security checklist:**
+
+- Only use HTTP Basic Auth behind HTTPS — credentials are only Base64-encoded, not encrypted.
+- Store only hashed passwords, never plaintext.
+- Never put credentials in source code or committed files. Use your platform's secret management solution — for example [GCP Secret Manager](https://cloud.google.com/secret-manager), [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/), or a `.env` file that is listed in `.gitignore` for local development.
+- Consider combining with an IP allowlist at the network/load-balancer level for extra protection.
