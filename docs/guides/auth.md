@@ -358,50 +358,6 @@ def on_logout(e: me.ClickEvent):
     me.delete_cookie(SessionCookie)   # pass the class, not a string
 ```
 
-#### Full login / logout example
-
-```python
-import mesop as me
-
-@me.cookieclass
-class SessionCookie:
-    username: str = ""
-
-@me.stateclass
-class State:
-    logged_in: bool = False
-    username: str = ""
-
-def on_load(e: me.LoadEvent):
-    session = me.cookie(SessionCookie)
-    if session.username:
-        state = me.state(State)
-        state.logged_in = True
-        state.username = session.username
-
-@me.page(path="/", on_load=on_load)
-def page():
-    state = me.state(State)
-    if state.logged_in:
-        me.text(f"Logged in as: {state.username}")
-        me.button("Log out", on_click=on_logout)
-    else:
-        me.text("Not logged in.")
-        me.button("Log in as Alice", on_click=on_login)
-
-def on_login(e: me.ClickEvent):
-    state = me.state(State)
-    state.logged_in = True
-    state.username = "alice"
-    me.set_cookie(SessionCookie(username="alice"), max_age=3600)
-
-def on_logout(e: me.ClickEvent):
-    state = me.state(State)
-    state.logged_in = False
-    state.username = ""
-    me.delete_cookie(SessionCookie)
-```
-
 ### Signed and encrypted cookies
 
 By default `@me.cookieclass` stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting `signed=True` or `encrypted=True` on the decorator.
