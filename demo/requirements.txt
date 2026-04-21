@@ -6,3 +6,4 @@ Werkzeug==3.0.6
 matplotlib
 numpy
 pandas
+pydantic

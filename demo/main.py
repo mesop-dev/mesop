@@ -104,7 +104,13 @@ import tooltip as tooltip
 import uploader as uploader
 import video as video
 
+async_action = _import_demo_subdir("async_action")
+charts = _import_demo_subdir("charts")
 copy_to_clipboard = _import_demo_subdir("copy_to_clipboard")
+hotkeys = _import_demo_subdir("hotkeys")
+leaflet = _import_demo_subdir("leaflet")
+plotly = _import_demo_subdir("plotly")
+svg_icon = _import_demo_subdir("svg_icon")
 
 
 @dataclass
@@ -243,10 +249,52 @@ COMPONENTS_SECTIONS = [
     name="Web Components",
     examples=[
       Example(
+        name="async_action",
+        extra_files=[
+          "async_action_component.py",
+          "async_action_component.js",
+        ],
+      ),
+      Example(
+        name="charts",
+        extra_files=[
+          "chartjs_component.py",
+          "chartjs_component.js",
+        ],
+      ),
+      Example(
         name="copy_to_clipboard",
         extra_files=[
           "copy_to_clipboard_component.py",
           "copy_to_clipboard_component.js",
+        ],
+      ),
+      Example(
+        name="hotkeys",
+        extra_files=[
+          "hotkeys_component.py",
+          "hotkeys_component.js",
+        ],
+      ),
+      Example(
+        name="leaflet",
+        extra_files=[
+          "leaflet_component.py",
+          "leaflet_component.js",
+        ],
+      ),
+      Example(
+        name="plotly",
+        extra_files=[
+          "plotly_component.py",
+          "plotly_component.js",
+        ],
+      ),
+      Example(
+        name="svg_icon",
+        extra_files=[
+          "svg_icon_component.py",
+          "svg_icon_component.js",
         ],
       ),
     ],
