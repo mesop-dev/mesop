@@ -42,6 +42,12 @@ SECTIONS = [
         app_url="https://huggingface.co/spaces/wwwillchen/mesop-duo-chat",
         img_url="https://github.com/user-attachments/assets/107afb9c-f08c-4f27-bd00-e122415c069e",
       ),
+    ],
+  ),
+  Section(
+    name="Apps",
+    icon="computer",
+    resources=[
       Resource(
         title="Mesop Prompt Tuner",
         description="Prompt tuning app heavily inspired by Anthropic Console Workbench.",
@@ -50,12 +56,6 @@ SECTIONS = [
         github_url="https://github.com/richard-to/mesop-prompt-tuner",
         github_username="richard-to",
       ),
-    ],
-  ),
-  Section(
-    name="Apps",
-    icon="computer",
-    resources=[
       Resource(
         title="Mesop Arena",
         description="Rate generated images head-to-head. Includes ELO leaderboard and voting history.",
