@@ -101,6 +101,14 @@ SECTIONS = [
         github_url="https://github.com/richard-to/mesop-jeopardy",
         github_username="richard-to",
       ),
+      Resource(
+        title="Vidhai - AI Driven Farm Planner",
+        description="AI-driven farm planning app for smallholder farmers in Tamil Nadu. Built with Mesop and Google ADK, it uses generative AI and semantic search to guide farms toward regenerative agroforestry.",
+        app_url="https://vidhai.sankalp.life/",
+        img_url="https://github.com/user-attachments/assets/586c5b1e-7179-4dbc-82f1-e78ec72c432d",
+        github_url="",
+        github_username="justsankalp",
+      ),
     ],
   ),
   Section(
