@@ -15,6 +15,14 @@ from hotkeys_component import HotKey, hotkeys_component
 
 import mesop as me
 
+instruction_text = """
+The hotkeys are active when you have focus in the text area.
+
+- Press Escape
+- Press Shift+Enter to submit text
+- Press CMD+s to save
+"""
+
 
 @me.stateclass
 class State:
@@ -47,13 +55,19 @@ def page():
     HotKey(key="Escape", action="close"),
   ]
   with me.box(style=me.Style(margin=me.Margin.all(15))):
+    me.text(
+      "Hot key example",
+      type="headline-4",
+      style=me.Style(margin=me.Margin(bottom=5)),
+    )
+    me.markdown(instruction_text)
+
     with hotkeys_component(hotkeys=hotkeys, on_hotkey_press=on_key_press):
       me.textarea(
         on_input=on_input, rows=5, style=me.Style(display="block", width="100%")
       )
     with me.box(
       style=me.Style(
-        background="#ececec",
         margin=me.Margin(top=15),
         padding=me.Padding.all(10),
       )

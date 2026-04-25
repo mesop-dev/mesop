@@ -155,27 +155,6 @@ config_pie = {
   "options": _PIE_OPTIONS,
 }
 
-config_polar_area = {
-  "type": "polarArea",
-  "data": {
-    "labels": ["Pies", "Donuts", "Cakes", "Cookies", "Brownies"],
-    "datasets": [
-      {
-        "label": "Dessert Sales",
-        "data": [11, 16, 7, 3, 14],
-        "backgroundColor": [
-          _RED,
-          _GREEN,
-          _YELLOW,
-          _GREY,
-          _BLUE,
-        ],
-      }
-    ],
-  },
-  "options": _POLAR_AREA_OPTIONS,
-}
-
 
 def on_load(e: me.LoadEvent):
   me.set_theme_mode("system")
@@ -222,8 +201,3 @@ def page():
       me.card_header(title="Pie Chart", subtitle=_SUBTITLE_DATE)
       with me.card_content():
         chartjs_component(config=config_pie)
-
-    with me.card():
-      me.card_header(title="Polar Area Chart", subtitle=_SUBTITLE_DATE)
-      with me.card_content():
-        chartjs_component(config=config_polar_area)
