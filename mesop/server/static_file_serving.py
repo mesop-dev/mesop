@@ -19,6 +19,7 @@ from mesop.env.env import (
   MESOP_HTTP_CACHE_JS_BUNDLE,
   MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY,
   MESOP_WEBSOCKETS_ENABLED,
+  MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT,
   get_app_base_path,
 )
 from mesop.exceptions import MesopException
@@ -102,6 +103,7 @@ def configure_static_file_serving(
       ):
         experiment_settings = {
           "websocketsEnabled": MESOP_WEBSOCKETS_ENABLED,
+          "websocketsReloadOnDisconnect": MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT,
           "webComponentsCacheKey": MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY,
         }
         lines[i] = f"""

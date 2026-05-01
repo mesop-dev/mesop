@@ -48,6 +48,18 @@ MESOP_WEBSOCKETS_ENABLED = (
   os.environ.get("MESOP_WEBSOCKETS_ENABLED", "false").lower() == "true"
 )
 
+# When the WebSocket reconnect attempts are exhausted, the client probes a
+# lightweight HTTP endpoint to distinguish a transient network failure from an
+# auth-proxy redirect (which the browser hides from JS for cross-origin WS
+# handshakes). If the probe indicates the underlying HTTP layer is unhealthy
+# (non-2xx, cross-origin redirect, or fetch error), the client reloads the
+# page so the proxy's SSO redirect can run as a normal HTTP navigation.
+# See: https://github.com/mesop-dev/mesop/issues/1389
+MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT = (
+  os.environ.get("MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT", "false").lower()
+  == "true"
+)
+
 MESOP_HTTP_CACHE_JS_BUNDLE = (
   os.environ.get("MESOP_HTTP_CACHE_JS_BUNDLE", "false").lower() == "true"
 )

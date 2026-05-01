@@ -8,6 +8,7 @@ describe('ExperimentService', () => {
   it('uses default settings when __MESOP_EXPERIMENTS__ is not set', () => {
     const service = new ExperimentService();
     expect(service.websocketsEnabled).toBe(false);
+    expect(service.websocketsReloadOnDisconnect).toBe(false);
   });
 
   it('reads websocketsEnabled=true from window settings', () => {
@@ -17,6 +18,16 @@ describe('ExperimentService', () => {
     };
     const service = new ExperimentService();
     expect(service.websocketsEnabled).toBe(true);
+  });
+
+  it('reads websocketsReloadOnDisconnect=true from window settings', () => {
+    (window as any).__MESOP_EXPERIMENTS__ = {
+      websocketsEnabled: true,
+      websocketsReloadOnDisconnect: true,
+      webComponentsCacheKey: null,
+    };
+    const service = new ExperimentService();
+    expect(service.websocketsReloadOnDisconnect).toBe(true);
   });
 
   it('reads webComponentsCacheKey from window settings', () => {

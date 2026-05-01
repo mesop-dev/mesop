@@ -51,6 +51,7 @@ from mesop.warn import warn
 
 UI_PATH = prefix_base_url("/__ui__")
 APPLY_COOKIES_PATH = prefix_base_url("/__apply-cookies")
+HEALTH_PATH = prefix_base_url("/__health__")
 
 logger = logging.getLogger(__name__)
 
@@ -505,6 +506,16 @@ def configure_flask_app(
         httponly=cookie.httponly,
         samesite=cookie.samesite,
       )
+    return resp
+
+  @flask_app.route(HEALTH_PATH, methods=["GET"])
+  def health() -> Response:
+    # Lightweight liveness probe used by the client to distinguish a transient
+    # WebSocket failure from an auth-proxy redirect that the browser hides
+    # from JS. A reverse proxy enforcing auth will intercept this with its own
+    # 3xx/4xx response, which is exactly what the client needs to detect.
+    resp = make_response("ok", 200)
+    resp.headers["Cache-Control"] = "no-store"
     return resp
 
   @flask_app.teardown_request

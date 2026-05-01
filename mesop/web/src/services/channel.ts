@@ -256,9 +256,69 @@ export class Channel {
             const refreshRequest = this.createInitRequest();
             this.initWebSocket(initParams, refreshRequest);
           }, backoffDelay);
+        } else if (this.experimentService.websocketsReloadOnDisconnect) {
+          // Reconnect attempts are exhausted. The browser hides handshake-time
+          // HTTP responses (e.g. an auth proxy returning 302) from JS, so we
+          // probe a same-origin HTTP endpoint to distinguish auth/proxy
+          // failure from a real server-side WS issue. If the probe shows the
+          // HTTP layer is unhealthy, reload so the proxy's SSO redirect can
+          // run as a normal navigation.
+          // See: https://github.com/mesop-dev/mesop/issues/1389
+          this.maybeReloadAfterDisconnect();
         }
       });
     };
+  }
+
+  private async maybeReloadAfterDisconnect() {
+    // Throttle reloads via sessionStorage so a server returning auth failures
+    // for both WS and the probe doesn't put the page into a reload loop.
+    const RELOAD_THROTTLE_KEY = 'mesop_ws_last_reload_ms';
+    const RELOAD_THROTTLE_MS = 60_000;
+    try {
+      const last = Number(sessionStorage.getItem(RELOAD_THROTTLE_KEY) ?? '0');
+      if (Number.isFinite(last) && Date.now() - last < RELOAD_THROTTLE_MS) {
+        console.warn(
+          'WebSocket disconnect recovery: skipping reload (throttled).',
+        );
+        return;
+      }
+    } catch {
+      // sessionStorage may be unavailable (e.g. private mode); fall through.
+    }
+
+    let shouldReload = false;
+    try {
+      const response = await fetch(prefixBasePath('/__health__'), {
+        method: 'GET',
+        credentials: 'include',
+        cache: 'no-store',
+        redirect: 'follow',
+      });
+      // Non-2xx, or a redirect that landed on a different origin (typical SSO
+      // flow), means the HTTP layer can't reach Mesop — reload so the user
+      // can re-authenticate.
+      const responseUrl = new URL(response.url, window.location.href);
+      const crossOrigin = responseUrl.origin !== window.location.origin;
+      if (!response.ok || response.redirected || crossOrigin) {
+        shouldReload = true;
+      }
+    } catch {
+      // Network error / opaque redirect — treat as unhealthy and reload.
+      shouldReload = true;
+    }
+
+    if (shouldReload) {
+      try {
+        sessionStorage.setItem(RELOAD_THROTTLE_KEY, String(Date.now()));
+      } catch {
+        // ignore
+      }
+      console.warn(
+        'WebSocket disconnect recovery: reloading page to recover connection.',
+      );
+      window.location.reload();
+    }
   }
 
   private async handleUiResponse(
