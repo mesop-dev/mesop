@@ -19,6 +19,7 @@ from mesop.env.env import (
   MESOP_HTTP_CACHE_JS_BUNDLE,
   MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY,
   MESOP_WEBSOCKETS_ENABLED,
+  MESOP_WEBSOCKETS_PROBE_ON_DISCONNECT,
   get_app_base_path,
 )
 from mesop.exceptions import MesopException
@@ -103,6 +104,7 @@ def configure_static_file_serving(
         experiment_settings = {
           "websocketsEnabled": MESOP_WEBSOCKETS_ENABLED,
           "webComponentsCacheKey": MESOP_WEB_COMPONENTS_HTTP_CACHE_KEY,
+          "websocketsProbeOnDisconnect": MESOP_WEBSOCKETS_PROBE_ON_DISCONNECT,
         }
         lines[i] = f"""
           <script nonce="{g.csp_nonce}">
@@ -133,6 +135,12 @@ def configure_static_file_serving(
     return send_file(
       get_path("sandbox_iframe.html"), download_name="sandbox_iframe.html"
     )
+
+  @app.route(prefix_base_url("/__health__"), methods=["GET", "HEAD"])
+  def serve_health():
+    response = make_response("OK")
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
   @app.route(prefix_base_url(f"/{WEB_COMPONENTS_PATH_SEGMENT}/<path:path>"))
   def serve_web_components(path: str):
