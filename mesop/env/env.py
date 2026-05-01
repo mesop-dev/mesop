@@ -54,6 +54,11 @@ MESOP_WEBSOCKETS_ENABLED = (
 # handshakes). If the probe indicates the underlying HTTP layer is unhealthy
 # (non-2xx, cross-origin redirect, or fetch error), the client reloads the
 # page so the proxy's SSO redirect can run as a normal HTTP navigation.
+#
+# Caveat: the reload drops any in-flight client state (typed-but-unsubmitted
+# form input, scroll position, ephemeral UI state). Apps that need to preserve
+# state across recovery should leave this off until a connection-state API is
+# available.
 # See: https://github.com/mesop-dev/mesop/issues/1389
 MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT = (
   os.environ.get("MESOP_WEBSOCKETS_RELOAD_ON_DISCONNECT", "false").lower()

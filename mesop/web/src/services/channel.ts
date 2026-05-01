@@ -314,6 +314,10 @@ export class Channel {
       } catch {
         // ignore
       }
+      // Caveat: a full reload drops any in-flight client state (typed-but-
+      // unsubmitted form input, scroll position, ephemeral UI state). The
+      // longer-term fix is a connection-state API that lets the app decide
+      // whether to auto-reload, prompt the user, or persist state first.
       console.warn(
         'WebSocket disconnect recovery: reloading page to recover connection.',
       );
