@@ -59,6 +59,7 @@ export class Channel {
   private webSocket: WebSocket | undefined;
   private wsReconnectAttempts = 0;
   private wsMaxReconnectAttempts = 3;
+  private isProbing = false;
   private initParams!: InitParams;
   private states: States = new States();
   private stateToken = '';
@@ -91,10 +92,40 @@ export class Channel {
       userEvent.setChangePrefersColorScheme(new ChangePrefersColorScheme());
       this.dispatch(userEvent);
     });
+
+    window.addEventListener('focus', async () => {
+      if (
+        this.isWebSocketDead &&
+        this.experimentService.websocketsProbeOnDisconnect &&
+        !this.isProbing
+      ) {
+        this.isProbing = true;
+        try {
+          console.debug('Window focused, probing connection...');
+          const isRedirected = await this.probeConnection();
+          if (!isRedirected) {
+            console.debug('Auth restored, retrying connection...');
+            const refreshRequest = this.createInitRequest();
+            this.init(this.initParams, refreshRequest);
+          }
+        } finally {
+          this.isProbing = false;
+        }
+      }
+    });
   }
 
   getStatus(): ChannelStatus {
     return this.status;
+  }
+
+  private get isWebSocketDead(): boolean {
+    return (
+      this.experimentService.websocketsEnabled &&
+      !!this.webSocket &&
+      (this.webSocket.readyState === WebSocket.CLOSED ||
+        this.webSocket.readyState === WebSocket.CLOSING)
+    );
   }
 
   isHotReloading(): boolean {
@@ -445,18 +476,26 @@ export class Channel {
     };
 
     if (this.status === ChannelStatus.CLOSED) {
-      const isWebSocketDead =
-        this.experimentService.websocketsEnabled &&
-        this.webSocket &&
-        (this.webSocket.readyState === WebSocket.CLOSED ||
-          this.webSocket.readyState === WebSocket.CLOSING);
-
-      if (isWebSocketDead) {
+      if (this.isWebSocketDead) {
         this.queuedEvents.push(initUserEvent);
 
         const refreshRequest = this.createInitRequest();
 
-        this.init(this.initParams, refreshRequest);
+        if (this.experimentService.websocketsProbeOnDisconnect) {
+          this.probeConnection().then((isRedirected) => {
+            if (isRedirected) {
+              window.dispatchEvent(
+                new CustomEvent('mesop:auth-required', {
+                  detail: {url: window.location.href},
+                }),
+              );
+            } else {
+              this.init(this.initParams, refreshRequest);
+            }
+          });
+        } else {
+          this.init(this.initParams, refreshRequest);
+        }
       } else {
         initUserEvent();
       }
@@ -490,6 +529,28 @@ export class Channel {
     if (this.queuedEvents.length) {
       const queuedEvent = this.queuedEvents.shift()!;
       queuedEvent();
+    }
+  }
+
+  /**
+   * Probes the connection to check if the session is still valid or if it has
+   * been redirected by a proxy (e.g., to an SSO login page).
+   *
+   * We use `redirect: 'manual'` to detect redirects without following them,
+   * which avoids CORS issues if the redirect points to a different domain.
+   *
+   * @returns true if a redirect was detected (meaning session expired), false otherwise.
+   */
+  private async probeConnection(): Promise<boolean> {
+    try {
+      const response = await fetch(prefixBasePath('/__health__'), {
+        method: 'HEAD',
+        redirect: 'manual',
+      });
+      return response.type === 'opaqueredirect';
+    } catch (error) {
+      console.error('Probe connection error:', error);
+      return false;
     }
   }
 
