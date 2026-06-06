@@ -10,6 +10,7 @@ from mesop.component_helpers.helper import (
   DetachedNodeTreeStateContext,
   NamedSlot,
   UnnamedSlot,
+  map_code_value,
   _UserCompositeComponent,
   check_property_keys_is_safe,
   register_event_handler,
@@ -343,6 +344,31 @@ def test_event_handler_registers_different_handler_id_based_on_event_type(app):
     assert (
       blur_handler_id != select_handler_id
     ), "Handler IDs should be different for different event types"
+
+
+def test_map_code_value_string():
+  assert map_code_value("hello") == pb.CodeValue(string_value="hello")
+
+
+def test_map_code_value_int():
+  assert map_code_value(42) == pb.CodeValue(int_value=42)
+
+
+def test_map_code_value_float():
+  assert map_code_value(3.14) == pb.CodeValue(double_value=3.14)
+
+
+def test_map_code_value_bool_true():
+  # bool is a subclass of int in Python, so this must be checked before int
+  assert map_code_value(True) == pb.CodeValue(bool_value=True)
+
+
+def test_map_code_value_bool_false():
+  assert map_code_value(False) == pb.CodeValue(bool_value=False)
+
+
+def test_map_code_value_none():
+  assert map_code_value(None) is None
 
 
 if __name__ == "__main__":
