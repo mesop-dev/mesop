@@ -380,12 +380,12 @@ def get_component_name(fn: Callable[..., Any]) -> pb.ComponentName:
 def map_code_value(value: Any) -> pb.CodeValue | None:
   if isinstance(value, str):
     return pb.CodeValue(string_value=value)
+  if isinstance(value, bool):
+    return pb.CodeValue(bool_value=value)
   if isinstance(value, int):
     return pb.CodeValue(int_value=value)
   if isinstance(value, float):
     return pb.CodeValue(double_value=value)
-  if isinstance(value, bool):
-    return pb.CodeValue(bool_value=value)
   return None
 
 
