@@ -1,4 +1,4 @@
-mesop==1.2.7
+mesop==1.3.2
 Flask==3.0.0
 gunicorn==22.0.0
 Werkzeug==3.0.6
