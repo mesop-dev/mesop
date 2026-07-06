@@ -57,7 +57,9 @@ def notebook_run(*, port: int = 32123, prod_mode: bool = False):
   log_startup(port=port)
 
   def run_flask_app():
-    flask_app.run(host=get_public_host(), port=port, use_reloader=False)
+    flask_app.run(
+      host=get_public_host(), port=port, use_reloader=False, threaded=True
+    )
 
   # Launch Flask in background thread so we don't hog up the main thread
   # for regular Colab usage.

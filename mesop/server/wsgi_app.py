@@ -22,7 +22,9 @@ class App:
   def run(self):
     log_startup(port=port())
 
-    self._flask_app.run(host=get_local_host(), port=port(), use_reloader=False)
+    self._flask_app.run(
+      host=get_local_host(), port=port(), use_reloader=False, threaded=True
+    )
 
 
 def create_app(
