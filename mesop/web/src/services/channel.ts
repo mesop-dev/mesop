@@ -562,9 +562,15 @@ export class Channel {
         );
         if (response.status === 200) {
           const text = await response.text();
-          this.hotReloadCounter = Number(text);
-          this.hotReload();
+          const newCounter = Number(text);
           this.hotReloadBackoffCounter = 0;
+          // The server may respond without the counter having changed (e.g.
+          // it hit its max poll duration with no reload having happened).
+          // Only trigger a reload when the counter actually advanced.
+          if (newCounter !== this.hotReloadCounter) {
+            this.hotReloadCounter = newCounter;
+            this.hotReload();
+          }
           // Use void to explicitly not await to avoid downstream sync issue.
           void pollHotReloadEndpoint();
         } else {
