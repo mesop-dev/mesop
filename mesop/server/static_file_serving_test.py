@@ -4,7 +4,11 @@ from io import BytesIO
 
 from flask import Flask
 
-from mesop.server.static_file_serving import gzip_cache, send_file_compressed
+from mesop.server.static_file_serving import (
+  _sanitize_terminal,
+  gzip_cache,
+  send_file_compressed,
+)
 
 
 # Putting this test first because it's making sure the cache is empty.
@@ -60,6 +64,7 @@ def test_send_file_compressed_cached_request():
     gzip_file.write(cached_bytes)
   gzip_buffer.seek(0)
   gzip_cache[tmp_file_path] = gzip_buffer.getvalue()
+
   with app.test_request_context():
     response = send_file_compressed(tmp_file_path, disable_gzip_cache=False)
 
@@ -67,10 +72,22 @@ def test_send_file_compressed_cached_request():
     assert response.direct_passthrough is False
     assert int(response.headers["Content-Length"]) == len(response.get_data())
 
-    # Check that the cached bytes is returned
+    # Check that the cached bytes are returned
     with gzip.GzipFile(fileobj=BytesIO(response.get_data()), mode="rb") as f:
       ungzipped_data = f.read()
       assert ungzipped_data == cached_bytes
+
+
+def test_sanitize_terminal_removes_ansi_escape_sequences():
+  payload = "\x1b[2J\x1b[H\x1b[32mPWNED\x1b[0m"
+
+  assert _sanitize_terminal(payload) == "PWNED"
+
+
+def test_sanitize_terminal_keeps_plain_text():
+  payload = "Normal CSP report message"
+
+  assert _sanitize_terminal(payload) == payload
 
 
 if __name__ == "__main__":
