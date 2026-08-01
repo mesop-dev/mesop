@@ -44,6 +44,30 @@ def noop():
   pass
 
 
+# Matches ANSI CSI, OSC, and other common ANSI/VT100 escape sequences so they
+# can be stripped from untrusted data before it's written to the terminal.
+_ANSI_ESCAPE_RE = re.compile(
+  r"""
+    \x1B
+    (?:
+        \[[0-?]*[ -/]*[@-~]              # CSI
+      | \][^\x07\x1B]*(?:\x07|\x1B\\)    # OSC
+      | [PX^_][^\x1B]*\x1B\\             # DCS/APC/PM/SOS
+      | [@-_]                            # 2-byte escape
+    )
+    """,
+  re.VERBOSE,
+)
+
+
+def _sanitize_terminal(value: object) -> str:
+  # Prevent ANSI/VT100 terminal escape injection when logging
+  # attacker-controlled data (e.g. CSP report fields).
+  if not isinstance(value, str):
+    value = str(value)
+  return _ANSI_ESCAPE_RE.sub("", value)
+
+
 def configure_static_file_serving(
   app: Flask,
   static_file_runfiles_base: str,
@@ -185,14 +209,16 @@ def configure_static_file_serving(
     # but it's actually application/csp-report
     report = request.get_json(force=True)
 
-    document_uri: str = report["csp-report"]["document-uri"]
+    document_uri: str = _sanitize_terminal(report["csp-report"]["document-uri"])
     path = urlparse(document_uri).path
-    blocked_uri: str = report["csp-report"]["blocked-uri"]
+    blocked_uri: str = _sanitize_terminal(report["csp-report"]["blocked-uri"])
     # Remove the path from blocked_uri, keeping only the origin.
     blocked_site = (
       urlparse(blocked_uri).scheme + "://" + urlparse(blocked_uri).netloc
     )
-    violated_directive: str = report["csp-report"]["violated-directive"]
+    violated_directive: str = _sanitize_terminal(
+      report["csp-report"]["violated-directive"]
+    )
     if violated_directive == "script-src-elem":
       keyword_arg = "allowed_script_srcs"
     elif violated_directive == "connect-src":
