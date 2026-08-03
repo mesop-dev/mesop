@@ -150,7 +150,8 @@ def _recursive_update_dataclass_from_json_obj(instance: Any, json_dict: Any):
             # and the instance has an attribute with a matching name,
             # we assume the dict should be converted into a dataclass.
             attr = getattr(instance, key)
-            item_instance = instance.__annotations__[key].__args__[0]()
+            type_hints = get_type_hints(type(instance))
+            item_instance = type_hints[key].__args__[0]()
             updated_list.append(
               _recursive_update_dataclass_from_json_obj(item_instance, item)
             )
