@@ -621,7 +621,7 @@ def test_class_level_attribute_pollution_blocked():
   """
 
   class MutableRoleMap(dict):
-    __hash__ = object.__hash__  # (mimic a hashable-but-mutable gadget)
+    __hash__ = object.__hash__  # type: ignore (mimic a hashable-but-mutable gadget)
 
   class RoleService:
     # Class-level (not annotated, so not a dataclass field) shared mapping.
