@@ -133,6 +133,14 @@ def _recursive_update_dataclass_from_json_obj(instance: Any, json_dict: Any):
       raise MesopDeveloperException(
         f"Cannot use dunder property: {key} in stateclass"
       )
+    if (
+      not isinstance(instance, dict)
+      and hasattr(instance, key)
+      and key not in getattr(instance, "__dataclass_fields__", {})
+    ):
+      raise MesopDeveloperException(
+        f"Cannot set non-dataclass-field property: {key} in stateclass"
+      )
     if hasattr(instance, key):
       attr = getattr(instance, key)
       if isinstance(value, dict):

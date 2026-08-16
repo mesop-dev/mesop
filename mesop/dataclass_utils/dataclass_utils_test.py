@@ -612,5 +612,37 @@ def test_globals_pollution():
   assert __name__ == initial_name
 
 
+def test_class_level_attribute_pollution_blocked():
+  """Regression test for class-level mutable attribute pollution.
+
+  A non-dunder key that resolves to a class-level attribute (rather than a
+  declared dataclass field) must be rejected, since setting it would mutate
+  state shared across all sessions instead of the per-instance field.
+  """
+
+  class MutableRoleMap(dict):
+    __hash__ = object.__hash__  # type: ignore (mimic a hashable-but-mutable gadget)
+
+  class RoleService:
+    # Class-level (not annotated, so not a dataclass field) shared mapping.
+    role_map = MutableRoleMap({"assistant": "user"})
+
+  @dataclass
+  class ChatState:
+    service: RoleService = field(default_factory=RoleService)
+
+  state = ChatState()
+  with pytest.raises(MesopDeveloperException) as exc_info:
+    update_dataclass_from_json(
+      state, '{"service": {"role_map": {"assistant": "system"}}}'
+    )
+  assert (
+    "Cannot set non-dataclass-field property: role_map in stateclass"
+    in str(exc_info.value)
+  )
+  # Make sure the shared class-level mapping was not mutated.
+  assert RoleService.role_map == {"assistant": "user"}
+
+
 if __name__ == "__main__":
   raise SystemExit(pytest.main(["-vv", __file__]))
