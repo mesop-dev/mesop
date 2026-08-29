@@ -76,6 +76,10 @@ def configure_static_file_serving(
   disable_gzip_cache: bool = False,
   default_allowed_iframe_parents: str = "'self'",
 ):
+  # Register @me.serve handlers.
+  for rule, handler_func in runtime().get_rule_to_handlers().items():
+    app.add_url_rule(rule, view_func=handler_func)
+
   def get_path(path: str):
     safe_path = safe_join(static_file_runfiles_base, path)
     assert safe_path
