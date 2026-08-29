@@ -579,7 +579,6 @@ def test_diff_int_dict_keys():
   ]
 
 
-# This looks like a bug.
 def test_diff_tuple_dict_keys():
   @dataclass
   class C:
@@ -596,14 +595,17 @@ def test_diff_tuple_dict_keys():
     }
   )
 
+  # Tuple keys are encoded as their str() representation so that the diff
+  # path is a single, unambiguous element "(1, 2)" rather than the key being
+  # incorrectly expanded into two separate path segments 1 and 2.
   assert json.loads(diff_state(s1, s2)) == [
     {
-      "path": ["val1", 1, 2],
+      "path": ["val1", "(1, 2)"],
       "action": "values_changed",
       "value": "V1",
-      "old_value": "unknown___",
+      "old_value": "v1",
       "type": "<class 'str'>",
-      "old_type": "unknown___",
+      "old_type": "<class 'str'>",
       "new_path": None,
       "t1_from_index": None,
       "t1_to_index": None,
