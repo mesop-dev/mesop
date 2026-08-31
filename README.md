@@ -1,5 +1,9 @@
 # Mesop: Build delightful web apps quickly in Python 🚀
 
+<!-- prettier-ignore -->
+> [!WARNING]
+> **Mesop is no longer maintained as of September 30, 2026.** No further updates, bug fixes, or support will be provided.
+
 [![PyPI](https://img.shields.io/pypi/v/mesop)](https://pypi.org/project/mesop/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/mesop)](https://pypi.org/project/mesop/)
 [![Twitter follow](https://img.shields.io/twitter/follow/mesop_dev?style=social&label=follow)](https://twitter.com/mesop_dev)

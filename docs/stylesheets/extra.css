@@ -562,3 +562,14 @@ h3#mesop\.features\.theme\.ThemeVar {
     align-items: center;
   }
 }
+
+/* Archival notice banner (see docs/theme/main.html) */
+.md-banner {
+  background-color: var(--amber-600);
+  color: var(--white);
+}
+
+.md-banner a {
+  color: var(--white);
+  text-decoration: underline;
+}
