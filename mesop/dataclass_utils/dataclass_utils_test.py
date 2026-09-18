@@ -322,6 +322,57 @@ def test_update_dataclass_from_json_list_nested_dataclass():
   assert a.strs == ["a", "b"]
 
 
+@dataclass
+class Usage:
+  input_tokens: int = 0
+
+
+@dataclass(frozen=True)
+class FrozenUsage:
+  input_tokens: int = 0
+
+
+@dataclass
+class ItemWithOptionalNestedDataclass:
+  name: str = ""
+  usage: Usage | None = None
+
+
+@dataclass
+class ListStateWithOptionalNestedDataclass:
+  items: list[ItemWithOptionalNestedDataclass] = field(default_factory=list)
+
+
+@dataclass
+class StateWithFrozenNestedDataclass:
+  usage: FrozenUsage = field(default_factory=FrozenUsage)
+
+
+def test_update_dataclass_from_json_optional_nested_dataclass():
+  state = ItemWithOptionalNestedDataclass(name="b", usage=Usage(input_tokens=7))
+  new_state = ItemWithOptionalNestedDataclass()
+  update_dataclass_from_json(new_state, serialize_dataclass(state))
+  assert new_state == state
+
+
+def test_update_dataclass_from_json_optional_nested_dataclass_inside_list():
+  state = ListStateWithOptionalNestedDataclass(
+    items=[
+      ItemWithOptionalNestedDataclass(name="a", usage=Usage(input_tokens=7))
+    ]
+  )
+  new_state = ListStateWithOptionalNestedDataclass()
+  update_dataclass_from_json(new_state, serialize_dataclass(state))
+  assert new_state == state
+
+
+def test_update_dataclass_from_json_frozen_nested_dataclass():
+  state = StateWithFrozenNestedDataclass(usage=FrozenUsage(input_tokens=7))
+  new_state = StateWithFrozenNestedDataclass()
+  update_dataclass_from_json(new_state, serialize_dataclass(state))
+  assert new_state == state
+
+
 def test_update_dataclass_with_pandas_dataframe():
   serialized_dataclass = serialize_dataclass(
     WithPandasDataFrame(

@@ -4,7 +4,17 @@ import json
 from dataclasses import Field, asdict, dataclass, field, is_dataclass
 from datetime import date, datetime
 from io import StringIO
-from typing import Any, Type, TypeVar, cast, get_origin, get_type_hints
+from types import UnionType
+from typing import (
+  Any,
+  Type,
+  TypeVar,
+  Union,
+  cast,
+  get_args,
+  get_origin,
+  get_type_hints,
+)
 
 from deepdiff import DeepDiff, Delta
 from deepdiff.operator import BaseOperator
@@ -144,25 +154,41 @@ def _recursive_update_dataclass_from_json_obj(instance: Any, json_dict: Any):
     if hasattr(instance, key):
       attr = getattr(instance, key)
       if isinstance(value, dict):
-        # If the value is a dict, recursively update the dataclass.
-        setattr(
-          instance,
-          key,
-          _recursive_update_dataclass_from_json_obj(attr, value),
-        )
+        type_hints = get_type_hints(type(instance))
+        field_type = _resolve_optional_dataclass_type(type_hints.get(key))
+        if is_dataclass(field_type):
+          # Build the nested dataclass directly from the payload instead of
+          # recursing into whatever `attr` currently holds. This is required
+          # when `attr` is `None` (e.g. an `X | None` field that hasn't been
+          # set yet) since there's nothing to recurse into, and when the
+          # nested dataclass is frozen, since its fields can't be set via
+          # setattr at all.
+          setattr(
+            instance, key, _build_dataclass_from_json_obj(field_type, value)
+          )
+        else:
+          # If the value is a dict, recursively update the dataclass.
+          setattr(
+            instance,
+            key,
+            _recursive_update_dataclass_from_json_obj(attr, value),
+          )
       elif isinstance(value, list):
+        type_hints = get_type_hints(type(instance))
+        item_type = _resolve_optional_dataclass_type(
+          getattr(type_hints.get(key), "__args__", (None,))[0]
+        )
         updated_list: list[Any] = []
         for item in cast(list[Any], value):
-          if isinstance(item, dict):
+          if (
+            isinstance(item, dict)
+            and item_type is not None
+            and is_dataclass(item_type)
+          ):
             # If the json item value is an instance of dict
-            # and the instance has an attribute with a matching name,
-            # we assume the dict should be converted into a dataclass.
-            attr = getattr(instance, key)
-            type_hints = get_type_hints(type(instance))
-            item_instance = type_hints[key].__args__[0]()
-            updated_list.append(
-              _recursive_update_dataclass_from_json_obj(item_instance, item)
-            )
+            # and the list's type hint is a dataclass, build the item
+            # directly from the payload (see comment above for why).
+            updated_list.append(_build_dataclass_from_json_obj(item_type, item))
           else:
             # If the item is not a dict, append it directly.
             updated_list.append(item)
@@ -178,6 +204,60 @@ def _recursive_update_dataclass_from_json_obj(instance: Any, json_dict: Any):
           f"Unhandled stateclass deserialization where key={key}, value={value}, instance={instance}"
         )
   return instance
+
+
+def _resolve_optional_dataclass_type(type_hint: Any) -> Any:
+  """Strips `X | None` (or `Optional[X]`) down to `X`."""
+  if get_origin(type_hint) in (Union, UnionType):
+    args = [arg for arg in get_args(type_hint) if arg is not type(None)]
+    if len(args) == 1:
+      return args[0]
+  return type_hint
+
+
+def _build_dataclass_from_json_obj(dataclass_type: Any, json_dict: dict) -> Any:
+  """
+  Builds a new dataclass instance directly from a JSON dict via the
+  constructor, rather than instantiating an empty instance and mutating it
+  with setattr.
+
+  This is needed for fields typed `X | None` that are currently `None`
+  (there's no existing instance to mutate into) and for frozen dataclasses
+  (their fields can't be set via setattr at all).
+  """
+  dataclass_fields = getattr(dataclass_type, "__dataclass_fields__", {})
+  type_hints = get_type_hints(dataclass_type)
+  kwargs: dict[str, Any] = {}
+  for key, value in json_dict.items():
+    if key.startswith("__") and key.endswith("__"):
+      raise MesopDeveloperException(
+        f"Cannot use dunder property: {key} in stateclass"
+      )
+    if key not in dataclass_fields:
+      raise MesopDeveloperException(
+        f"Cannot set non-dataclass-field property: {key} in stateclass"
+      )
+    field_type = _resolve_optional_dataclass_type(type_hints[key])
+    if isinstance(value, dict) and is_dataclass(field_type):
+      kwargs[key] = _build_dataclass_from_json_obj(field_type, value)
+    elif isinstance(value, list):
+      item_type = _resolve_optional_dataclass_type(
+        getattr(field_type, "__args__", (None,))[0]
+      )
+      updated_list: list[Any] = []
+      for item in cast(list[Any], value):
+        if (
+          isinstance(item, dict)
+          and item_type is not None
+          and is_dataclass(item_type)
+        ):
+          updated_list.append(_build_dataclass_from_json_obj(item_type, item))
+        else:
+          updated_list.append(item)
+      kwargs[key] = updated_list
+    else:
+      kwargs[key] = value
+  return dataclass_type(**kwargs)
 
 
 class MesopJSONEncoder(json.JSONEncoder):
