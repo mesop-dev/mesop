@@ -1,6 +1,6 @@
 """Contains the version string."""
 
-VERSION = "1.3.6"
+VERSION = "1.3.7"
 
 if __name__ == "__main__":
   print(VERSION)
