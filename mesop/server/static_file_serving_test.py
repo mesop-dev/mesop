@@ -97,6 +97,41 @@ def test_sanitize_terminal_keeps_plain_text():
   assert _sanitize_terminal(payload) == payload
 
 
+def test_sanitize_terminal_removes_bare_control_characters():
+  # C0 controls (incl. CR/LF/BS/BEL), DEL, C1 controls (e.g. 8-bit CSI) and
+  # a stray ESC are not ESC-prefixed sequences but still affect the terminal.
+  for ch in [
+    "\x00",
+    "\x07",
+    "\x08",
+    "\t",
+    "\n",
+    "\x0b",
+    "\x0c",
+    "\r",
+    "\x0e",
+    "\x0f",
+    "\x1b",
+    "\x7f",
+    "\x85",
+    "\x9b",
+  ]:
+    assert _sanitize_terminal(f"before{ch}after") == "beforeafter", repr(ch)
+
+
+def test_sanitize_terminal_removes_bidi_overrides():
+  rlo, lri, pdi = chr(0x202E), chr(0x2066), chr(0x2069)
+  payload = f"abc{rlo}def{lri}g{pdi}"
+
+  assert _sanitize_terminal(payload) == "abcdefg"
+
+
+def test_sanitize_terminal_keeps_non_ascii_text():
+  payload = "https://例え.jp/café?q=ü"
+
+  assert _sanitize_terminal(payload) == payload
+
+
 def test_sanitize_terminal_coerces_non_str_input():
   assert _sanitize_terminal(123) == "123"
 
@@ -130,6 +165,35 @@ def test_csp_report_sanitizes_ansi_escapes_in_output(capsys):
   assert "\x1b]0;INJECTED-TITLE" not in output
   assert "pwned/page" in output
   assert "evil.example" in output
+
+
+def test_csp_report_strips_control_characters_in_output(capsys):
+  app = Flask(__name__)
+  configure_static_file_serving(
+    app,
+    static_file_runfiles_base="unused",
+    disable_gzip_cache=True,
+  )
+  client = app.test_client()
+
+  response = client.post(
+    "/__csp__",
+    json={
+      "csp-report": {
+        "document-uri": "https://example.com/page\nFAKE: forged line",
+        "blocked-uri": "https://evil.example/x\rINFO: server healthy\x08\x07",
+        "violated-directive": "connect-src",
+      }
+    },
+  )
+
+  assert response.status_code == 204
+  output = capsys.readouterr().out
+  for ch in ["\r", "\x08", "\x07"]:
+    assert ch not in output
+  assert "\nFAKE" not in output
+  assert "https://evil.example/xINFO: server healthy" in output
+  assert "/pageFAKE: forged line" in output
 
 
 if __name__ == "__main__":

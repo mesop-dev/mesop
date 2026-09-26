@@ -59,13 +59,23 @@ _ANSI_ESCAPE_RE = re.compile(
   re.VERBOSE,
 )
 
+# Matches control characters that are not part of an ESC-prefixed sequence but
+# can still manipulate terminal output (e.g. CR/BS overwrite text, LF forges new
+# log lines, 0x9B is an 8-bit CSI), plus Unicode bidi overrides which can
+# visually reorder text.
+_CONTROL_CHARS_RE = re.compile(
+  r"[\x00-\x1f\x7f-\x9f\u200e\u200f\u202a-\u202e\u2066-\u2069]"
+)
+
 
 def _sanitize_terminal(value: object) -> str:
-  # Prevent ANSI/VT100 terminal escape injection when logging
+  # Prevent terminal escape and control character injection when logging
   # attacker-controlled data (e.g. CSP report fields).
   if not isinstance(value, str):
     value = str(value)
-  return _ANSI_ESCAPE_RE.sub("", value)
+  value = _ANSI_ESCAPE_RE.sub("", value)
+  # Strip any remaining control characters (including a stray ESC).
+  return _CONTROL_CHARS_RE.sub("", value)
 
 
 def configure_static_file_serving(
