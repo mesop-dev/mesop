@@ -1,0 +1,2699 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../multi-pages/">
+      
+      
+        <link rel="next" href="../theming/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>Auth - Mesop</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="mesop-light" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#auth" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+<strong>⚠️ Mesop is no longer maintained as of September 30, 2026.</strong>
+No further updates, bug fixes, or support will be provided. 
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      <!-- https://github.com/squidfunk/mkdocs-material/blob/68332de12e50eb62b8a9282b4cac7f75e51d9ea9/src/templates/partials/header.html -->
+<!--
+  Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+  IN THE SOFTWARE.
+-->
+
+<!-- Determine classes -->
+   
+
+<!-- Header -->
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <!-- Link to home -->
+    <a
+      href="../.."
+      title="Mesop"
+      class="md-header__button md-logo"
+      aria-label="Mesop"
+      data-md-component="logo"
+    >
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+
+    <!-- Button to open drawer -->
+    <label class="md-header__button md-icon" for="__drawer">
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+
+    <!-- Header title -->
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis"> Mesop </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+             Auth 
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Color palette toggle -->
+     
+    <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="mesop-light" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="mesop-dark" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>  
+
+    <!-- User preference: color palette -->
+     <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script> 
+
+    <!-- Site language selector -->
+    
+
+    <!-- Button to open search modal -->
+    
+    <label class="md-header__button md-icon" for="__search">
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+    </label>
+
+    <!-- Search interface -->
+    <!-- https://github.com/squidfunk/mkdocs-material/blob/d5363ad000d049b25ce0f66c3781040d277bfa7f/src/templates/partials/search.html -->
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input
+        type="text"
+        class="md-search__input"
+        name="query"
+        aria-label="Search"
+        placeholder="Search"
+        autocapitalize="off"
+        autocorrect="off"
+        autocomplete="off"
+        spellcheck="false"
+        data-md-component="search-query"
+        required
+      />
+      <label class="md-search__icon md-icon" for="__search">
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button
+          type="reset"
+          class="md-search__icon md-icon"
+          title="Clear"
+          aria-label="Clear"
+          tabindex="-1"
+        >
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+
+    <!-- Repository information -->
+    
+    <div class="md-header__source"><a href="https://github.com/mesop-dev/mesop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mesop-dev/mesop
+  </div>
+</a></div>
+    
+  </nav>
+
+  <!-- Navigation tabs (sticky) -->
+    
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installing/" class="md-tabs__link">
+          
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../state-management/" class="md-tabs__link">
+          
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../components/" class="md-tabs__link">
+          
+  
+  Components
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/page/" class="md-tabs__link">
+          
+  
+  API
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../faq/" class="md-tabs__link">
+          
+  
+  FAQ
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../demo/" class="md-tabs__link">
+        
+  
+    
+  
+  Demo 🌐
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../showcase/" class="md-tabs__link">
+        
+  
+    
+  
+  Showcase 🌐
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../blog/" class="md-tabs__link">
+          
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../internal/contributing/" class="md-tabs__link">
+          
+  
+  Contributing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Mesop" class="md-nav__button md-logo" aria-label="Mesop" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    Mesop
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mesop-dev/mesop" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mesop-dev/mesop
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../getting-started/installing/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Guides
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Fundamentals
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Fundamentals
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-management/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State Management
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../event-handlers/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Event Handlers
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactivity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interactivity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../layouts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Layouts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Enhancements
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Enhancements
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi-pages/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-Pages
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Auth
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Auth
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-iap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Google Cloud IAP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firebase-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Firebase Authentication
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Firebase Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#web-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web component
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#js-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      JS code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integrating-into-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating into the app
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cookies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cookies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How it works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mecookieclass-structured-cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      @me.cookieclass — structured cookies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@me.cookieclass — structured cookies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reading-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading a cookie
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-updating-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing / updating a cookie
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleting-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting a cookie
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signed-and-encrypted-cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signed and encrypted cookies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-level-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Low-level API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Low-level API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mecookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.cookie()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meset_cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.set_cookie()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medelete_cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.delete_cookie()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#username-and-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      Username and Password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-basic-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Basic Auth
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../theming/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Theming
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../static-assets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Static assets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-integration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Server integration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Development
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../debugging/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Debugging
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Labs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Production
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Production
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../performance/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Performance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../web-security/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Web Security
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    
+  
+  
+    <a href="../../components/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Components
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../api/page/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    API
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../faq/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../demo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Demo 🌐
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../showcase/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Showcase 🌐
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../blog/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../internal/contributing/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#google-cloud-iap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Google Cloud IAP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#firebase-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Firebase Authentication
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Firebase Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#web-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web component
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web component">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#js-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      JS code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#python-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integrating-into-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integrating into the app
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cookies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cookies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How it works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mecookieclass-structured-cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      @me.cookieclass — structured cookies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="@me.cookieclass — structured cookies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reading-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reading a cookie
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#writing-updating-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Writing / updating a cookie
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleting-a-cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting a cookie
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signed-and-encrypted-cookies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signed and encrypted cookies
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-level-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Low-level API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Low-level API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mecookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.cookie()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meset_cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.set_cookie()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medelete_cookie" class="md-nav__link">
+    <span class="md-ellipsis">
+      me.delete_cookie()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#username-and-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      Username and Password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security notes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-basic-auth" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP Basic Auth
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="auth">Auth<a class="headerlink" href="#auth" title="Permanent link">&para;</a></h1>
+<p>Mesop is designed to be auth provider agnostic. You can integrate any auth library you prefer, whether it's on the client-side (JavaScript) or server-side (Python). This guide covers several approaches so you can choose the one that fits your deployment.</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>Best for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#google-cloud-iap">Google Cloud IAP</a></td>
+<td>Apps already on App Engine or Cloud Run</td>
+</tr>
+<tr>
+<td><a href="#firebase-authentication">Firebase Authentication</a></td>
+<td>Apps that need social sign-in or multi-provider auth</td>
+</tr>
+<tr>
+<td><a href="#cookies">Cookies</a></td>
+<td>Persisting session tokens or structured data across requests; includes a <a href="#username-and-password">username/password login example</a> (experimental)</td>
+</tr>
+<tr>
+<td><a href="#http-basic-auth">HTTP Basic Auth</a></td>
+<td>Internal tools where a browser pop-up is acceptable and no login UI is needed</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Important:</strong> Regardless of which approach you choose, always enforce authorization on the server side in your event handlers. Never rely solely on client-visible state to gate privileged actions. See the <a href="../state-management/#security-best-practices">state management security guide</a> for more details.</p>
+</blockquote>
+<h2 id="google-cloud-iap">Google Cloud IAP<a class="headerlink" href="#google-cloud-iap" title="Permanent link">&para;</a></h2>
+<p><a href="https://cloud.google.com/iap">Google Cloud Identity-Aware Proxy (IAP)</a> handles authentication entirely at the infrastructure level before any request reaches your Mesop app. This is the simplest approach if you are already deploying to App Engine or Cloud Run — there is no login UI to build and no tokens to manage in your app.</p>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>You enable IAP on your App Engine or Cloud Run service in the Google Cloud Console.</li>
+<li>Google handles the sign-in flow and only forwards authenticated requests to your app.</li>
+<li>Each forwarded request includes a signed <code>X-Goog-IAP-JWT-Assertion</code> header containing the user's identity.</li>
+<li>Your app verifies this header and trusts the identity inside it.</li>
+</ol>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>A Google Cloud project with App Engine or Cloud Run</li>
+<li>IAP enabled on your service (see the <a href="https://cloud.google.com/iap/docs/enabling-cloud-run">IAP docs</a> for setup)</li>
+<li><code>google-auth</code> Python package (<code>pip install google-auth</code>)</li>
+</ul>
+<p><strong>Finding your audience string:</strong></p>
+<p>The audience value for JWT verification depends on your service type:</p>
+<ul>
+<li><strong>App Engine:</strong> <code>/projects/PROJECT_NUMBER/apps/PROJECT_ID</code></li>
+<li><strong>Cloud Run:</strong> <code>/projects/PROJECT_NUMBER/global/backendServices/SERVICE_ID</code></li>
+</ul>
+<p>You can find <code>PROJECT_NUMBER</code> and <code>PROJECT_ID</code> in the Google Cloud Console. For Cloud Run, get <code>SERVICE_ID</code> from the <a href="https://cloud.google.com/iap/docs/signed-headers-howto#securing_iap_headers">IAP settings page</a>.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># requirements.txt: google-auth</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span> <span class="nn">os</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">import</span> <span class="nn">google.auth.transport.requests</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">import</span> <span class="nn">google.oauth2.id_token</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Set via environment variable in production.</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Format for App Engine:  /projects/PROJECT_NUMBER/apps/PROJECT_ID</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Format for Cloud Run:   /projects/PROJECT_NUMBER/global/backendServices/SERVICE_ID</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">IAP_AUDIENCE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;IAP_AUDIENCE&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">_http_request</span> <span class="o">=</span> <span class="n">google</span><span class="o">.</span><span class="n">auth</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">requests</span><span class="o">.</span><span class="n">Request</span><span class="p">()</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">def</span> <span class="nf">verify_iap_jwt</span><span class="p">(</span><span class="n">iap_jwt</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="k">return</span> <span class="n">google</span><span class="o">.</span><span class="n">oauth2</span><span class="o">.</span><span class="n">id_token</span><span class="o">.</span><span class="n">verify_token</span><span class="p">(</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="n">iap_jwt</span><span class="p">,</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="n">_http_request</span><span class="p">,</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="n">audience</span><span class="o">=</span><span class="n">IAP_AUDIENCE</span><span class="p">,</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="n">certs_url</span><span class="o">=</span><span class="s2">&quot;https://www.gstatic.com/iap/verify/public_key&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="p">)</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="nd">@me</span><span class="o">.</span><span class="n">stateclass</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">user_email</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">LoadEvent</span><span class="p">):</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">iap_jwt</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;X-Goog-IAP-JWT-Assertion&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">iap_jwt</span><span class="p">:</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="c1"># Header is absent — IAP is not in front of this request.</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="c1"># This can happen during local development. Gate accordingly.</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>        <span class="n">me</span><span class="o">.</span><span class="n">navigate</span><span class="p">(</span><span class="s2">&quot;/unauthorized&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>        <span class="k">return</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>        <span class="n">payload</span> <span class="o">=</span> <span class="n">verify_iap_jwt</span><span class="p">(</span><span class="n">iap_jwt</span><span class="p">)</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="n">me</span><span class="o">.</span><span class="n">navigate</span><span class="p">(</span><span class="s2">&quot;/unauthorized&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="k">return</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">user_email</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">on_load</span><span class="o">=</span><span class="n">on_load</span><span class="p">)</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="k">def</span> <span class="nf">page</span><span class="p">():</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">user_email</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>
+<a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>
+<a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/unauthorized&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="k">def</span> <span class="nf">unauthorized_page</span><span class="p">():</span>
+<a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>    <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Access denied.&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Local development tip:</strong> The IAP header is absent when running locally. You can detect this and either skip the check (during development only) or inject a fake header via a local reverse proxy like <a href="https://cloud.google.com/run/docs/testing/local">Cloud Run proxy</a>.</p>
+<h2 id="firebase-authentication">Firebase Authentication<a class="headerlink" href="#firebase-authentication" title="Permanent link">&para;</a></h2>
+<p>This guide will walk you through the process of integrating Firebase Authentication with Mesop using a custom web component.</p>
+<p><strong>Pre-requisites:</strong> You will need to create a <a href="https://firebase.google.com/">Firebase</a> account and project. It's free to get started with Firebase and use Firebase auth for small projects, but refer to the <a href="https://firebase.google.com/pricing">pricing page</a> for the most up-to-date information.</p>
+<p>We will be using three libraries from Firebase to build an end-to-end auth flow:</p>
+<ul>
+<li><a href="https://firebase.google.com/docs/web/learn-more">Firebase Web SDK</a>: Allows you to call Firebase services from your client-side JavaScript code.</li>
+<li><a href="https://github.com/firebase/firebaseui-web">FirebaseUI Web</a>: Provides a simple, customizable auth UI integrated with the Firebase Web SDK.</li>
+<li><a href="https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_the_firebase_admin_sdk">Firebase Admin SDK (Python)</a>: Provides server-side libraries to integrate Firebase services, including Authentication, into your Python applications.</li>
+</ul>
+<p>Let's dive into how we will use each one in our Mesop app.</p>
+<h3 id="web-component">Web component<a class="headerlink" href="#web-component" title="Permanent link">&para;</a></h3>
+<p>The Firebase Authentication web component is a custom component built for handling the user authentication process. It's implemented using <a href="https://lit.dev/">Lit</a>, a simple library for building lightweight web components.</p>
+<h4 id="js-code">JS code<a class="headerlink" href="#js-code" title="Permanent link">&para;</a></h4>
+<div class="highlight"><span class="filename">firebase_auth_component.js</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nx">LitElement</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nx">html</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">import</span><span class="w"> </span><span class="s1">&#39;https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">import</span><span class="w"> </span><span class="s1">&#39;https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">import</span><span class="w"> </span><span class="s1">&#39;https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.js&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// TODO: replace this with your web app&#39;s Firebase configuration</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="kd">const</span><span class="w"> </span><span class="nx">firebaseConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;AIzaSyAQR9T7sk1lElXTEUBYHx7jv7d_Bs2zt-s&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="nx">authDomain</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;mesop-auth-test.firebaseapp.com&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="nx">projectId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;mesop-auth-test&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">  </span><span class="nx">storageBucket</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;mesop-auth-test.appspot.com&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span><span class="nx">messagingSenderId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;565166920272&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span><span class="nx">appId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;1:565166920272:web:4275481621d8e5ba91b755&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="p">};</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">// Initialize Firebase</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="nx">firebase</span><span class="p">.</span><span class="nx">initializeApp</span><span class="p">(</span><span class="nx">firebaseConfig</span><span class="p">);</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="kd">const</span><span class="w"> </span><span class="nx">uiConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">  </span><span class="c1">// TODO: change this to your Mesop page path.</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">  </span><span class="nx">signInSuccessUrl</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;/web_component/firebase_auth/firebase_auth_app&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">  </span><span class="nx">signInFlow</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;popup&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">  </span><span class="nx">signInOptions</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">GoogleAuthProvider</span><span class="p">.</span><span class="nx">PROVIDER_ID</span><span class="p">],</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="c1">// tosUrl and privacyPolicyUrl accept either url string or a callback</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">  </span><span class="c1">// function.</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">  </span><span class="c1">// Terms of service url/callback.</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">  </span><span class="nx">tosUrl</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&lt;your-tos-url&gt;&#39;</span><span class="p">,</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">  </span><span class="c1">// Privacy policy url/callback.</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">  </span><span class="nx">privacyPolicyUrl</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">    </span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="s1">&#39;&lt;your-privacy-policy-url&gt;&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="p">};</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="c1">// Initialize the FirebaseUI Widget using Firebase.</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="kd">const</span><span class="w"> </span><span class="nx">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">firebaseui</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">AuthUI</span><span class="p">(</span><span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">());</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="kd">class</span><span class="w"> </span><span class="nx">FirebaseAuthComponent</span><span class="w"> </span><span class="k">extends</span><span class="w"> </span><span class="nx">LitElement</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="nx">properties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">    </span><span class="nx">isSignedIn</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">Boolean</span><span class="p">},</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">    </span><span class="nx">authChanged</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">type</span><span class="o">:</span><span class="w"> </span><span class="nb">String</span><span class="p">},</span>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">  </span><span class="p">};</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">  </span><span class="kr">constructor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">    </span><span class="k">super</span><span class="p">();</span>
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">isSignedIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="w">  </span><span class="nx">createRenderRoot</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">    </span><span class="c1">// Render in light DOM so firebase-ui-auth works.</span>
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">;</span>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>
+<a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="w">  </span><span class="nx">firstUpdated</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="w">    </span><span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">().</span><span class="nx">onAuthStateChanged</span><span class="p">(</span>
+<a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">      </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">isSignedIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a><span class="w">          </span><span class="kd">const</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">getIdToken</span><span class="p">();</span>
+<a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">MesopEvent</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">authChanged</span><span class="p">,</span><span class="w"> </span><span class="nx">token</span><span class="p">));</span>
+<a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">isSignedIn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">          </span><span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span><span class="ow">new</span><span class="w"> </span><span class="nx">MesopEvent</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">authChanged</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">));</span>
+<a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a><span class="w">      </span><span class="p">},</span>
+<a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">      </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">        </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+<a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">      </span><span class="p">},</span>
+<a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="w">    </span><span class="p">);</span>
+<a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a>
+<a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a><span class="w">    </span><span class="nx">ui</span><span class="p">.</span><span class="nx">start</span><span class="p">(</span><span class="s1">&#39;#firebaseui-auth-container&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">uiConfig</span><span class="p">);</span>
+<a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a>
+<a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">  </span><span class="nx">signOut</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a><span class="w">    </span><span class="nx">firebase</span><span class="p">.</span><span class="nx">auth</span><span class="p">().</span><span class="nx">signOut</span><span class="p">();</span>
+<a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a>
+<a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="w">  </span><span class="nx">render</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">html</span><span class="sb">`</span>
+<a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="sb">      &lt;div</span>
+<a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="sb">        id=&quot;firebaseui-auth-container&quot;</span>
+<a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="sb">        style=&quot;</span><span class="si">${</span><span class="k">this</span><span class="p">.</span><span class="nx">isSignedIn</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;display: none&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="sb">&quot;</span>
+<a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="sb">      &gt;&lt;/div&gt;</span>
+<a id="__codelineno-1-87" name="__codelineno-1-87" href="#__codelineno-1-87"></a><span class="sb">      &lt;div</span>
+<a id="__codelineno-1-88" name="__codelineno-1-88" href="#__codelineno-1-88"></a><span class="sb">        class=&quot;firebaseui-container firebaseui-page-provider-sign-in firebaseui-id-page-provider-sign-in firebaseui-use-spinner&quot;</span>
+<a id="__codelineno-1-89" name="__codelineno-1-89" href="#__codelineno-1-89"></a><span class="sb">        style=&quot;</span><span class="si">${</span><span class="k">this</span><span class="p">.</span><span class="nx">isSignedIn</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;display: none&#39;</span><span class="si">}</span><span class="sb">&quot;</span>
+<a id="__codelineno-1-90" name="__codelineno-1-90" href="#__codelineno-1-90"></a><span class="sb">      &gt;</span>
+<a id="__codelineno-1-91" name="__codelineno-1-91" href="#__codelineno-1-91"></a><span class="sb">        &lt;button</span>
+<a id="__codelineno-1-92" name="__codelineno-1-92" href="#__codelineno-1-92"></a><span class="sb">          style=&quot;background-color:#ffffff&quot;</span>
+<a id="__codelineno-1-93" name="__codelineno-1-93" href="#__codelineno-1-93"></a><span class="sb">          class=&quot;firebaseui-idp-button mdl-button mdl-js-button mdl-button--raised firebaseui-idp-google firebaseui-id-idp-button&quot;</span>
+<a id="__codelineno-1-94" name="__codelineno-1-94" href="#__codelineno-1-94"></a><span class="sb">          @click=&quot;</span><span class="si">${</span><span class="k">this</span><span class="p">.</span><span class="nx">signOut</span><span class="si">}</span><span class="sb">&quot;</span>
+<a id="__codelineno-1-95" name="__codelineno-1-95" href="#__codelineno-1-95"></a><span class="sb">        &gt;</span>
+<a id="__codelineno-1-96" name="__codelineno-1-96" href="#__codelineno-1-96"></a><span class="sb">          &lt;span class=&quot;firebaseui-idp-text firebaseui-idp-text-long&quot;</span>
+<a id="__codelineno-1-97" name="__codelineno-1-97" href="#__codelineno-1-97"></a><span class="sb">            &gt;Sign out&lt;/span</span>
+<a id="__codelineno-1-98" name="__codelineno-1-98" href="#__codelineno-1-98"></a><span class="sb">          &gt;</span>
+<a id="__codelineno-1-99" name="__codelineno-1-99" href="#__codelineno-1-99"></a><span class="sb">        &lt;/button&gt;</span>
+<a id="__codelineno-1-100" name="__codelineno-1-100" href="#__codelineno-1-100"></a><span class="sb">      &lt;/div&gt;</span>
+<a id="__codelineno-1-101" name="__codelineno-1-101" href="#__codelineno-1-101"></a><span class="sb">    `</span><span class="p">;</span>
+<a id="__codelineno-1-102" name="__codelineno-1-102" href="#__codelineno-1-102"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-103" name="__codelineno-1-103" href="#__codelineno-1-103"></a><span class="p">}</span>
+<a id="__codelineno-1-104" name="__codelineno-1-104" href="#__codelineno-1-104"></a>
+<a id="__codelineno-1-105" name="__codelineno-1-105" href="#__codelineno-1-105"></a><span class="nx">customElements</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span><span class="s1">&#39;firebase-auth-component&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">FirebaseAuthComponent</span><span class="p">);</span>
+</code></pre></div>
+<p><strong>What you need to do:</strong></p>
+<ul>
+<li>Replace <code>firebaseConfig</code> with your Firebase project's config. Read the <a href="https://firebase.google.com/docs/web/learn-more#config-object">Firebase docs</a> to learn how to get yours.</li>
+<li>Replace the URLs <code>signInSuccessUrl</code> with your Mesop page path and <code>tosUrl</code> and <code>privacyPolicyUrl</code> to your terms and services and privacy policy page respectively.</li>
+</ul>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>This creates a simple and configurable auth UI using FirebaseUI Web.</li>
+<li>Once the user has signed in, then a sign out button is shown.</li>
+<li>Whenever the user signs in or out, the web component dispatches an event to the Mesop server with the auth token, or absence of it.</li>
+<li>See our <a href="../../web-components/quickstart/#javascript-module">web component docs</a> for more details.</li>
+</ul>
+<h4 id="python-code">Python code<a class="headerlink" href="#python-code" title="Permanent link">&para;</a></h4>
+<div class="highlight"><span class="filename">firebase_auth_component.py</span><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nd">@me</span><span class="o">.</span><span class="n">web_component</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;./firebase_auth_component.js&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">def</span> <span class="nf">firebase_auth_component</span><span class="p">(</span><span class="n">on_auth_changed</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">me</span><span class="o">.</span><span class="n">WebEvent</span><span class="p">],</span> <span class="n">Any</span><span class="p">]):</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  <span class="k">return</span> <span class="n">me</span><span class="o">.</span><span class="n">insert_web_component</span><span class="p">(</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;firebase-auth-component&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">events</span><span class="o">=</span><span class="p">{</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>      <span class="s2">&quot;authChanged&quot;</span><span class="p">:</span> <span class="n">on_auth_changed</span><span class="p">,</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="p">},</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  <span class="p">)</span>
+</code></pre></div>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Implements the Python side of the Mesop web component. See our <a href="../../web-components/quickstart/#python-module">web component docs</a> for more details.</li>
+</ul>
+<h3 id="integrating-into-the-app">Integrating into the app<a class="headerlink" href="#integrating-into-the-app" title="Permanent link">&para;</a></h3>
+<p>Let's put it all together:</p>
+<div class="highlight"><span class="filename">firebase_auth_app.py</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">firebase_admin</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">firebase_admin</span> <span class="kn">import</span> <span class="n">auth</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="kn">from</span> <span class="nn">mesop.examples.web_component.firebase_auth.firebase_auth_component</span> <span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  <span class="n">firebase_auth_component</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1"># Avoid re-initializing firebase app (useful for avoiding warning message because of hot reloads).</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">if</span> <span class="n">firebase_admin</span><span class="o">.</span><span class="n">_DEFAULT_APP_NAME</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">firebase_admin</span><span class="o">.</span><span class="n">_apps</span><span class="p">:</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  <span class="n">default_app</span> <span class="o">=</span> <span class="n">firebase_admin</span><span class="o">.</span><span class="n">initialize_app</span><span class="p">()</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>  <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/web_component/firebase_auth/firebase_auth_app&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>  <span class="n">stylesheets</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="s2">&quot;https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth.css&quot;</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>  <span class="p">],</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>  <span class="c1"># Loosen the security policy so the firebase JS libraries work.</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>  <span class="n">security_policy</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">SecurityPolicy</span><span class="p">(</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="n">dangerously_disable_trusted_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="n">allowed_connect_srcs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*.googleapis.com&quot;</span><span class="p">],</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="n">allowed_script_srcs</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>      <span class="s2">&quot;*.google.com&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>      <span class="s2">&quot;https://www.gstatic.com&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>      <span class="s2">&quot;https://cdn.jsdelivr.net&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="p">],</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>  <span class="p">),</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="p">)</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="k">def</span> <span class="nf">page</span><span class="p">():</span>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>  <span class="n">email</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">email</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>  <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>    <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Signed in email: &quot;</span> <span class="o">+</span> <span class="n">email</span><span class="p">)</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>  <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Not signed in&quot;</span><span class="p">)</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>  <span class="n">firebase_auth_component</span><span class="p">(</span><span class="n">on_auth_changed</span><span class="o">=</span><span class="n">on_auth_changed</span><span class="p">)</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="nd">@me</span><span class="o">.</span><span class="n">stateclass</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>  <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="k">def</span> <span class="nf">on_auth_changed</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">WebEvent</span><span class="p">):</span>
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>  <span class="n">firebaseAuthToken</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
+<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a>  <span class="k">if</span> <span class="ow">not</span> <span class="n">firebaseAuthToken</span><span class="p">:</span>
+<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>    <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>    <span class="k">return</span>
+<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
+<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a>  <span class="n">decoded_token</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">verify_id_token</span><span class="p">(</span><span class="n">firebaseAuthToken</span><span class="p">)</span>
+<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a>  <span class="c1"># You can do an allowlist if needed.</span>
+<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>  <span class="c1"># if decoded_token[&quot;email&quot;] != &quot;allowlisted.user@gmail.com&quot;:</span>
+<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>  <span class="c1">#   raise me.MesopUserException(&quot;Invalid user: &quot; + decoded_token[&quot;email&quot;])</span>
+<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a>  <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">decoded_token</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+</code></pre></div>
+<p><em>Note</em> You must add <code>firebase-admin</code> to your Mesop app's <code>requirements.txt</code> file</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>The <code>firebase_auth_app.py</code> module integrates the Firebase Auth web component into the Mesop app. It initializes the Firebase app, defines the page where the Firebase Auth web component will be used, and sets up the state to store the user's email.</li>
+<li>The <code>on_auth_changed</code> function is triggered whenever the user's authentication state changes. If the user is signed in, it verifies the user's ID token and stores the user's email in the state. If the user is not signed in, it clears the email from the state.</li>
+</ul>
+<h3 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h3>
+<p>Congrats! You've now built an authenticated app with Mesop from start to finish. Read the <a href="https://firebase.google.com/docs/auth">Firebase Auth docs</a> to learn how to configure additional sign-in options and much more.</p>
+<h2 id="cookies">Cookies<a class="headerlink" href="#cookies" title="Permanent link">&para;</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Experimental</p>
+<p>The cookie API is experimental. The interface may change in future releases.</p>
+</div>
+<p>Mesop provides a first-class cookie API so you can persist small pieces of data (session tokens, user preferences, etc.) in the browser without managing raw <code>Set-Cookie</code> headers yourself.</p>
+<div class="admonition note">
+<p class="admonition-title">MESOP_COOKIE_SECRET_KEY required</p>
+<p>Set <a href="../../api/config/#mesop_cookie_secret_key"><code>MESOP_COOKIE_SECRET_KEY</code></a> before starting Mesop:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">MESOP_COOKIE_SECRET_KEY</span><span class="o">=</span>your-random-secret<span class="w"> </span>mesop<span class="w"> </span>main.py
+</code></pre></div>
+<p>Generate a strong key:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import secrets; print(secrets.token_hex(32))&quot;</span>
+</code></pre></div>
+</div>
+<h3 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<p>Mesop event handlers run inside a streaming response (SSE or WebSockets). HTTP response headers — including <code>Set-Cookie</code> — are committed to the client <em>before</em> the event-handler body executes, so cookies cannot be set directly on the handler response. Instead, cookies are applied via a lightweight two-step protocol:</p>
+<ol>
+<li>Your event handler calls <code>me.set_cookie()</code>.</li>
+<li>Mesop encodes the pending cookie operations into a short-lived itsdangerous-signed token and sends an <code>ApplyCookiesCommand</code> to the browser.  Any server worker that holds the same <a href="../../api/config/#mesop_cookie_secret_key"><code>MESOP_COOKIE_SECRET_KEY</code></a> can verify and redeem the token.</li>
+<li>The Mesop client POSTs the token to <code>/__apply-cookies</code>, which verifies the signature, marks the token's nonce as used (single-use within a process), and responds with the <code>Set-Cookie</code> headers.</li>
+</ol>
+<p>This is transparent to your application code.</p>
+<h3 id="mecookieclass-structured-cookies"><code>@me.cookieclass</code> — structured cookies<a class="headerlink" href="#mecookieclass-structured-cookies" title="Permanent link">&para;</a></h3>
+<p>The recommended API is <code>@me.cookieclass</code>, which works like <code>@me.stateclass</code> but for cookies.  Fields are JSON-serialised automatically.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nd">@me</span><span class="o">.</span><span class="n">cookieclass</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">class</span> <span class="nc">SessionCookie</span><span class="p">:</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;guest&quot;</span>
+</code></pre></div>
+<h4 id="reading-a-cookie">Reading a cookie<a class="headerlink" href="#reading-a-cookie" title="Permanent link">&para;</a></h4>
+<p>Call <code>me.cookie(SessionCookie)</code> inside <code>on_load</code> or any event handler.  If the cookie is absent or unparseable, a fresh default instance is returned — no exception is raised.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">LoadEvent</span><span class="p">):</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">session</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">state</span><span class="o">.</span><span class="n">logged_in</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="n">state</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">username</span>
+</code></pre></div>
+<h4 id="writing-updating-a-cookie">Writing / updating a cookie<a class="headerlink" href="#writing-updating-a-cookie" title="Permanent link">&para;</a></h4>
+<p>Pass a cookieclass instance to <code>me.set_cookie()</code>.  The cookie name is derived from the class, and the fields are JSON-serialised automatically.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span> <span class="nf">on_login</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">ClickEvent</span><span class="p">):</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">me</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="n">SessionCookie</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">),</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>   <span class="c1"># seconds; omit for a session cookie</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="p">)</span>
+</code></pre></div>
+<p>When <code>secure</code> is omitted it auto-detects HTTPS — so the same code works in local HTTP development and in production HTTPS deployments without any extra configuration.</p>
+<h4 id="deleting-a-cookie">Deleting a cookie<a class="headerlink" href="#deleting-a-cookie" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">def</span> <span class="nf">on_logout</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">ClickEvent</span><span class="p">):</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">me</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>   <span class="c1"># pass the class, not a string</span>
+</code></pre></div>
+<h3 id="signed-and-encrypted-cookies">Signed and encrypted cookies<a class="headerlink" href="#signed-and-encrypted-cookies" title="Permanent link">&para;</a></h3>
+<p>By default <code>@me.cookieclass</code> stores the JSON value in plain text — readable in browser DevTools.  For cookies that carry sensitive data you can add tamper-protection or full encryption by setting <code>signed=True</code> or <code>encrypted=True</code> on the decorator.</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Protection</th>
+<th>Contents visible?</th>
+<th>Extra dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(default)</em></td>
+<td>None</td>
+<td>Yes (plain JSON)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>signed=True</code></td>
+<td>HMAC — tampering detected on read</td>
+<td>Yes (Base64)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>encrypted=True</code></td>
+<td>Fernet — contents hidden</td>
+<td>No</td>
+<td><code>pip install cryptography</code></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Tamper-proof — contents still visible in DevTools, but any modification</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># is detected and the cookie is silently discarded on the next read.</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nd">@me</span><span class="o">.</span><span class="n">cookieclass</span><span class="p">(</span><span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span> <span class="nc">SessionCookie</span><span class="p">:</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># Fully encrypted — contents hidden; requires pip install cryptography.</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="nd">@me</span><span class="o">.</span><span class="n">cookieclass</span><span class="p">(</span><span class="n">encrypted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="k">class</span> <span class="nc">SessionCookie</span><span class="p">:</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+</code></pre></div>
+<p>The read (<code>me.cookie()</code>) and write (<code>me.set_cookie()</code>) calls are identical regardless of the protection level — the signing or encryption is applied transparently.</p>
+<h3 id="low-level-api">Low-level API<a class="headerlink" href="#low-level-api" title="Permanent link">&para;</a></h3>
+<p>If you need full control over the cookie name and value format — for example when storing an opaque session token generated by an external library — use <code>me.set_cookie()</code> with explicit string arguments.</p>
+<blockquote>
+<p><strong>When to use which form:</strong> prefer the cookieclass form for structured data.  Use the low-level form only for raw opaque values.</p>
+</blockquote>
+<h4 id="mecookie"><code>me.cookie()</code><a class="headerlink" href="#mecookie" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">token</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">cookie</span><span class="p">(</span><span class="s2">&quot;session_id&quot;</span><span class="p">)</span>         <span class="c1"># low-level: raw string value (or &quot;&quot; if absent)</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">session</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>      <span class="c1"># high-level: typed cookieclass instance</span>
+</code></pre></div>
+<h4 id="meset_cookie"><code>me.set_cookie()</code><a class="headerlink" href="#meset_cookie" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Low-level: explicit name + raw string value.</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">me</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="s2">&quot;session_id&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="s2">&quot;abc123&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>        <span class="c1"># None → session cookie</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>    <span class="n">domain</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>         <span class="c1"># None → current domain</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>    <span class="n">secure</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>         <span class="c1"># None → auto-detect HTTPS (recommended default)</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">httponly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>       <span class="c1"># hidden from JavaScript</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>    <span class="n">samesite</span><span class="o">=</span><span class="s2">&quot;Lax&quot;</span><span class="p">,</span>      <span class="c1"># &quot;Lax&quot; | &quot;Strict&quot; | &quot;None&quot;</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="p">)</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1"># High-level: cookieclass instance — name and serialisation handled automatically.</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="n">me</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">),</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="medelete_cookie"><code>me.delete_cookie()</code><a class="headerlink" href="#medelete_cookie" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">me</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="s2">&quot;session_id&quot;</span><span class="p">)</span>      <span class="c1"># low-level: explicit string name</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">me</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>     <span class="c1"># high-level: class lookup</span>
+</code></pre></div>
+<h3 id="username-and-password">Username and Password<a class="headerlink" href="#username-and-password" title="Permanent link">&para;</a></h3>
+<p>This example combines a username/password login form with cookie-backed sessions. After a successful login the verified username is written to a signed cookie, so the session persists across page refreshes and new tabs — unlike a state-only approach, which is cleared on any hard navigation.</p>
+<blockquote>
+<p><strong>Warning:</strong> Rolling your own auth is error-prone. For production apps with many users, prefer a managed solution like <a href="#google-cloud-iap">Google Cloud IAP</a> or <a href="#firebase-authentication">Firebase Authentication</a>.</p>
+</blockquote>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li><code>werkzeug</code> (already installed with Mesop — used for password hashing)</li>
+</ul>
+<p><strong>Step 1 — Store hashed passwords</strong></p>
+<p>Never store plaintext passwords. Use <code>werkzeug.security</code> to hash them at setup time and store only the hash.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">werkzeug.security</span> <span class="kn">import</span> <span class="n">generate_password_hash</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="c1"># Run this once to generate the hash, then store it securely.</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">generate_password_hash</span><span class="p">(</span><span class="s2">&quot;my-secret-password&quot;</span><span class="p">))</span>
+</code></pre></div>
+<p><strong>Step 2 — Full example</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># cookie_auth_app.py</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># Run: gunicorn --bind 0.0.0.0:8080 cookie_auth_app:me</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1">#</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># One-time setup:</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">#   export ALICE_PASSWORD_HASH=&quot;$(python -c &quot;from werkzeug.security import generate_password_hash; print(generate_password_hash(&#39;hunter2&#39;))&quot;)&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1">#</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># Login with: username &quot;alice&quot;, password &quot;hunter2&quot;</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="kn">import</span> <span class="nn">os</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="kn">from</span> <span class="nn">werkzeug.security</span> <span class="kn">import</span> <span class="n">check_password_hash</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="c1"># In production, load from a database.</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="n">USERS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>    <span class="s2">&quot;alice&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ALICE_PASSWORD_HASH&quot;</span><span class="p">],</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="p">}</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="nd">@me</span><span class="o">.</span><span class="n">cookieclass</span><span class="p">(</span><span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="k">class</span> <span class="nc">SessionCookie</span><span class="p">:</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="nd">@me</span><span class="o">.</span><span class="n">stateclass</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>    <span class="n">username_input</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>    <span class="n">password_input</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>    <span class="n">error</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a>
+<a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a><span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">LoadEvent</span><span class="p">):</span>
+<a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a>    <span class="n">session</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>
+<a id="__codelineno-15-31" name="__codelineno-15-31" href="#__codelineno-15-31"></a>    <span class="k">if</span> <span class="n">session</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+<a id="__codelineno-15-32" name="__codelineno-15-32" href="#__codelineno-15-32"></a>        <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">username</span>
+<a id="__codelineno-15-33" name="__codelineno-15-33" href="#__codelineno-15-33"></a>
+<a id="__codelineno-15-34" name="__codelineno-15-34" href="#__codelineno-15-34"></a><span class="k">def</span> <span class="nf">on_username_input</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">InputEvent</span><span class="p">):</span>
+<a id="__codelineno-15-35" name="__codelineno-15-35" href="#__codelineno-15-35"></a>    <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">username_input</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
+<a id="__codelineno-15-36" name="__codelineno-15-36" href="#__codelineno-15-36"></a>
+<a id="__codelineno-15-37" name="__codelineno-15-37" href="#__codelineno-15-37"></a><span class="k">def</span> <span class="nf">on_password_input</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">InputEvent</span><span class="p">):</span>
+<a id="__codelineno-15-38" name="__codelineno-15-38" href="#__codelineno-15-38"></a>    <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">password_input</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">value</span>
+<a id="__codelineno-15-39" name="__codelineno-15-39" href="#__codelineno-15-39"></a>
+<a id="__codelineno-15-40" name="__codelineno-15-40" href="#__codelineno-15-40"></a><span class="k">def</span> <span class="nf">on_login</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">ClickEvent</span><span class="p">):</span>
+<a id="__codelineno-15-41" name="__codelineno-15-41" href="#__codelineno-15-41"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-15-42" name="__codelineno-15-42" href="#__codelineno-15-42"></a>    <span class="n">username</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">username_input</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<a id="__codelineno-15-43" name="__codelineno-15-43" href="#__codelineno-15-43"></a>
+<a id="__codelineno-15-44" name="__codelineno-15-44" href="#__codelineno-15-44"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">password_input</span><span class="p">:</span>
+<a id="__codelineno-15-45" name="__codelineno-15-45" href="#__codelineno-15-45"></a>        <span class="n">state</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Please enter a username and password.&quot;</span>
+<a id="__codelineno-15-46" name="__codelineno-15-46" href="#__codelineno-15-46"></a>        <span class="k">return</span>
+<a id="__codelineno-15-47" name="__codelineno-15-47" href="#__codelineno-15-47"></a>
+<a id="__codelineno-15-48" name="__codelineno-15-48" href="#__codelineno-15-48"></a>    <span class="n">stored_hash</span> <span class="o">=</span> <span class="n">USERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+<a id="__codelineno-15-49" name="__codelineno-15-49" href="#__codelineno-15-49"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">stored_hash</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">check_password_hash</span><span class="p">(</span><span class="n">stored_hash</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">password_input</span><span class="p">):</span>
+<a id="__codelineno-15-50" name="__codelineno-15-50" href="#__codelineno-15-50"></a>        <span class="n">state</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;Invalid username or password.&quot;</span>
+<a id="__codelineno-15-51" name="__codelineno-15-51" href="#__codelineno-15-51"></a>        <span class="n">state</span><span class="o">.</span><span class="n">password_input</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-52" name="__codelineno-15-52" href="#__codelineno-15-52"></a>        <span class="k">return</span>
+<a id="__codelineno-15-53" name="__codelineno-15-53" href="#__codelineno-15-53"></a>
+<a id="__codelineno-15-54" name="__codelineno-15-54" href="#__codelineno-15-54"></a>    <span class="n">state</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+<a id="__codelineno-15-55" name="__codelineno-15-55" href="#__codelineno-15-55"></a>    <span class="n">state</span><span class="o">.</span><span class="n">password_input</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-56" name="__codelineno-15-56" href="#__codelineno-15-56"></a>    <span class="n">state</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-57" name="__codelineno-15-57" href="#__codelineno-15-57"></a>    <span class="n">me</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">username</span><span class="p">),</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">86400</span><span class="p">)</span>  <span class="c1"># 1 day</span>
+<a id="__codelineno-15-58" name="__codelineno-15-58" href="#__codelineno-15-58"></a>
+<a id="__codelineno-15-59" name="__codelineno-15-59" href="#__codelineno-15-59"></a><span class="k">def</span> <span class="nf">on_logout</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">ClickEvent</span><span class="p">):</span>
+<a id="__codelineno-15-60" name="__codelineno-15-60" href="#__codelineno-15-60"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-15-61" name="__codelineno-15-61" href="#__codelineno-15-61"></a>    <span class="n">state</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-15-62" name="__codelineno-15-62" href="#__codelineno-15-62"></a>    <span class="n">me</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="n">SessionCookie</span><span class="p">)</span>
+<a id="__codelineno-15-63" name="__codelineno-15-63" href="#__codelineno-15-63"></a>
+<a id="__codelineno-15-64" name="__codelineno-15-64" href="#__codelineno-15-64"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">on_load</span><span class="o">=</span><span class="n">on_load</span><span class="p">)</span>
+<a id="__codelineno-15-65" name="__codelineno-15-65" href="#__codelineno-15-65"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-15-66" name="__codelineno-15-66" href="#__codelineno-15-66"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-15-67" name="__codelineno-15-67" href="#__codelineno-15-67"></a>
+<a id="__codelineno-15-68" name="__codelineno-15-68" href="#__codelineno-15-68"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+<a id="__codelineno-15-69" name="__codelineno-15-69" href="#__codelineno-15-69"></a>        <span class="k">with</span> <span class="n">me</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">Style</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">Padding</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span> <span class="n">max_width</span><span class="o">=</span><span class="mi">320</span><span class="p">)):</span>
+<a id="__codelineno-15-70" name="__codelineno-15-70" href="#__codelineno-15-70"></a>            <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;Sign in&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;headline-5&quot;</span><span class="p">)</span>
+<a id="__codelineno-15-71" name="__codelineno-15-71" href="#__codelineno-15-71"></a>            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+<a id="__codelineno-15-72" name="__codelineno-15-72" href="#__codelineno-15-72"></a>                <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">Style</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">))</span>
+<a id="__codelineno-15-73" name="__codelineno-15-73" href="#__codelineno-15-73"></a>            <span class="n">me</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Username&quot;</span><span class="p">,</span> <span class="n">on_input</span><span class="o">=</span><span class="n">on_username_input</span><span class="p">)</span>
+<a id="__codelineno-15-74" name="__codelineno-15-74" href="#__codelineno-15-74"></a>            <span class="n">me</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Password&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">on_input</span><span class="o">=</span><span class="n">on_password_input</span><span class="p">)</span>
+<a id="__codelineno-15-75" name="__codelineno-15-75" href="#__codelineno-15-75"></a>            <span class="n">me</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Sign in&quot;</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="n">on_login</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+<a id="__codelineno-15-76" name="__codelineno-15-76" href="#__codelineno-15-76"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-15-77" name="__codelineno-15-77" href="#__codelineno-15-77"></a>        <span class="k">with</span> <span class="n">me</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">Style</span><span class="p">(</span><span class="n">padding</span><span class="o">=</span><span class="n">me</span><span class="o">.</span><span class="n">Padding</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="mi">32</span><span class="p">))):</span>
+<a id="__codelineno-15-78" name="__codelineno-15-78" href="#__codelineno-15-78"></a>            <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Welcome, </span><span class="si">{</span><span class="n">state</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+<a id="__codelineno-15-79" name="__codelineno-15-79" href="#__codelineno-15-79"></a>            <span class="n">me</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;Sign out&quot;</span><span class="p">,</span> <span class="n">on_click</span><span class="o">=</span><span class="n">on_logout</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;flat&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p><strong>Multiple protected pages</strong></p>
+<p>For apps with several protected pages, add <code>on_load=on_load</code> to each page and check <code>state.username</code> at the top:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span> <span class="nf">_require_login</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">state</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>        <span class="n">_render_login_form</span><span class="p">()</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>        <span class="k">return</span> <span class="kc">False</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="k">return</span> <span class="kc">True</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/dashboard&quot;</span><span class="p">,</span> <span class="n">on_load</span><span class="o">=</span><span class="n">on_load</span><span class="p">)</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="k">def</span> <span class="nf">dashboard</span><span class="p">():</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_require_login</span><span class="p">():</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>        <span class="k">return</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="c1"># Protected dashboard content...</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/settings&quot;</span><span class="p">,</span> <span class="n">on_load</span><span class="o">=</span><span class="n">on_load</span><span class="p">)</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="k">def</span> <span class="nf">settings</span><span class="p">():</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_require_login</span><span class="p">():</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>        <span class="k">return</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    <span class="c1"># Protected settings content...</span>
+</code></pre></div>
+<p><strong>Security checklist:</strong></p>
+<ul>
+<li>Never store plaintext passwords — use <code>generate_password_hash</code> / <code>check_password_hash</code>.</li>
+<li>Never store password hashes in source code or committed files — use a secret manager (e.g. <a href="https://cloud.google.com/secret-manager">GCP Secret Manager</a>, <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager</a>) or a <code>.env</code> file listed in <code>.gitignore</code> for local development.</li>
+<li>Use <code>@me.cookieclass(signed=True)</code> (or <code>encrypted=True</code>) to prevent cookie tampering or content inspection.</li>
+<li>Validate and sanitize all user inputs (see the <a href="../state-management/#validate-input-before-updating-state">state management guide</a>).</li>
+<li>For genuine access control, use <a href="#google-cloud-iap">Google Cloud IAP</a> or <a href="#firebase-authentication">Firebase Authentication</a>.</li>
+</ul>
+<h3 id="security-notes">Security notes<a class="headerlink" href="#security-notes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong><code>httponly=True</code> (default):</strong> The cookie is not accessible to JavaScript, which mitigates XSS-based session theft.  It is still visible in browser DevTools.</li>
+<li><strong><code>secure=None</code> (default):</strong> Auto-detects HTTPS — <code>True</code> in production, <code>False</code> on local HTTP.  Pass <code>secure=True</code> to enforce HTTPS-only regardless of environment.</li>
+<li><strong><code>samesite="Lax"</code> (default):</strong> Protects against most CSRF attacks.  Use <code>"Strict"</code> for additional protection at the cost of some UX friction on cross-site navigations.</li>
+<li><strong>Cookie value size:</strong> Browsers limit individual cookies to ~4 KB.  Use server-side session storage (database, Redis, etc.) for larger payloads and store only an opaque session ID in the cookie.</li>
+<li><strong>Sensitive data:</strong> Use <code>@me.cookieclass(encrypted=True)</code> to hide cookie contents, or store only an opaque token and keep sensitive data server-side.</li>
+<li><strong>Cookie value visibility during apply:</strong> When <code>me.set_cookie()</code> is called, the pending cookie values are embedded in the <code>ApplyCookiesCommand</code> token that passes through browser JavaScript before being POSTed to <code>/__apply-cookies</code>.  The token is HMAC-signed but not encrypted, so the values are Base64-readable in that brief window.  For cookies that must never be visible to JavaScript (e.g. an <code>httponly</code> session token whose raw value is sensitive), use <code>@me.cookieclass(encrypted=True)</code> — the value is Fernet-encrypted before it ever leaves the server, so the token carries only ciphertext.</li>
+</ul>
+<hr />
+<h2 id="http-basic-auth">HTTP Basic Auth<a class="headerlink" href="#http-basic-auth" title="Permanent link">&para;</a></h2>
+<p>HTTP Basic Auth lets the browser display a native username/password pop-up with no login page required. It is a good fit for internal tools where:</p>
+<ul>
+<li>The entire app should be protected (no public pages)</li>
+<li>You want the simplest possible setup with zero UI code</li>
+<li>The app is served over HTTPS (required — Basic Auth sends credentials in plaintext otherwise)</li>
+</ul>
+<blockquote>
+<p><strong>Warning:</strong> Do not use HTTP Basic Auth over plain HTTP. Always deploy behind HTTPS.</p>
+</blockquote>
+<p><strong>How it works:</strong></p>
+<p>A WSGI middleware wrapper intercepts every request before it reaches Mesop. If the <code>Authorization</code> header is missing or the credentials are wrong, the middleware returns a <code>401</code> response immediately and the browser shows its built-in sign-in dialog. Valid requests are passed through to Mesop as normal.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li><code>werkzeug</code> (already installed with Mesop)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">import</span> <span class="nn">base64</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">import</span> <span class="nn">os</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="kn">import</span> <span class="nn">mesop</span> <span class="k">as</span> <span class="nn">me</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="kn">from</span> <span class="nn">werkzeug.security</span> <span class="kn">import</span> <span class="n">check_password_hash</span><span class="p">,</span> <span class="n">generate_password_hash</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="kn">from</span> <span class="nn">mesop</span> <span class="kn">import</span> <span class="n">create_wsgi_app</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1"># In production, load from environment variables or a database.</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="c1"># Generate hashes with: werkzeug.security.generate_password_hash(&quot;my-password&quot;)</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="n">USERS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="s2">&quot;alice&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ALICE_PASSWORD_HASH&quot;</span><span class="p">],</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="p">}</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="n">REALM</span> <span class="o">=</span> <span class="s2">&quot;My Internal Tool&quot;</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="k">class</span> <span class="nc">BasicAuthMiddleware</span><span class="p">:</span>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;WSGI middleware that enforces HTTP Basic Auth on every request.&quot;&quot;&quot;</span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>
+<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a>        <span class="c1"># Parse the Authorization header.</span>
+<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a>        <span class="n">auth_header</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HTTP_AUTHORIZATION&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a>        <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_credentials</span><span class="p">(</span><span class="n">auth_header</span><span class="p">)</span>
+<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a>
+<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a>        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a>            <span class="c1"># Credentials missing or wrong — ask the browser to prompt.</span>
+<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a>            <span class="n">start_response</span><span class="p">(</span>
+<a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a>                <span class="s2">&quot;401 Unauthorized&quot;</span><span class="p">,</span>
+<a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a>                <span class="p">[</span>
+<a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a>                    <span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">),</span>
+<a id="__codelineno-17-33" name="__codelineno-17-33" href="#__codelineno-17-33"></a>                    <span class="p">(</span><span class="s2">&quot;WWW-Authenticate&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Basic realm=&quot;</span><span class="si">{</span><span class="n">REALM</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">),</span>
+<a id="__codelineno-17-34" name="__codelineno-17-34" href="#__codelineno-17-34"></a>                <span class="p">],</span>
+<a id="__codelineno-17-35" name="__codelineno-17-35" href="#__codelineno-17-35"></a>            <span class="p">)</span>
+<a id="__codelineno-17-36" name="__codelineno-17-36" href="#__codelineno-17-36"></a>            <span class="k">return</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&quot;Unauthorized&quot;</span><span class="p">]</span>
+<a id="__codelineno-17-37" name="__codelineno-17-37" href="#__codelineno-17-37"></a>
+<a id="__codelineno-17-38" name="__codelineno-17-38" href="#__codelineno-17-38"></a>        <span class="c1"># Pass the verified username to the app via an environment variable</span>
+<a id="__codelineno-17-39" name="__codelineno-17-39" href="#__codelineno-17-39"></a>        <span class="c1"># so Mesop handlers can read it with os.environ or flask.request.environ.</span>
+<a id="__codelineno-17-40" name="__codelineno-17-40" href="#__codelineno-17-40"></a>        <span class="n">environ</span><span class="p">[</span><span class="s2">&quot;basic_auth_user&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">username</span>
+<a id="__codelineno-17-41" name="__codelineno-17-41" href="#__codelineno-17-41"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)</span>
+<a id="__codelineno-17-42" name="__codelineno-17-42" href="#__codelineno-17-42"></a>
+<a id="__codelineno-17-43" name="__codelineno-17-43" href="#__codelineno-17-43"></a>    <span class="k">def</span> <span class="nf">_check_credentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auth_header</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-17-44" name="__codelineno-17-44" href="#__codelineno-17-44"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the username if credentials are valid, otherwise None.&quot;&quot;&quot;</span>
+<a id="__codelineno-17-45" name="__codelineno-17-45" href="#__codelineno-17-45"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">auth_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;Basic &quot;</span><span class="p">):</span>
+<a id="__codelineno-17-46" name="__codelineno-17-46" href="#__codelineno-17-46"></a>            <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-17-47" name="__codelineno-17-47" href="#__codelineno-17-47"></a>        <span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-17-48" name="__codelineno-17-48" href="#__codelineno-17-48"></a>            <span class="n">decoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">auth_header</span><span class="p">[</span><span class="mi">6</span><span class="p">:])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+<a id="__codelineno-17-49" name="__codelineno-17-49" href="#__codelineno-17-49"></a>            <span class="n">username</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">password</span> <span class="o">=</span> <span class="n">decoded</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+<a id="__codelineno-17-50" name="__codelineno-17-50" href="#__codelineno-17-50"></a>        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+<a id="__codelineno-17-51" name="__codelineno-17-51" href="#__codelineno-17-51"></a>            <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-17-52" name="__codelineno-17-52" href="#__codelineno-17-52"></a>
+<a id="__codelineno-17-53" name="__codelineno-17-53" href="#__codelineno-17-53"></a>        <span class="n">stored_hash</span> <span class="o">=</span> <span class="n">USERS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+<a id="__codelineno-17-54" name="__codelineno-17-54" href="#__codelineno-17-54"></a>        <span class="k">if</span> <span class="n">stored_hash</span> <span class="ow">and</span> <span class="n">check_password_hash</span><span class="p">(</span><span class="n">stored_hash</span><span class="p">,</span> <span class="n">password</span><span class="p">):</span>
+<a id="__codelineno-17-55" name="__codelineno-17-55" href="#__codelineno-17-55"></a>            <span class="k">return</span> <span class="n">username</span>
+<a id="__codelineno-17-56" name="__codelineno-17-56" href="#__codelineno-17-56"></a>        <span class="k">return</span> <span class="kc">None</span>
+<a id="__codelineno-17-57" name="__codelineno-17-57" href="#__codelineno-17-57"></a>
+<a id="__codelineno-17-58" name="__codelineno-17-58" href="#__codelineno-17-58"></a>
+<a id="__codelineno-17-59" name="__codelineno-17-59" href="#__codelineno-17-59"></a><span class="c1"># ------------------------------------------------------------------ #</span>
+<a id="__codelineno-17-60" name="__codelineno-17-60" href="#__codelineno-17-60"></a><span class="c1"># Mesop app</span>
+<a id="__codelineno-17-61" name="__codelineno-17-61" href="#__codelineno-17-61"></a><span class="c1"># ------------------------------------------------------------------ #</span>
+<a id="__codelineno-17-62" name="__codelineno-17-62" href="#__codelineno-17-62"></a>
+<a id="__codelineno-17-63" name="__codelineno-17-63" href="#__codelineno-17-63"></a><span class="nd">@me</span><span class="o">.</span><span class="n">stateclass</span>
+<a id="__codelineno-17-64" name="__codelineno-17-64" href="#__codelineno-17-64"></a><span class="k">class</span> <span class="nc">State</span><span class="p">:</span>
+<a id="__codelineno-17-65" name="__codelineno-17-65" href="#__codelineno-17-65"></a>    <span class="n">username</span><span class="p">:</span> <span class="nb">str</span>
+<a id="__codelineno-17-66" name="__codelineno-17-66" href="#__codelineno-17-66"></a>
+<a id="__codelineno-17-67" name="__codelineno-17-67" href="#__codelineno-17-67"></a>
+<a id="__codelineno-17-68" name="__codelineno-17-68" href="#__codelineno-17-68"></a><span class="k">def</span> <span class="nf">on_load</span><span class="p">(</span><span class="n">e</span><span class="p">:</span> <span class="n">me</span><span class="o">.</span><span class="n">LoadEvent</span><span class="p">):</span>
+<a id="__codelineno-17-69" name="__codelineno-17-69" href="#__codelineno-17-69"></a>    <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">request</span>
+<a id="__codelineno-17-70" name="__codelineno-17-70" href="#__codelineno-17-70"></a>    <span class="c1"># Read the username set by the middleware.</span>
+<a id="__codelineno-17-71" name="__codelineno-17-71" href="#__codelineno-17-71"></a>    <span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;basic_auth_user&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<a id="__codelineno-17-72" name="__codelineno-17-72" href="#__codelineno-17-72"></a>
+<a id="__codelineno-17-73" name="__codelineno-17-73" href="#__codelineno-17-73"></a>
+<a id="__codelineno-17-74" name="__codelineno-17-74" href="#__codelineno-17-74"></a><span class="nd">@me</span><span class="o">.</span><span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">on_load</span><span class="o">=</span><span class="n">on_load</span><span class="p">)</span>
+<a id="__codelineno-17-75" name="__codelineno-17-75" href="#__codelineno-17-75"></a><span class="k">def</span> <span class="nf">page</span><span class="p">():</span>
+<a id="__codelineno-17-76" name="__codelineno-17-76" href="#__codelineno-17-76"></a>    <span class="n">me</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hello, </span><span class="si">{</span><span class="n">me</span><span class="o">.</span><span class="n">state</span><span class="p">(</span><span class="n">State</span><span class="p">)</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+<a id="__codelineno-17-77" name="__codelineno-17-77" href="#__codelineno-17-77"></a>
+<a id="__codelineno-17-78" name="__codelineno-17-78" href="#__codelineno-17-78"></a>
+<a id="__codelineno-17-79" name="__codelineno-17-79" href="#__codelineno-17-79"></a><span class="c1"># Wrap the Mesop WSGI app with the Basic Auth middleware.</span>
+<a id="__codelineno-17-80" name="__codelineno-17-80" href="#__codelineno-17-80"></a><span class="n">app</span> <span class="o">=</span> <span class="n">BasicAuthMiddleware</span><span class="p">(</span><span class="n">create_wsgi_app</span><span class="p">(</span><span class="n">debug_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</code></pre></div>
+<p>Run with Gunicorn:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>gunicorn --bind 0.0.0.0:8080 &#39;your_module:app&#39;
+</code></pre></div>
+<p><strong>Security checklist:</strong></p>
+<ul>
+<li>Only use HTTP Basic Auth behind HTTPS — credentials are only Base64-encoded, not encrypted.</li>
+<li>Store only hashed passwords, never plaintext.</li>
+<li>Never put credentials in source code or committed files. Use your platform's secret management solution — for example <a href="https://cloud.google.com/secret-manager">GCP Secret Manager</a>, <a href="https://aws.amazon.com/secrets-manager/">AWS Secrets Manager</a>, or a <code>.env</code> file that is listed in <code>.gitignore</code> for local development.</li>
+<li>Consider combining with an IP allowlist at the network/load-balancer level for extra protection.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.copy", "navigation.path", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.prune", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "search.highlight"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+    
+  </body>
+</html>
