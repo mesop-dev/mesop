@@ -1,7 +1,7 @@
 from collections.abc import AsyncGenerator, Coroutine
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Callable, Generator, Type, TypeVar, cast
+from typing import Any, Callable, Dict, Generator, Tuple, Type, TypeVar, cast
 
 from flask import g, request
 
@@ -56,6 +56,9 @@ class Runtime:
     # clients polling whether to request a hot reload.
     self.hot_reload_counter = 0
     self._path_to_page_config: dict[str, PageConfig] = {}
+    self._rule_to_handler: dict[
+      str, Callable[[], Tuple[str, int, Dict[str, str]]]
+    ] = {}
     self.component_fns: set[Callable[..., Any]] = set()
     self.event_mappers: dict[Type[Any], Callable[[pb.UserEvent, Key], Any]] = {}
     self._state_classes: list[type[Any]] = []
@@ -140,8 +143,26 @@ Try one of the following paths:
       )
     self._path_to_page_config[path] = page_config
 
+  def register_handler(
+    self, *, rule: str, handler: Callable[[], Tuple[str, int, Dict[str, str]]]
+  ):
+    if self._has_served_traffic:
+      raise MesopDeveloperException(
+        "Cannot register a handler after traffic has been served. You must register all handlers upon server startup before any traffic has been served. This prevents security issues."
+      )
+    if rule in self._rule_to_handler:
+      raise MesopDeveloperException(
+        f"Handler for rule '{rule}' already registered."
+      )
+    self._rule_to_handler[rule] = handler
+
   def get_page_config(self, *, path: str) -> PageConfig | None:
     return self._path_to_page_config.get(path)
+
+  def get_rule_to_handlers(
+    self,
+  ) -> dict[str, Callable[[], Tuple[str, int, Dict[str, str]]]]:
+    return deepcopy(self._rule_to_handler)
 
   def get_path_to_page_configs(self) -> dict[str, PageConfig]:
     return deepcopy(self._path_to_page_config)
