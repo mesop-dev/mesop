@@ -1,3 +1,4 @@
+import os
 import sys
 from typing import Any, Callable
 
@@ -6,6 +7,7 @@ from flask import Flask
 
 from mesop.runtime import enable_debug_mode
 from mesop.server.constants import EDITOR_PACKAGE_PATH, PROD_PACKAGE_PATH
+from mesop.server.hot_reload import start_file_watcher
 from mesop.server.flags import port
 from mesop.server.logging import log_startup
 from mesop.server.server import configure_flask_app
@@ -48,14 +50,41 @@ def create_app(
   return App(flask_app=flask_app)
 
 
-def create_wsgi_app(*, debug_mode: bool = False):
+def create_wsgi_app(
+  *, debug_mode: bool = False, watch_path: str | None = None
+):
   """
   Creates a WSGI app that can be used to run Mesop in a WSGI server like gunicorn.
 
   Args:
-    debug_mode: If True, enables debug mode for the Mesop app.
+    debug_mode: If True, enables debug mode and hot reloading for the Mesop app.
+    watch_path: Path to the main Python file to watch for changes. When provided
+      alongside ``debug_mode=True``, a background file-watcher thread is started
+      so that hot reloading works even when Mesop is mounted inside another web
+      server (e.g. FastAPI). Typically set to ``__file__`` of your entry-point
+      module.
+
+      Example::
+
+        import mesop as me
+        from mesop.server.wsgi_app import create_wsgi_app
+
+        @me.page()
+        def home():
+            me.text("Hello")
+
+        mesop_app = create_wsgi_app(debug_mode=True, watch_path=__file__)
   """
   _app = None
+
+  # Start the file watcher immediately so that changes made before the first
+  # request are still detected. The watcher runs in a daemon thread and does
+  # not depend on the Flask app being initialised yet.
+  if debug_mode and watch_path:
+    absolute_path = (
+      watch_path if os.path.isabs(watch_path) else os.path.abspath(watch_path)
+    )
+    start_file_watcher(absolute_path, prod_mode=False)
 
   def wsgi_app(environ: dict[Any, Any], start_response: Callable[..., Any]):
     # Lazily create and reuse a flask app instance to avoid

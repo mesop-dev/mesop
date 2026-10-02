@@ -9,6 +9,7 @@ load(
     "THIRD_PARTY_PY_MSGPACK",
     "THIRD_PARTY_PY_PYTEST",
     "THIRD_PARTY_PY_SQLALCHEMY",
+    "THIRD_PARTY_PY_WATCHDOG",
     "py_library",
     "py_test",
 )
@@ -31,15 +32,19 @@ py_library(
         ] + STATE_SESSIONS_SRCS,
     ),
     deps = [
+               "//mesop/cli:execute_module",
                "//mesop/component_helpers",
                "//mesop/env",
                "//mesop/events",
+               "//mesop/exceptions",
                "//mesop/protos:ui_py_pb2",
+               "//mesop/runtime",
                "//mesop/utils",
                "//mesop/warn",
            ] + THIRD_PARTY_PY_ABSL_PY +
            THIRD_PARTY_PY_FLASK +
-           THIRD_PARTY_PY_FLASK_SOCK,
+           THIRD_PARTY_PY_FLASK_SOCK +
+           THIRD_PARTY_PY_WATCHDOG,
 )
 
 py_library(

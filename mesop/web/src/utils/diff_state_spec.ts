@@ -213,6 +213,23 @@ describe('applyStateDiff functionality', () => {
     );
   });
 
+  it('applies updates to tuple dict keys (encoded as strings)', () => {
+    // Python tuple keys like (1, 2) are serialised as the string "(1, 2)"
+    // in both the state JSON and the diff path.
+    const state1 = JSON.stringify({
+      val1: {'(1, 2)': 'v1', '(3, 4)': 'v2'},
+    });
+    const diff = JSON.stringify([
+      {path: ['val1', '(1, 2)'], action: 'values_changed', value: 'V1'},
+    ]);
+
+    expect(applyStateDiff(state1, diff)).toBe(
+      JSON.stringify({
+        val1: {'(1, 2)': 'V1', '(3, 4)': 'v2'},
+      }),
+    );
+  });
+
   it('applies updates to int dict keys', () => {
     const state1 = JSON.stringify({
       val1: {
