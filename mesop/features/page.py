@@ -4,6 +4,7 @@ from typing import Callable
 
 from mesop.runtime import OnLoadHandler, PageConfig, runtime
 from mesop.security.security_policy import SecurityPolicy
+from mesop.security.cors import CORS
 
 
 def page(
@@ -12,6 +13,7 @@ def page(
   title: str | None = None,
   stylesheets: list[str] | None = None,
   security_policy: SecurityPolicy | None = None,
+  cors: CORS | None = None,
   on_load: OnLoadHandler | None = None,
 ) -> Callable[[Callable[[], None]], Callable[[], None]]:
   """Defines a page in a Mesop application.
@@ -42,7 +44,8 @@ def page(
         page_fn=wrapper,
         title=title or f"Mesop: {path}",
         stylesheets=deepcopy(stylesheets or default_stylesheets),
-        security_policy=deepcopy(security_policy)
+        security_policy=deepcopy(security_policy),
+        cors = deepcopy(cors)
         if security_policy
         else SecurityPolicy(),
         on_load=on_load,
